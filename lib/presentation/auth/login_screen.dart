@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:go_router/go_router.dart'; 
 import 'package:wedo_flutter/core/router/app_routes.dart';
-import 'package:wedo_flutter/core/widgets/custom_button.dart';
-import 'package:wedo_flutter/core/widgets/custom_text_field.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/widgets/custom_button.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class RegisterScreen extends StatelessWidget {
 
                 // 2. Main Title
                 const Text(
-                  'Create an Account',
+                  'Welcome Back!',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -47,11 +47,12 @@ class RegisterScreen extends StatelessWidget {
 
                 // 3. Subtitle
                 const Text(
-                  'Join WeDo to collaborate on tasks',
+                  'Log in to continue your tasks',
                   style: TextStyle(fontSize: 14, color: AppColors.textLight),
                 ),
                 const SizedBox(height: 32),
 
+                // 4. Form Container
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -59,23 +60,15 @@ class RegisterScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: .05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
                     ],
                   ),
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const CustomTextField(
-                        label: 'Full Name',
-                        hint: 'John Doe',
-                        icon: Icons.person_outline,
-                      ),
-                      const SizedBox(height: 16),
-
                       // Email Field
                       const CustomTextField(
                         label: 'Email',
@@ -92,42 +85,44 @@ class RegisterScreen extends StatelessWidget {
                         icon: Icons.lock_outline,
                         isPassword: true,
                       ),
-                      const SizedBox(height: 24),
 
-                      // Sign Up Button
+                      SizedBox(height: 32,),
+
+                      // Login Button
                       CustomButton(
-                        text: 'Sign Up',
+                        text: 'Login',
                         onPressed: () {
-                          // TODO: Handle Register logic later with Cubit
+                          // TODO: Handle Login logic with Cubit
                         },
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
+                      const SizedBox(height: 24),
 
-                // 5. Login Redirect Text
-                GestureDetector(
-                  onTap: () {
-                    context.push(AppRoutes.login);
-                  },
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Already have an account? ',
-                      style: TextStyle(
-                        color: AppColors.textLight,
-                        fontSize: 14,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: 'Login',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
+                      // 5. Sign Up Redirect Text
+                      GestureDetector(
+                        onTap: () {
+                          // Navigation using GoRouter
+                          context.push(AppRoutes.register);
+                        },
+                        child: RichText(
+                          text: const TextSpan(
+                            text: 'Don\'t have an account? ',
+                            style: TextStyle(
+                              color: AppColors.textLight,
+                              fontSize: 14,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Sign Up',
+                                style: TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],

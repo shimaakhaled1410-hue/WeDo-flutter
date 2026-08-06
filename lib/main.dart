@@ -1,7 +1,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/presentation/auth/register_screen.dart';
+import 'package:wedo_flutter/core/router/app_router.dart';
 import 'core/theme/app_colors.dart';
 
 void main() {
@@ -18,7 +18,7 @@ class WeDoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'WeDo',
       locale: DevicePreview.locale(context),
@@ -33,7 +33,7 @@ class WeDoApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const RegisterScreen(),
+      routerConfig: AppRouter.router,
     );
   }
 }
