@@ -12,6 +12,7 @@ import 'package:wedo_flutter/domain/repo/project_repo.dart';
 import 'package:wedo_flutter/domain/repo/task_repo.dart';
 import 'package:wedo_flutter/domain/usecases/auth/login_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/register_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/auth/sign_out_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/delete_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
@@ -30,11 +31,16 @@ final sl = GetIt.instance;
 Future<void> init() async {
   //auth
   sl.registerFactory(
-    () => AuthCubit(loginUseCase: sl(), registerUseCase: sl()),
+    () => AuthCubit(
+      loginUseCase: sl(),
+      registerUseCase: sl(),
+      signOutUsecase: sl(),
+    ),
   );
 
   sl.registerLazySingleton(() => LoginUseCase(sl()));
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
+  sl.registerLazySingleton(() => SignOutUsecase(sl()));
 
   sl.registerLazySingleton<AuthRepo>(() => AuthRepoImpl(sl()));
 
@@ -60,7 +66,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetProjectsUsecase(sl()));
   sl.registerLazySingleton(() => DeleteProjectUsecase(sl()));
   sl.registerLazySingleton(() => UpdateProjectUsecase(sl()));
-  
+
   sl.registerLazySingleton<ProjectRepo>(() => ProjectRepoImpl(sl()));
 
   sl.registerLazySingleton<ProjectRemoteDataSource>(

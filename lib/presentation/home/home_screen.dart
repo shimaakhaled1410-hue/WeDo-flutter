@@ -38,13 +38,16 @@ class HomeScreen extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-              child: const Icon(
-                Icons.person_outline,
-                color: AppColors.primary,
-                size: 20,
+            child: GestureDetector(
+              onTap: () => context.push(AppRoutes.profile),
+              child: CircleAvatar(
+                radius: 16,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                child: const Icon(
+                  Icons.person_outline,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -144,7 +147,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               actions: [
                                 TextButton(
-                                  onPressed: () =>dialogContext.pop(),
+                                  onPressed: () => dialogContext.pop(),
                                   child: const Text('Cancel'),
                                 ),
                                 TextButton(
@@ -155,7 +158,8 @@ class HomeScreen extends StatelessWidget {
                                     dialogContext.pop();
                                     CustomSnackBar.show(
                                       context: context,
-                                      message: 'Project "${project.name}" deleted',
+                                      message:
+                                          'Project "${project.name}" deleted',
                                       isError: false,
                                     );
                                   },
