@@ -3,16 +3,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wedo_flutter/data/datasource/auth_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/project_remote_datasource.dart';
+import 'package:wedo_flutter/data/datasource/task_remote_datasource.dart';
 import 'package:wedo_flutter/data/repo_impl/auth_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/project_repo_impl.dart';
+import 'package:wedo_flutter/data/repo_impl/task_repo_impl.dart';
 import 'package:wedo_flutter/domain/repo/auth_repo.dart';
 import 'package:wedo_flutter/domain/repo/project_repo.dart';
+import 'package:wedo_flutter/domain/repo/task_repo.dart';
 import 'package:wedo_flutter/domain/usecases/auth/login_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/register_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
+import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -45,5 +52,22 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ProjectRemoteDataSource>(
     () => ProjectRemoteDataSourceImpl(sl()),
+  );
+
+  //tasks
+  sl.registerFactory(
+    () => TaskCubit(
+      addTaskUsecase: sl(),
+      getTasksUsecase: sl(),
+      toggleTaskStatusUsecase: sl(),
+    ),
+  );
+  sl.registerLazySingleton(() => AddTaskUsecase(sl()));
+  sl.registerLazySingleton(() => GetTasksUsecase(sl()));
+  sl.registerLazySingleton(() => ToggleTaskStatusUsecase(sl()));
+  sl.registerLazySingleton<TaskRepo>(() => TaskRepoImpl(sl()));
+
+  sl.registerLazySingleton<TaskRemoteDataSource>(
+    () => TaskRemoteDataSourceImpl(sl()),
   );
 }

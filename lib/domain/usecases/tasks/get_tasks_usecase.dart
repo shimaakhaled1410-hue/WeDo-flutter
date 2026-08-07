@@ -6,8 +6,8 @@ import 'package:wedo_flutter/domain/repo/task_repo.dart';
 class GetTasksUsecase {
   final TaskRepo repo;
 
-  GetTasksUsecase({required this.repo});
-  
+  GetTasksUsecase(this.repo);
+
   Future<Either<Failure, List<TaskEntity>>> call({required String projectId}) {
     return repo.getTasks(projectId: projectId);
   }
