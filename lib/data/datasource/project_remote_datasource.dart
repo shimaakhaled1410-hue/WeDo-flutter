@@ -36,7 +36,7 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
     final querySnapshot = await firestore
         .collection('projects')
         .where('ownerId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
+        // .orderBy('createdAt', descending: true)
         .get();
 
     return querySnapshot.docs

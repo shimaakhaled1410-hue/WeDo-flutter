@@ -6,7 +6,7 @@ class ProjectEntity extends Equatable {
   final int iconCodePoint; 
   final int completedTasks; 
   final int totalTasks;
-  final List collaboratorsImages;
+  final List<String> collaboratorsImages;
   final DateTime createdAt;
   final String ownerId;
 
