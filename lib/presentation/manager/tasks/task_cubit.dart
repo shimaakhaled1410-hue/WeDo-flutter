@@ -3,9 +3,9 @@ import 'package:wedo_flutter/domain/entities/task_entity.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
-import 'task_state.dart';
+import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
 
-class TaskCubit extends Cubit {
+class TaskCubit extends Cubit<TaskState> {
   final AddTaskUsecase addTaskUsecase;
   final GetTasksUsecase getTasksUsecase;
   final ToggleTaskStatusUsecase toggleTaskStatusUsecase;
@@ -16,7 +16,7 @@ class TaskCubit extends Cubit {
     required this.toggleTaskStatusUsecase,
   }) : super(TaskInitial());
 
-  List tasksList = [];
+  List<TaskEntity> tasksList = [];
 
   Future fetchTasks(String projectId) async {
     emit(GetTasksLoading());
@@ -24,8 +24,8 @@ class TaskCubit extends Cubit {
     final result = await getTasksUsecase(projectId: projectId);
 
     result.fold((failure) => emit(GetTasksError(failure.message)), (tasks) {
-      tasksList = tasks;
-      emit(GetTasksSuccess(tasks));
+      tasksList = List<TaskEntity>.from(tasks);
+      emit(GetTasksSuccess(tasksList));
     });
   }
 
@@ -50,24 +50,26 @@ class TaskCubit extends Cubit {
     });
   }
 
-  Future toggleTask(TaskEntity task) async {
+  Future<void> toggleTask(TaskEntity task) async {
     final index = tasksList.indexWhere((t) => t.id == task.id);
     if (index == -1) return;
 
     final updatedTask = task.copyWith(isCompleted: !task.isCompleted);
     tasksList[index] = updatedTask;
-    emit(
-      ToggleTaskStatusSuccess(
-        taskId: updatedTask.id,
-        isCompleted: updatedTask.isCompleted,
-      ),
-    );
+
+    emit(ToggleTaskStatusSuccess(
+      taskId: updatedTask.id,
+      isCompleted: updatedTask.isCompleted,
+    ));
 
     final result = await toggleTaskStatusUsecase(task: task);
 
-    result.fold((failure) {
-      tasksList[index] = task;
-      emit(ToggleTaskStatusError(failure.message));
-    }, (_) {});
+    result.fold(
+      (failure) {
+        tasksList[index] = task;
+        emit(ToggleTaskStatusError(failure.message));
+      },
+      (_) {},
+    );
   }
 }

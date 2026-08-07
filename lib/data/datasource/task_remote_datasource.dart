@@ -39,7 +39,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     final querySnapshot = await firestore
         .collection('tasks')
         .where('projectId', isEqualTo: projectId)
-        .orderBy('createdAt', descending: true)
+        // .orderBy('createdAt', descending: true)
         .get();
 
     return querySnapshot.docs

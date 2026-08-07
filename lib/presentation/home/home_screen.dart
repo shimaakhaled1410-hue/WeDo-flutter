@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:wedo_flutter/core/router/app_routes.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
 import 'package:wedo_flutter/presentation/home/widgets/add_project_buttom_sheet.dart';
 import 'package:wedo_flutter/presentation/home/widgets/project_card.dart';
@@ -14,6 +16,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
@@ -117,6 +120,15 @@ class HomeScreen extends StatelessWidget {
                         totalTasks: project.totalTasks,
                         icon: getProjectIcon(project.iconCodePoint),
                         collaboratorsImages: project.collaboratorsImages,
+                        onTap: () async {
+                          await context.push(
+                            AppRoutes.projectDetails,
+                            extra: project,
+                          );
+                          if (context.mounted) {
+                            context.read<ProjectCubit>().fetchProjects();
+                          }
+                        },
                       );
                     },
                   );
