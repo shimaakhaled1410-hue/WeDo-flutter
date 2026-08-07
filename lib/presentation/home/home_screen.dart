@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/router/app_routes.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/presentation/home/widgets/add_project_buttom_sheet.dart';
 import 'package:wedo_flutter/presentation/home/widgets/project_card.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
@@ -129,6 +130,38 @@ class HomeScreen extends StatelessWidget {
                             context.read<ProjectCubit>().fetchProjects();
                           }
                         },
+                        onEdit: () {
+                          _showEditProjectBottomSheet(context, project);
+                        },
+                        onDelete: () {
+                          showDialog(
+                            context: context,
+                            builder: (dialogContext) => AlertDialog(
+                              title: const Text('Delete Project'),
+                              content: Text(
+                                'Are you sure you want to delete "${project.name}"?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(dialogContext),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<ProjectCubit>().deleteProject(
+                                      project.id,
+                                    );
+                                    Navigator.pop(dialogContext);
+                                  },
+                                  child: const Text(
+                                    'Delete',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       );
                     },
                   );
@@ -186,3 +219,160 @@ IconData getProjectIcon(int codePoint) {
       return Icons.folder_outlined;
   }
 }
+
+void _showEditProjectBottomSheet(BuildContext context, ProjectEntity project) {
+  final projectCubit = context.read<ProjectCubit>();
+
+  final formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController(text: project.name);
+
+  int selectedIconIndex = _availableIcons.indexWhere(
+    (icon) => icon.codePoint == project.iconCodePoint,
+  );
+  if (selectedIconIndex == -1) selectedIconIndex = 0;
+
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (sheetContext) => BlocProvider.value(
+      value: projectCubit,
+      child: StatefulBuilder(
+        builder: (context, setState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Edit Project',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: nameController,
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        hintText: 'Project Name',
+                        filled: true,
+                        fillColor: AppColors.background,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      validator: (val) {
+                        if (val == null || val.trim().isEmpty) {
+                          return 'Please enter project name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Select Icon',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textLight,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _availableIcons.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        itemBuilder: (context, index) {
+                          final isSelected = selectedIconIndex == index;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedIconIndex = index;
+                              });
+                            },
+                            child: Container(
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : AppColors.background,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                _availableIcons[index],
+                                color: isSelected
+                                    ? AppColors.white
+                                    : AppColors.primary,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            final updatedProject = project.copyWith(
+                              name: nameController.text.trim(),
+                              iconCodePoint:
+                                  _availableIcons[selectedIconIndex].codePoint,
+                            );
+
+                            projectCubit.updateProject(updatedProject);
+                            Navigator.pop(sheetContext);
+                          }
+                        },
+                        child: const Text(
+                          'Save Changes',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
+}
+
+final List<IconData> _availableIcons = [
+  Icons.shopping_cart_outlined,
+  Icons.code_rounded,
+  Icons.flight_takeoff_rounded,
+  Icons.work_outline_rounded,
+  Icons.favorite_border_rounded,
+];

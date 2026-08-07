@@ -14,6 +14,12 @@ abstract class TaskRepo {
   Future<Either<Failure, void>> toggleTaskStatus({
     required TaskEntity task,
   });
+  Future<Either<Failure, void>> deleteTask({
+    required TaskEntity task,
+  });
+  Future<Either<Failure, void>> updateTask({
+    required TaskEntity task,
+  });
 }
 
    

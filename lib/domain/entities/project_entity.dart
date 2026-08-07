@@ -21,6 +21,28 @@ class ProjectEntity extends Equatable {
     required this.ownerId,
   });
 
+  ProjectEntity copyWith({
+    String? id,
+    String? name,
+    String? ownerId,
+    int? iconCodePoint,
+    int? totalTasks,
+    int? completedTasks,
+    List<String>? collaboratorsImages,
+    DateTime? createdAt,
+  }) {
+    return ProjectEntity(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      ownerId: ownerId ?? this.ownerId,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+      totalTasks: totalTasks ?? this.totalTasks,
+      completedTasks: completedTasks ?? this.completedTasks,
+      collaboratorsImages: collaboratorsImages ?? this.collaboratorsImages,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   @override
   List get props => [
         id,

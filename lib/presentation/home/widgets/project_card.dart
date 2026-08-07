@@ -8,6 +8,8 @@ class ProjectCard extends StatelessWidget {
   final IconData icon;
   final List<String> collaboratorsImages;
   final VoidCallback onTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const ProjectCard({
     super.key,
@@ -17,6 +19,8 @@ class ProjectCard extends StatelessWidget {
     required this.icon,
     required this.collaboratorsImages,
     required this.onTap,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -33,7 +37,7 @@ class ProjectCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04), 
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 15,
               offset: const Offset(0, 5),
             ),
@@ -48,16 +52,51 @@ class ProjectCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha:0.08),
+                    color: AppColors.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(icon, color: AppColors.primary, size: 24),
                 ),
-                const Icon(Icons.more_vert, color: AppColors.textLight, size: 20),
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert, color: AppColors.textLight),
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      onEdit?.call();
+                    } else if (value == 'delete') {
+                      onDelete?.call();
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit, size: 20, color: AppColors.primary),
+                          SizedBox(width: 8),
+                          Text('Edit'),
+                        ],
+                      ),
+                    ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.delete_outline,
+                            size: 20,
+                            color: Colors.red,
+                          ),
+                          SizedBox(width: 8),
+                          Text('Delete', style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
             const SizedBox(height: 16),
-            
+
             Text(
               title,
               style: const TextStyle(
@@ -76,36 +115,35 @@ class ProjectCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
                 value: progress,
-                backgroundColor: AppColors.background.withValues(alpha:0.5),
-                valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
+                backgroundColor: AppColors.background.withValues(alpha: 0.5),
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  AppColors.accent,
+                ),
                 minHeight: 6,
               ),
             ),
             const SizedBox(height: 16),
-            
+
             Row(
-              children: List.generate(
-                collaboratorsImages.length,
-                (index) {
-                  return Align(
-                    widthFactor: 0.7, 
+              children: List.generate(collaboratorsImages.length, (index) {
+                return Align(
+                  widthFactor: 0.7,
+                  child: CircleAvatar(
+                    radius: 14,
+                    backgroundColor: AppColors.white,
                     child: CircleAvatar(
-                      radius: 14,
-                      backgroundColor: AppColors.white, 
-                      child: CircleAvatar(
-                        radius: 12,
-                        backgroundColor: Colors.grey.shade300,
-                        backgroundImage: NetworkImage(collaboratorsImages[index]),
-                      ),
+                      radius: 12,
+                      backgroundColor: Colors.grey.shade300,
+                      backgroundImage: NetworkImage(collaboratorsImages[index]),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }),
             ),
           ],
         ),

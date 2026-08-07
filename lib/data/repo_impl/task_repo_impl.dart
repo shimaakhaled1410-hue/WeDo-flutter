@@ -11,7 +11,9 @@ class TaskRepoImpl implements TaskRepo {
   TaskRepoImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failure, TaskEntity>> addTask({required TaskEntity task}) async {
+  Future<Either<Failure, TaskEntity>> addTask({
+    required TaskEntity task,
+  }) async {
     try {
       final taskModel = TaskModel.fromEntity(task);
       final TaskEntity result = await remoteDataSource.addTask(taskModel);
@@ -22,7 +24,9 @@ class TaskRepoImpl implements TaskRepo {
   }
 
   @override
-  Future<Either<Failure, List<TaskEntity>>> getTasks({required String projectId}) async {
+  Future<Either<Failure, List<TaskEntity>>> getTasks({
+    required String projectId,
+  }) async {
     try {
       final List<TaskModel> result = await remoteDataSource.getTasks(projectId);
       return Right(result);
@@ -32,10 +36,34 @@ class TaskRepoImpl implements TaskRepo {
   }
 
   @override
-  Future<Either<Failure, void>> toggleTaskStatus({required TaskEntity task}) async {
+  Future<Either<Failure, void>> toggleTaskStatus({
+    required TaskEntity task,
+  }) async {
     try {
       final taskModel = TaskModel.fromEntity(task);
       await remoteDataSource.toggleTaskStatus(taskModel);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteTask({required TaskEntity task}) async {
+    try {
+      final taskModel = TaskModel.fromEntity(task);
+      await remoteDataSource.deleteTask(taskModel);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateTask({required TaskEntity task}) async {
+    try {
+      final taskModel = TaskModel.fromEntity(task);
+      await remoteDataSource.updateTask(taskModel);
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(e.toString()));

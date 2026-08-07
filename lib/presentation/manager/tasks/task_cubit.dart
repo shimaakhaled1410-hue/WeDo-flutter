@@ -1,19 +1,25 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wedo_flutter/domain/entities/task_entity.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/delete_task_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/update_task_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
   final AddTaskUsecase addTaskUsecase;
   final GetTasksUsecase getTasksUsecase;
   final ToggleTaskStatusUsecase toggleTaskStatusUsecase;
+  final DeleteTaskUsecase deleteTaskUsecase;
+  final UpdateTaskUsecase updateTaskUsecase;
 
   TaskCubit({
     required this.addTaskUsecase,
     required this.getTasksUsecase,
     required this.toggleTaskStatusUsecase,
+    required this.deleteTaskUsecase,
+    required this.updateTaskUsecase,
   }) : super(TaskInitial());
 
   List<TaskEntity> tasksList = [];
@@ -57,19 +63,38 @@ class TaskCubit extends Cubit<TaskState> {
     final updatedTask = task.copyWith(isCompleted: !task.isCompleted);
     tasksList[index] = updatedTask;
 
-    emit(ToggleTaskStatusSuccess(
-      taskId: updatedTask.id,
-      isCompleted: updatedTask.isCompleted,
-    ));
+    emit(
+      ToggleTaskStatusSuccess(
+        taskId: updatedTask.id,
+        isCompleted: updatedTask.isCompleted,
+      ),
+    );
 
     final result = await toggleTaskStatusUsecase(task: task);
 
-    result.fold(
-      (failure) {
-        tasksList[index] = task;
-        emit(ToggleTaskStatusError(failure.message));
-      },
-      (_) {},
-    );
+    result.fold((failure) {
+      tasksList[index] = task;
+      emit(ToggleTaskStatusError(failure.message));
+    }, (_) {});
+  }
+
+  Future<void> deleteTask(TaskEntity task) async {
+    tasksList.removeWhere((t) => t.id == task.id);
+    emit(GetTasksSuccess(List<TaskEntity>.from(tasksList)));
+
+    final result = await deleteTaskUsecase(task: task);
+    result.fold((failure) => emit(GetTasksError(failure.message)), (_) {});
+  }
+
+  Future<void> updateTask(TaskEntity task, String newTitle) async {
+    final index = tasksList.indexWhere((t) => t.id == task.id);
+    if (index == -1) return;
+
+    final updated = task.copyWith(title: newTitle);
+    tasksList[index] = updated;
+    emit(GetTasksSuccess(List<TaskEntity>.from(tasksList)));
+
+    final result = await updateTaskUsecase(task: updated);
+    result.fold((failure) => emit(GetTasksError(failure.message)), (_) {});
   }
 }

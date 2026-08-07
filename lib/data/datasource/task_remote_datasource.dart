@@ -5,6 +5,8 @@ abstract class TaskRemoteDataSource {
   Future<TaskModel> addTask(TaskModel task);
   Future<List<TaskModel>> getTasks(String projectId);
   Future<void> toggleTaskStatus(TaskModel task);
+  Future<void> deleteTask(TaskModel task);
+  Future<void> updateTask(TaskModel task);
 }
 
 class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
@@ -27,9 +29,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     await taskDocRef.set(taskToSave.toMap());
 
     final projectDocRef = firestore.collection('projects').doc(task.projectId);
-    await projectDocRef.update({
-      'totalTasks': FieldValue.increment(1), 
-    });
+    await projectDocRef.update({'totalTasks': FieldValue.increment(1)});
 
     return taskToSave;
   }
@@ -58,6 +58,24 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
     final projectDocRef = firestore.collection('projects').doc(task.projectId);
     await projectDocRef.update({
       'completedTasks': FieldValue.increment(newStatus ? 1 : -1),
+    });
+  }
+
+  @override
+  Future<void> deleteTask(TaskModel task) async {
+    await firestore.collection('tasks').doc(task.id).delete();
+
+    final projectDocRef = firestore.collection('projects').doc(task.projectId);
+    await projectDocRef.update({
+      'totalTasks': FieldValue.increment(-1),
+      if (task.isCompleted) 'completedTasks': FieldValue.increment(-1),
+    });
+  }
+
+  @override
+  Future<void> updateTask(TaskModel task) async {
+    await firestore.collection('tasks').doc(task.id).update({
+      'title': task.title,
     });
   }
 }

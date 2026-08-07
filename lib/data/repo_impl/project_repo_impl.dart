@@ -39,4 +39,23 @@ class ProjectRepoImpl implements ProjectRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+  @override
+  Future<Either<Failure, void>> deleteProject({required String projectId}) async {
+    try {
+      await remoteDataSource.deleteProject(projectId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+  @override
+  Future<Either<Failure, void>> updateProject({required ProjectEntity project}) async {
+    try {
+      final projectModel = ProjectModel.fromEntity(project);
+      await remoteDataSource.updateProject(projectModel);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

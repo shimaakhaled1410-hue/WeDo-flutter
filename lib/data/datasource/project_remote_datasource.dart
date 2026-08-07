@@ -4,6 +4,8 @@ import 'package:wedo_flutter/data/models/project_model.dart';
 abstract class ProjectRemoteDataSource {
   Future<ProjectModel> addProject(ProjectModel project);
   Future<List<ProjectModel>> getProjects(String userId);
+  Future<void> deleteProject(String projectId);
+  Future<void> updateProject(ProjectModel project);
 }
 
 class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
@@ -42,5 +44,27 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
     return querySnapshot.docs
         .map((doc) => ProjectModel.fromMap(doc.data(), doc.id))
         .toList();
+  }
+
+  @override
+  Future<void> deleteProject(String projectId) async {
+    await firestore.collection('projects').doc(projectId).delete();
+
+    final tasksQuery = await firestore
+        .collection('tasks')
+        .where('projectId', isEqualTo: projectId)
+        .get();
+
+    for (var doc in tasksQuery.docs) {
+      await doc.reference.delete();
+    }
+  }
+
+  @override
+  Future<void> updateProject(ProjectModel project) async {
+    await firestore
+        .collection('projects')
+        .doc(project.id)
+        .update(project.toMap());
   }
 }

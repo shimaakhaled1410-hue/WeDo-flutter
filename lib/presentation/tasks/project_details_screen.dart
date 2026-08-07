@@ -189,34 +189,46 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       final task = cubit.tasksList[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Material(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          clipBehavior: Clip.antiAlias,
-                          child: CheckboxListTile(
-                            value: task.isCompleted,
-                            activeColor: AppColors.accent,
-                            checkboxShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            title: Text(
-                              task.title,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: task.isCompleted
-                                    ? AppColors.textLight
-                                    : AppColors.primary,
-                                decoration: task.isCompleted
-                                    ? TextDecoration.lineThrough
-                                    : TextDecoration.none,
+                      return Dismissible(
+                        key: Key(task.id),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade400,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(
+                            Icons.delete_outline,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onDismissed: (_) {
+                          context.read<TaskCubit>().deleteTask(task);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Material(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            child: CheckboxListTile(
+                              value: task.isCompleted,
+                              activeColor: AppColors.accent,
+                              title: Text(task.title),
+                              secondary: IconButton(
+                                icon: const Icon(
+                                  Icons.edit_outlined,
+                                  size: 20,
+                                  color: AppColors.textLight,
+                                ),
+                                onPressed: () =>
+                                    _showEditTaskDialog(context, task),
                               ),
+                              onChanged: (_) {
+                                context.read<TaskCubit>().toggleTask(task);
+                              },
                             ),
-                            onChanged: (_) {
-                              context.read<TaskCubit>().toggleTask(task);
-                            },
                           ),
                         ),
                       );
@@ -235,4 +247,37 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
       ),
     );
   }
+}
+
+void _showEditTaskDialog(BuildContext context, dynamic task) {
+  final controller = TextEditingController(text: task.title);
+
+  showDialog(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: const Text('Edit Task'),
+      content: TextField(
+        controller: controller,
+        autofocus: true,
+        decoration: const InputDecoration(hintText: 'Enter new task title'),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => dialogContext.pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+          onPressed: () {
+            final newTitle = controller.text.trim();
+            if (newTitle.isNotEmpty) {
+              context.read<TaskCubit>().updateTask(task, newTitle);
+              dialogContext.pop();
+            }
+          },
+          child: const Text('Save', style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
 }

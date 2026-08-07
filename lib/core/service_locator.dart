@@ -13,10 +13,14 @@ import 'package:wedo_flutter/domain/repo/task_repo.dart';
 import 'package:wedo_flutter/domain/usecases/auth/login_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/register_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/project/delete_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/project/update_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/delete_task_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/tasks/update_task_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
@@ -44,10 +48,19 @@ Future<void> init() async {
 
   //project
   sl.registerFactory(
-    () => ProjectCubit(addProjectUsecase: sl(), getProjectsUsecase: sl()),
+    () => ProjectCubit(
+      addProjectUsecase: sl(),
+      getProjectsUsecase: sl(),
+      deleteProjectUsecase: sl(),
+      updateProjectUsecase: sl(),
+    ),
   );
+
   sl.registerLazySingleton(() => AddProjectUsecase(sl()));
   sl.registerLazySingleton(() => GetProjectsUsecase(sl()));
+  sl.registerLazySingleton(() => DeleteProjectUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateProjectUsecase(sl()));
+  
   sl.registerLazySingleton<ProjectRepo>(() => ProjectRepoImpl(sl()));
 
   sl.registerLazySingleton<ProjectRemoteDataSource>(
@@ -60,11 +73,16 @@ Future<void> init() async {
       addTaskUsecase: sl(),
       getTasksUsecase: sl(),
       toggleTaskStatusUsecase: sl(),
+      deleteTaskUsecase: sl(),
+      updateTaskUsecase: sl(),
     ),
   );
   sl.registerLazySingleton(() => AddTaskUsecase(sl()));
   sl.registerLazySingleton(() => GetTasksUsecase(sl()));
   sl.registerLazySingleton(() => ToggleTaskStatusUsecase(sl()));
+  sl.registerLazySingleton(() => DeleteTaskUsecase(sl()));
+  sl.registerLazySingleton(() => UpdateTaskUsecase(sl()));
+
   sl.registerLazySingleton<TaskRepo>(() => TaskRepoImpl(sl()));
 
   sl.registerLazySingleton<TaskRemoteDataSource>(

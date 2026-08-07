@@ -10,4 +10,10 @@ abstract class ProjectRepo {
   Future<Either<Failure, List<ProjectEntity>>> getProjects({
     required String userId,
   });
+  Future<Either<Failure, void>> deleteProject({
+    required String projectId,
+  });
+  Future<Either<Failure, void>> updateProject({
+    required ProjectEntity project,
+  });
 }
