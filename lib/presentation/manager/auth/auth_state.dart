@@ -11,9 +11,18 @@ class AuthSuccess extends AuthState {
 
   AuthSuccess(this.user);
 }
+
 class Unauthenticated extends AuthState {}
+
 class AuthError extends AuthState {
   final String message;
 
   AuthError(this.message);
+}
+
+class ProfileImageUpdated extends AuthState {
+  final String photoUrl;
+  ProfileImageUpdated(this.photoUrl);
+
+  List<Object?> get props => [photoUrl];
 }

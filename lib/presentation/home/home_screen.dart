@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -38,17 +39,29 @@ class HomeScreen extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: GestureDetector(
-              onTap: () => context.push(AppRoutes.profile),
-              child: CircleAvatar(
-                radius: 16,
-                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                child: const Icon(
-                  Icons.person_outline,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
+            child: Builder(
+              builder: (context) {
+                final user = FirebaseAuth.instance.currentUser;
+                final photoUrl = user?.photoURL;
+
+                return GestureDetector(
+                  onTap: () => context.push(AppRoutes.profile),
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+                        ? NetworkImage(photoUrl)
+                        : null,
+                    child: (photoUrl == null || photoUrl.isEmpty)
+                        ? const Icon(
+                            Icons.person_outline,
+                            color: AppColors.primary,
+                            size: 20,
+                          )
+                        : null,
+                  ),
+                );
+              },
             ),
           ),
         ],

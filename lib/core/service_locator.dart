@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:wedo_flutter/data/datasource/auth_remote_datasource.dart';
+import 'package:wedo_flutter/data/datasource/image_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/project_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/task_remote_datasource.dart';
 import 'package:wedo_flutter/data/repo_impl/auth_repo_impl.dart';
@@ -35,6 +37,8 @@ Future<void> init() async {
       loginUseCase: sl(),
       registerUseCase: sl(),
       signOutUsecase: sl(),
+      firebaseAuth: sl(),
+      imageRemoteDataSource: sl(),
     ),
   );
 
@@ -48,7 +52,12 @@ Future<void> init() async {
     () => AuthRemoteDataSourceImpl(firebaseAuth: sl(), firestore: sl()),
   );
 
-  //firebase
+  sl.registerLazySingleton<ImageRemoteDataSource>(
+    () => ImageRemoteDataSourceImpl(client: sl()),
+  );
+
+  //external services
+  sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton(() => FirebaseAuth.instance);
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
 

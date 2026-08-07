@@ -1,15 +1,54 @@
+import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:wedo_flutter/core/router/app_routes.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_state.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
+import 'package:wedo_flutter/presentation/profile/widgets/profile_avatar.dart';
+import 'package:wedo_flutter/presentation/profile/widgets/profile_setting_tile.dart';
+import 'package:wedo_flutter/presentation/profile/widgets/profile_stat_card.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Uint8List? _imageBytes;
+  bool _isUploading = false;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
+
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      setState(() {
+        _imageBytes = bytes;
+      });
+
+      if (mounted) {
+        context.read<AuthCubit>().updateProfileImage(bytes);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _imageBytes = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +61,24 @@ class ProfileScreen extends StatelessWidget {
       (sum, project) => sum + project.completedTasks,
     );
 
+    final displayName = user?.displayName?.isNotEmpty == true
+        ? user!.displayName!
+        : (user?.email?.split('@').first ?? 'User');
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is Unauthenticated) {
           context.go(AppRoutes.login);
+        } else if (state is AuthLoading) {
+          setState(() => _isUploading = true);
+        } else if (state is ProfileImageUpdated) {
+          setState(() => _isUploading = false);
+          CustomSnackBar.show(
+            context: context,
+            message: 'Profile image updated successfully!',
+          );
         } else if (state is AuthError) {
+          setState(() => _isUploading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -68,36 +120,21 @@ class ProfileScreen extends StatelessWidget {
 
               // Profile Avatar
               Stack(
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 52,
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                    child: const Icon(
-                      Icons.person_outline_rounded,
-                      color: AppColors.primary,
-                      size: 56,
-                    ),
+                  ProfileAvatar(
+                    imageBytes: _imageBytes,
+                    user: user,
+                    onTap: _isUploading ? () {} : _pickImage,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: AppColors.accent,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      size: 14,
-                      color: AppColors.white,
-                    ),
-                  ),
+                  if (_isUploading)
+                    const CircularProgressIndicator(color: AppColors.primary),
                 ],
               ),
               const SizedBox(height: 16),
 
-              // User Info
               Text(
-                user?.displayName ?? user?.email?.split('@').first ?? 'User',
+                displayName,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -119,7 +156,7 @@ class ProfileScreen extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: _buildStatCard(
+                    child: ProfileStatCard(
                       title: 'Projects',
                       value: '$totalProjects',
                       icon: Icons.folder_open_rounded,
@@ -127,7 +164,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _buildStatCard(
+                    child: ProfileStatCard(
                       title: 'Done Tasks',
                       value: '$completedTasksCount',
                       icon: Icons.task_alt_rounded,
@@ -137,27 +174,27 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // Settings Options Block
+              // Settings List
               Material(
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(16),
-                clipBehavior: Clip
-                    .antiAlias,
+                clipBehavior: Clip.antiAlias,
                 child: Column(
                   children: [
-                    _buildListTile(
-                      icon: Icons.person_outline_rounded,
-                      title: 'Account Information',
+                    ProfileSettingsTile(
+                      icon: Icons.language_rounded,
+                      title: 'Language',
+                      trailingText: 'English',
                       onTap: () {},
                     ),
                     const Divider(height: 1, indent: 16, endIndent: 16),
-                    _buildListTile(
+                    ProfileSettingsTile(
                       icon: Icons.notifications_none_rounded,
                       title: 'Notifications',
                       onTap: () {},
                     ),
                     const Divider(height: 1, indent: 16, endIndent: 16),
-                    _buildListTile(
+                    ProfileSettingsTile(
                       icon: Icons.dark_mode_outlined,
                       title: 'Theme Mode',
                       trailingText: 'Light',
@@ -197,90 +234,6 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(icon, color: AppColors.primary, size: 22),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textLight,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildListTile({
-    required IconData icon,
-    required String title,
-    String? trailingText,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.primary, size: 22),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: AppColors.primary,
-        ),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (trailingText != null)
-            Text(
-              trailingText,
-              style: const TextStyle(fontSize: 13, color: AppColors.textLight),
-            ),
-          const SizedBox(width: 6),
-          const Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 14,
-            color: AppColors.textLight,
-          ),
-        ],
-      ),
-      onTap: onTap,
     );
   }
 
