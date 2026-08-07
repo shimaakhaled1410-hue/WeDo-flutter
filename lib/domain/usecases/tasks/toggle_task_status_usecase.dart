@@ -7,7 +7,7 @@ class ToggleTaskStatusUsecase {
   final TaskRepo repo;
   ToggleTaskStatusUsecase(this.repo);
 
-  Future<Either<Failure, TaskEntity>> call({required TaskEntity task}) {
+  Future<Either<Failure, void>> call({required TaskEntity task}) {
     return repo.toggleTaskStatus(task: task);
   }
 }

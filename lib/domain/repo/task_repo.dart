@@ -11,7 +11,7 @@ abstract class TaskRepo {
     required String projectId,
   });
 
-  Future<Either<Failure, TaskEntity>> toggleTaskStatus({
+  Future<Either<Failure, void>> toggleTaskStatus({
     required TaskEntity task,
   });
 }
