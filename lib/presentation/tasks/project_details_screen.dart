@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
@@ -206,6 +207,11 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                         ),
                         onDismissed: (_) {
                           context.read<TaskCubit>().deleteTask(task);
+                          CustomSnackBar.show(
+                            context: context,
+                            message: 'Task "${task.title}" deleted',
+                            isError: false,
+                          );
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 12),
@@ -274,6 +280,11 @@ void _showEditTaskDialog(BuildContext context, dynamic task) {
               context.read<TaskCubit>().updateTask(task, newTitle);
               dialogContext.pop();
             }
+            CustomSnackBar.show(
+              context: context,
+              message: 'Task updated successfully',
+              isError: false,
+            );
           },
           child: const Text('Save', style: TextStyle(color: Colors.white)),
         ),

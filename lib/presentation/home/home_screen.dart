@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/router/app_routes.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/presentation/home/widgets/add_project_buttom_sheet.dart';
 import 'package:wedo_flutter/presentation/home/widgets/project_card.dart';
@@ -143,7 +144,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                               actions: [
                                 TextButton(
-                                  onPressed: () => Navigator.pop(dialogContext),
+                                  onPressed: () =>dialogContext.pop(),
                                   child: const Text('Cancel'),
                                 ),
                                 TextButton(
@@ -151,7 +152,12 @@ class HomeScreen extends StatelessWidget {
                                     context.read<ProjectCubit>().deleteProject(
                                       project.id,
                                     );
-                                    Navigator.pop(dialogContext);
+                                    dialogContext.pop();
+                                    CustomSnackBar.show(
+                                      context: context,
+                                      message: 'Project "${project.name}" deleted',
+                                      isError: false,
+                                    );
                                   },
                                   child: const Text(
                                     'Delete',
@@ -298,7 +304,7 @@ void _showEditProjectBottomSheet(BuildContext context, ProjectEntity project) {
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: _availableIcons.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 12),
+                        separatorBuilder: (_, _) => const SizedBox(width: 12),
                         itemBuilder: (context, index) {
                           final isSelected = selectedIconIndex == index;
                           return GestureDetector(
@@ -346,7 +352,12 @@ void _showEditProjectBottomSheet(BuildContext context, ProjectEntity project) {
                             );
 
                             projectCubit.updateProject(updatedProject);
-                            Navigator.pop(sheetContext);
+                            sheetContext.pop();
+                            CustomSnackBar.show(
+                              context: context,
+                              message: 'Project updated successfully',
+                              isError: false,
+                            );
                           }
                         },
                         child: const Text(
