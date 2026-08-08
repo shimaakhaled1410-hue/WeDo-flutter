@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
 import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/domain/entities/project_entity.dart';
+import 'package:wedo_flutter/presentation/home/widgets/project_collaborators_bar.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
 
@@ -138,6 +140,23 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.person_add_alt_1_rounded,
+              color: AppColors.primary,
+            ),
+            tooltip: 'Invite Collaborator',
+            onPressed: () {
+              final inviteUrl = 'wedo://join?projectId=${widget.project.id}';
+              Clipboard.setData(ClipboardData(text: inviteUrl));
+              CustomSnackBar.show(
+                context: context,
+                message: 'Invite link copied to clipboard!',
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -145,6 +164,12 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 12),
+            ProjectCollaboratorsBar(
+              projectId: widget.project.id,
+              collaboratorsImages: widget.project.collaboratorsImages,
+            ),
+
+            const SizedBox(height: 16),
             const Text(
               'Tasks List',
               style: TextStyle(

@@ -6,6 +6,7 @@ class UserModel extends UserEntity {
     required super.uid,
     required super.email,
     required super.name,
+    required super.photoUrl,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map, String uid) {
@@ -13,6 +14,7 @@ class UserModel extends UserEntity {
       uid: uid,
       email: map['email'] ?? '',
       name: map['name'] ?? '',
+      photoUrl: map['photoUrl'] ?? '',
     );
   }
 
@@ -21,6 +23,7 @@ class UserModel extends UserEntity {
       'email': email,
       'name': name,
       'createdAt': FieldValue.serverTimestamp(),
+      'photoUrl': photoUrl,
     };
   }
 }

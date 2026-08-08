@@ -129,21 +129,59 @@ class ProjectCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            Row(
-              children: List.generate(collaboratorsImages.length, (index) {
-                return Align(
-                  widthFactor: 0.7,
-                  child: CircleAvatar(
-                    radius: 14,
-                    backgroundColor: AppColors.white,
-                    child: CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.grey.shade300,
-                      backgroundImage: NetworkImage(collaboratorsImages[index]),
-                    ),
-                  ),
-                );
-              }),
+            SizedBox(
+              height: 32,
+              child: Row(
+                children: List.generate(
+                  collaboratorsImages.length > 3
+                      ? 4
+                      : collaboratorsImages.length,
+                  (index) {
+                    if (collaboratorsImages.length > 3 && index == 3) {
+                      final remaining = collaboratorsImages.length - 3;
+                      return Align(
+                        widthFactor: 0.65,
+                        child: CircleAvatar(
+                          radius: 14,
+                          backgroundColor: AppColors.primary,
+                          child: Text(
+                            '+$remaining',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    final imageUrl = collaboratorsImages[index];
+
+                    return Align(
+                      widthFactor: 0.65,
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: AppColors.white,
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.grey.shade300,
+                          backgroundImage: imageUrl.isNotEmpty
+                              ? NetworkImage(imageUrl)
+                              : null,
+                          child: imageUrl.isEmpty
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 14,
+                                  color: Colors.grey,
+                                )
+                              : null,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),

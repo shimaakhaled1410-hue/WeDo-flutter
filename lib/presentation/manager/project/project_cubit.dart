@@ -4,6 +4,7 @@ import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/delete_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/project/join_project_by_id.dart';
 import 'package:wedo_flutter/domain/usecases/project/update_project_usecase.dart';
 import 'project_state.dart';
 
@@ -12,12 +13,14 @@ class ProjectCubit extends Cubit<ProjectState> {
   final GetProjectsUsecase getProjectsUsecase;
   final DeleteProjectUsecase deleteProjectUsecase;
   final UpdateProjectUsecase updateProjectUsecase;
+  final JoinProjectById joinProjectByIdUsecase;
 
   ProjectCubit({
     required this.addProjectUsecase,
     required this.getProjectsUsecase,
     required this.deleteProjectUsecase,
     required this.updateProjectUsecase,
+    required this.joinProjectByIdUsecase,
   }) : super(ProjectInitial());
 
   List<ProjectEntity> projectsList = [];
@@ -94,5 +97,17 @@ class ProjectCubit extends Cubit<ProjectState> {
       fetchProjects();
       emit(GetProjectsError(failure.message));
     }, (_) {});
+  }
+
+  Future<void> joinProjectById(String projectId) async {
+    emit(JoinProjectLoading());
+    final result = await joinProjectByIdUsecase(projectId);
+
+    result.fold((failure) => emit(JoinProjectError(failure.message)), (
+      _,
+    ) async {
+      emit(ProjectJoinedSuccess());
+      await fetchProjects();
+    });
   }
 }

@@ -16,4 +16,7 @@ abstract class ProjectRepo {
   Future<Either<Failure, void>> updateProject({
     required ProjectEntity project,
   });
+  Future<Either<Failure, void>> joinProjectById({
+    required String projectId,
+  });
 }

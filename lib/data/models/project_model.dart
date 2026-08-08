@@ -8,6 +8,7 @@ class ProjectModel extends ProjectEntity {
     required super.iconCodePoint,
     super.completedTasks,
     super.totalTasks,
+    super.collaboratorsIds,
     super.collaboratorsImages,
     required super.createdAt,
     required super.ownerId,
@@ -20,6 +21,7 @@ class ProjectModel extends ProjectEntity {
       iconCodePoint: map['iconCodePoint'] ?? 0,
       completedTasks: map['completedTasks'] ?? 0,
       totalTasks: map['totalTasks'] ?? 0,
+      collaboratorsIds: List<String>.from(map['collaboratorsIds'] ?? []),
       collaboratorsImages: List<String>.from(map['collaboratorsImages'] ?? []),
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
@@ -34,6 +36,7 @@ class ProjectModel extends ProjectEntity {
       'iconCodePoint': iconCodePoint,
       'completedTasks': completedTasks,
       'totalTasks': totalTasks,
+      'collaboratorsIds': collaboratorsIds,
       'collaboratorsImages': collaboratorsImages,
       'createdAt': Timestamp.fromDate(createdAt),
       'ownerId': ownerId,
@@ -47,6 +50,7 @@ class ProjectModel extends ProjectEntity {
       iconCodePoint: entity.iconCodePoint,
       completedTasks: entity.completedTasks,
       totalTasks: entity.totalTasks,
+      collaboratorsIds: entity.collaboratorsIds,
       collaboratorsImages: entity.collaboratorsImages,
       createdAt: entity.createdAt,
       ownerId: entity.ownerId,

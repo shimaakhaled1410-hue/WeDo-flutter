@@ -6,6 +6,7 @@ class ProjectEntity extends Equatable {
   final int iconCodePoint; 
   final int completedTasks; 
   final int totalTasks;
+  final List<String> collaboratorsIds;
   final List<String> collaboratorsImages;
   final DateTime createdAt;
   final String ownerId;
@@ -16,6 +17,7 @@ class ProjectEntity extends Equatable {
     required this.iconCodePoint,
     this.completedTasks = 0, 
     this.totalTasks = 0,
+    this.collaboratorsIds = const [],
     this.collaboratorsImages = const [],
     required this.createdAt,
     required this.ownerId,
@@ -28,6 +30,7 @@ class ProjectEntity extends Equatable {
     int? iconCodePoint,
     int? totalTasks,
     int? completedTasks,
+    List<String>? collaboratorsIds,
     List<String>? collaboratorsImages,
     DateTime? createdAt,
   }) {
@@ -38,6 +41,7 @@ class ProjectEntity extends Equatable {
       iconCodePoint: iconCodePoint ?? this.iconCodePoint,
       totalTasks: totalTasks ?? this.totalTasks,
       completedTasks: completedTasks ?? this.completedTasks,
+      collaboratorsIds: collaboratorsIds ?? this.collaboratorsIds,
       collaboratorsImages: collaboratorsImages ?? this.collaboratorsImages,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -50,6 +54,7 @@ class ProjectEntity extends Equatable {
         iconCodePoint,
         completedTasks,
         totalTasks,
+        collaboratorsIds,
         collaboratorsImages,
         createdAt,
         ownerId,

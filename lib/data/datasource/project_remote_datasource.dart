@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wedo_flutter/data/models/project_model.dart';
 
 abstract class ProjectRemoteDataSource {
@@ -6,16 +7,20 @@ abstract class ProjectRemoteDataSource {
   Future<List<ProjectModel>> getProjects(String userId);
   Future<void> deleteProject(String projectId);
   Future<void> updateProject(ProjectModel project);
+  Future<void> joinProjectById(String projectId);
 }
 
 class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
   final FirebaseFirestore firestore;
+  final FirebaseAuth firebaseAuth;
 
-  ProjectRemoteDataSourceImpl(this.firestore);
+  ProjectRemoteDataSourceImpl(this.firestore, this.firebaseAuth);
 
   @override
   Future<ProjectModel> addProject(ProjectModel project) async {
     final docRef = firestore.collection('projects').doc();
+    final currentUser = firebaseAuth.currentUser;
+    final userPhoto = currentUser?.photoURL ?? '';
 
     final projectToSave = ProjectModel(
       id: docRef.id,
@@ -23,13 +28,13 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
       iconCodePoint: project.iconCodePoint,
       completedTasks: project.completedTasks,
       totalTasks: project.totalTasks,
-      collaboratorsImages: project.collaboratorsImages,
+      collaboratorsIds: [project.ownerId],
+      collaboratorsImages: userPhoto.isNotEmpty ? [userPhoto] : [],
       createdAt: project.createdAt,
       ownerId: project.ownerId,
     );
 
     await docRef.set(projectToSave.toMap());
-
     return projectToSave;
   }
 
@@ -37,13 +42,29 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
   Future<List<ProjectModel>> getProjects(String userId) async {
     final querySnapshot = await firestore
         .collection('projects')
-        .where('ownerId', isEqualTo: userId)
-        // .orderBy('createdAt', descending: true)
+        .where('collaboratorsIds', arrayContains: userId)
         .get();
 
     return querySnapshot.docs
         .map((doc) => ProjectModel.fromMap(doc.data(), doc.id))
         .toList();
+  }
+
+  @override
+  Future<void> joinProjectById(String projectId) async {
+    final currentUser = firebaseAuth.currentUser;
+    if (currentUser == null) {
+      throw Exception('User must be logged in');
+    }
+
+    final userId = currentUser.uid;
+    final userPhoto = currentUser.photoURL ?? '';
+
+    await firestore.collection('projects').doc(projectId).update({
+      'collaboratorsIds': FieldValue.arrayUnion([userId]),
+      if (userPhoto.isNotEmpty)
+        'collaboratorsImages': FieldValue.arrayUnion([userPhoto]),
+    });
   }
 
   @override

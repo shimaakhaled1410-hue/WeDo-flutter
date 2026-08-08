@@ -47,7 +47,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     
     final uid = userCredential.user!.uid;
 
-    final userModel = UserModel(uid: uid, email: email, name: name);
+    final userModel = UserModel(uid: uid, email: email, name: name, photoUrl: userCredential.user?.photoURL ?? '');
 
     await firestore.collection('users').doc(uid).set(userModel.toMap());
 

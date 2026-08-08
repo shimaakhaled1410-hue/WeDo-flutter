@@ -58,4 +58,13 @@ class ProjectRepoImpl implements ProjectRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+  @override
+  Future<Either<Failure, void>> joinProjectById({required String projectId}) async {
+    try {
+      await remoteDataSource.joinProjectById(projectId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

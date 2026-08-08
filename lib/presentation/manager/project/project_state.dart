@@ -45,3 +45,14 @@ class GetProjectsError extends ProjectState {
   @override
   List<Object?> get props => [message];
 }
+class JoinProjectLoading extends ProjectState {}
+
+class ProjectJoinedSuccess extends ProjectState {}
+
+class JoinProjectError extends ProjectState {
+  final String message;
+  const JoinProjectError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

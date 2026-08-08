@@ -18,6 +18,7 @@ import 'package:wedo_flutter/domain/usecases/auth/sign_out_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/delete_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/project/join_project_by_id.dart';
 import 'package:wedo_flutter/domain/usecases/project/update_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/delete_task_usecase.dart';
@@ -68,6 +69,7 @@ Future<void> init() async {
       getProjectsUsecase: sl(),
       deleteProjectUsecase: sl(),
       updateProjectUsecase: sl(),
+      joinProjectByIdUsecase: sl(),
     ),
   );
 
@@ -75,11 +77,12 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetProjectsUsecase(sl()));
   sl.registerLazySingleton(() => DeleteProjectUsecase(sl()));
   sl.registerLazySingleton(() => UpdateProjectUsecase(sl()));
+  sl.registerLazySingleton(() => JoinProjectById(sl()));
 
   sl.registerLazySingleton<ProjectRepo>(() => ProjectRepoImpl(sl()));
 
   sl.registerLazySingleton<ProjectRemoteDataSource>(
-    () => ProjectRemoteDataSourceImpl(sl()),
+    () => ProjectRemoteDataSourceImpl(sl(), sl()),
   );
 
   //tasks

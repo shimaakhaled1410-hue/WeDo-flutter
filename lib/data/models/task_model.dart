@@ -8,6 +8,9 @@ class TaskModel extends TaskEntity {
     required super.title,
     super.isCompleted,
     required super.createdAt,
+    super.assignedToUserId,
+    super.assignedToUserName,
+    super.assignedToUserImage,
   });
 
   factory TaskModel.fromMap(Map map, String docId) {
@@ -19,6 +22,9 @@ class TaskModel extends TaskEntity {
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
+      assignedToUserId: map['assignedToUserId'],
+      assignedToUserName: map['assignedToUserName'],
+      assignedToUserImage: map['assignedToUserImage'],
     );
   }
 
@@ -28,6 +34,9 @@ class TaskModel extends TaskEntity {
       'title': title,
       'isCompleted': isCompleted,
       'createdAt': Timestamp.fromDate(createdAt),
+      'assignedToUserId': assignedToUserId,
+      'assignedToUserName': assignedToUserName,
+      'assignedToUserImage': assignedToUserImage,
     };
   }
 
@@ -38,6 +47,9 @@ class TaskModel extends TaskEntity {
       title: entity.title,
       isCompleted: entity.isCompleted,
       createdAt: entity.createdAt,
+      assignedToUserId: entity.assignedToUserId,
+      assignedToUserName: entity.assignedToUserName,
+      assignedToUserImage: entity.assignedToUserImage,
     );
   }
 }
