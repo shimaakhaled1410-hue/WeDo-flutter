@@ -24,14 +24,15 @@ class TaskRepoImpl implements TaskRepo {
   }
 
   @override
-  Future<Either<Failure, List<TaskEntity>>> getTasks({
+  Stream<Either<Failure, List<TaskEntity>>> getTasks({
     required String projectId,
-  }) async {
+  }) async* {
     try {
-      final List<TaskModel> result = await remoteDataSource.getTasks(projectId);
-      return Right(result);
+      await for (final models in remoteDataSource.getTasks(projectId)) {
+        yield Right(models);
+      }
     } catch (e) {
-      return Left(ServerFailure(e.toString()));
+      yield Left(ServerFailure(e.toString()));
     }
   }
 

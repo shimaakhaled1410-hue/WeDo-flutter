@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wedo_flutter/domain/entities/task_entity.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
@@ -23,16 +25,30 @@ class TaskCubit extends Cubit<TaskState> {
   }) : super(TaskInitial());
 
   List<TaskEntity> tasksList = [];
+  StreamSubscription? _tasksSubscription;
 
-  Future fetchTasks(String projectId) async {
+  void startListeningToTasks(String projectId) {
     emit(GetTasksLoading());
 
-    final result = await getTasksUsecase(projectId: projectId);
+    _tasksSubscription?.cancel();
 
-    result.fold((failure) => emit(GetTasksError(failure.message)), (tasks) {
-      tasksList = List<TaskEntity>.from(tasks);
-      emit(GetTasksSuccess(tasksList));
-    });
+    _tasksSubscription = getTasksUsecase(projectId: projectId).listen(
+      (result) {
+        result.fold((failure) => emit(GetTasksError(failure.message)), (tasks) {
+          tasksList = List<TaskEntity>.from(tasks);
+          emit(GetTasksSuccess(tasksList));
+        });
+      },
+      onError: (error) {
+        emit(GetTasksError(error.toString()));
+      },
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _tasksSubscription?.cancel();
+    return super.close();
   }
 
   Future createTask({

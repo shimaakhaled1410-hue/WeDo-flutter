@@ -7,7 +7,7 @@ abstract class TaskRepo {
     required TaskEntity task,
   });
 
-  Future<Either<Failure, List<TaskEntity>>> getTasks({
+  Stream<Either<Failure, List<TaskEntity>>> getTasks({
     required String projectId,
   });
 

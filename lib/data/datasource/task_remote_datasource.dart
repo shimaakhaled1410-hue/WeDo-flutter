@@ -3,7 +3,7 @@ import 'package:wedo_flutter/data/models/task_model.dart';
 
 abstract class TaskRemoteDataSource {
   Future<TaskModel> addTask(TaskModel task);
-  Future<List<TaskModel>> getTasks(String projectId);
+  Stream<List<TaskModel>> getTasks(String projectId);
   Future<void> toggleTaskStatus(TaskModel task);
   Future<void> deleteTask(TaskModel task);
   Future<void> updateTask(TaskModel task);
@@ -39,16 +39,17 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
   }
 
   @override
-  Future<List<TaskModel>> getTasks(String projectId) async {
-    final querySnapshot = await firestore
+  Stream<List<TaskModel>> getTasks(String projectId) {
+    return firestore
         .collection('tasks')
         .where('projectId', isEqualTo: projectId)
         // .orderBy('createdAt', descending: true)
-        .get();
-
-    return querySnapshot.docs
-        .map((doc) => TaskModel.fromMap(doc.data(), doc.id))
-        .toList();
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => TaskModel.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   @override

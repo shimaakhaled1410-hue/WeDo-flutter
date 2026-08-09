@@ -46,7 +46,7 @@ class AppRouter {
         builder: (context, state) {
           final project = state.extra as ProjectEntity;
           return BlocProvider(
-            create: (context) => di.sl<TaskCubit>()..fetchTasks(project.id),
+            create: (context) => di.sl<TaskCubit>()..startListeningToTasks(project.id),
             child: ProjectDetailsScreen(project: project),
           );
         },

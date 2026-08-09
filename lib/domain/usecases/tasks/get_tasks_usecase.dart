@@ -8,7 +8,7 @@ class GetTasksUsecase {
 
   GetTasksUsecase(this.repo);
 
-  Future<Either<Failure, List<TaskEntity>>> call({required String projectId}) {
+  Stream<Either<Failure, List<TaskEntity>>> call({required String projectId}) {
     return repo.getTasks(projectId: projectId);
   }
 }
