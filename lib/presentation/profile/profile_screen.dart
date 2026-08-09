@@ -245,12 +245,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         content: const Text('Are you sure you want to sign out?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
+            onPressed: () => dialogContext.pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(dialogContext);
+              context.pop();
               context.read<AuthCubit>().signOut();
             },
             child: const Text('Sign Out', style: TextStyle(color: Colors.red)),

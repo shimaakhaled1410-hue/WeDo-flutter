@@ -6,6 +6,7 @@ class TaskEntity extends Equatable {
   final String title;
   final bool isCompleted;
   final DateTime createdAt;
+  final String creatorId;
   final String? assignedToUserId;
   final String? assignedToUserName;
   final String? assignedToUserImage;
@@ -16,10 +17,30 @@ class TaskEntity extends Equatable {
     required this.title,
     this.isCompleted = false,
     required this.createdAt,
+    required this.creatorId,
     this.assignedToUserId,
     this.assignedToUserName,
     this.assignedToUserImage,
   });
+
+  bool canToggleCompletion(String currentUserId) {
+    if (assignedToUserId != null) {
+      return currentUserId == assignedToUserId;
+    }
+    return currentUserId == creatorId;
+  }
+
+  bool canEditTitle(String currentUserId) {
+    return currentUserId == creatorId;
+  }
+
+  bool canDelete(String currentUserId, String projectOwnerId) {
+    return currentUserId == creatorId || currentUserId == projectOwnerId;
+  }
+
+  bool canReassign(String currentUserId, String projectOwnerId) {
+    return currentUserId == projectOwnerId || currentUserId == creatorId;
+  }
 
   TaskEntity copyWith({
     String? id,
@@ -27,6 +48,7 @@ class TaskEntity extends Equatable {
     String? title,
     bool? isCompleted,
     DateTime? createdAt,
+    String? creatorId,
     String? assignedToUserId,
     String? assignedToUserName,
     String? assignedToUserImage,
@@ -37,6 +59,7 @@ class TaskEntity extends Equatable {
       title: title ?? this.title,
       isCompleted: isCompleted ?? this.isCompleted,
       createdAt: createdAt ?? this.createdAt,
+      creatorId: creatorId ?? this.creatorId,
       assignedToUserId: assignedToUserId ?? this.assignedToUserId,
       assignedToUserName: assignedToUserName ?? this.assignedToUserName,
       assignedToUserImage: assignedToUserImage ?? this.assignedToUserImage,
@@ -50,6 +73,7 @@ class TaskEntity extends Equatable {
     title,
     isCompleted,
     createdAt,
+    creatorId,
     assignedToUserId,
     assignedToUserName,
     assignedToUserImage,

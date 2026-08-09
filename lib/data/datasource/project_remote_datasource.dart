@@ -21,7 +21,7 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
     final docRef = firestore.collection('projects').doc();
     final currentUser = firebaseAuth.currentUser;
     final userPhoto = currentUser?.photoURL ?? '';
-
+    final userName = currentUser?.displayName ?? 'Owner';
     final projectToSave = ProjectModel(
       id: docRef.id,
       name: project.name,
@@ -30,6 +30,7 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
       totalTasks: project.totalTasks,
       collaboratorsIds: [project.ownerId],
       collaboratorsImages: userPhoto.isNotEmpty ? [userPhoto] : [],
+      collaboratorsNames: [userName],
       createdAt: project.createdAt,
       ownerId: project.ownerId,
     );
@@ -59,9 +60,11 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
 
     final userId = currentUser.uid;
     final userPhoto = currentUser.photoURL ?? '';
+    final userName = currentUser.displayName ?? 'Member';
 
     await firestore.collection('projects').doc(projectId).update({
       'collaboratorsIds': FieldValue.arrayUnion([userId]),
+      'collaboratorsNames': FieldValue.arrayUnion([userName]),
       if (userPhoto.isNotEmpty)
         'collaboratorsImages': FieldValue.arrayUnion([userPhoto]),
     });

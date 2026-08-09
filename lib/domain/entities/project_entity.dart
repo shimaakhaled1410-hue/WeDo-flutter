@@ -1,13 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class ProjectEntity extends Equatable {
-  final String id; 
+  final String id;
   final String name;
-  final int iconCodePoint; 
-  final int completedTasks; 
+  final int iconCodePoint;
+  final int completedTasks;
   final int totalTasks;
   final List<String> collaboratorsIds;
   final List<String> collaboratorsImages;
+  final List<String> collaboratorsNames;
   final DateTime createdAt;
   final String ownerId;
 
@@ -15,10 +16,11 @@ class ProjectEntity extends Equatable {
     required this.id,
     required this.name,
     required this.iconCodePoint,
-    this.completedTasks = 0, 
+    this.completedTasks = 0,
     this.totalTasks = 0,
     this.collaboratorsIds = const [],
     this.collaboratorsImages = const [],
+    this.collaboratorsNames = const [],
     required this.createdAt,
     required this.ownerId,
   });
@@ -32,6 +34,7 @@ class ProjectEntity extends Equatable {
     int? completedTasks,
     List<String>? collaboratorsIds,
     List<String>? collaboratorsImages,
+    List<String>? collaboratorsNames,
     DateTime? createdAt,
   }) {
     return ProjectEntity(
@@ -43,20 +46,22 @@ class ProjectEntity extends Equatable {
       completedTasks: completedTasks ?? this.completedTasks,
       collaboratorsIds: collaboratorsIds ?? this.collaboratorsIds,
       collaboratorsImages: collaboratorsImages ?? this.collaboratorsImages,
+      collaboratorsNames: collaboratorsNames ?? this.collaboratorsNames,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
   List get props => [
-        id,
-        name,
-        iconCodePoint,
-        completedTasks,
-        totalTasks,
-        collaboratorsIds,
-        collaboratorsImages,
-        createdAt,
-        ownerId,
-      ];
+    id,
+    name,
+    iconCodePoint,
+    completedTasks,
+    totalTasks,
+    collaboratorsIds,
+    collaboratorsImages,
+    collaboratorsNames,
+    createdAt,
+    ownerId,
+  ];
 }

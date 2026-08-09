@@ -35,7 +35,14 @@ class TaskCubit extends Cubit<TaskState> {
     });
   }
 
-  Future createTask({required String projectId, required String title}) async {
+  Future createTask({
+    required String projectId,
+    required String title,
+    required String creatorId,
+    String? assignedToUserId,
+    String? assignedToUserImage,
+    String? assignedToUserName,
+  }) async {
     emit(AddTaskLoading());
 
     final newTask = TaskEntity(
@@ -44,6 +51,10 @@ class TaskCubit extends Cubit<TaskState> {
       title: title,
       isCompleted: false,
       createdAt: DateTime.now(),
+      creatorId: creatorId,
+      assignedToUserId: assignedToUserId,
+      assignedToUserImage: assignedToUserImage,
+      assignedToUserName: assignedToUserName,
     );
 
     final result = await addTaskUsecase(task: newTask);

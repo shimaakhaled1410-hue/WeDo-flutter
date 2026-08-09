@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,9 @@ import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/presentation/home/widgets/project_collaborators_bar.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
+import 'package:wedo_flutter/presentation/tasks/widgets/add_task_buttom_sheet.dart';
+import 'package:wedo_flutter/presentation/tasks/widgets/edit_task_dialog.dart';
+import 'package:wedo_flutter/presentation/tasks/widgets/task_item.dart';
 
 class ProjectDetailsScreen extends StatefulWidget {
   final ProjectEntity project;
@@ -19,100 +23,28 @@ class ProjectDetailsScreen extends StatefulWidget {
 }
 
 class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _taskController = TextEditingController();
-
-  @override
-  void dispose() {
-    _taskController.dispose();
-    super.dispose();
-  }
+  final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
   void _showAddTaskBottomSheet(BuildContext context) {
+    final taskCubit = context.read<TaskCubit>();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
-        value: context.read<TaskCubit>(),
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: const BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Add New Task',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _taskController,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      hintText: 'What needs to be done?',
-                      filled: true,
-                      fillColor: AppColors.background,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator: (val) {
-                      if (val == null || val.trim().isEmpty) {
-                        return 'Please enter task title';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          context.read<TaskCubit>().createTask(
-                            projectId: widget.project.id,
-                            title: _taskController.text.trim(),
-                          );
-                          _taskController.clear();
-                          context.pop();
-                        }
-                      },
-                      child: const Text(
-                        'Add Task',
-                        style: TextStyle(
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
+        value: taskCubit,
+        child: AddTaskBottomSheet(project: widget.project),
+      ),
+    );
+  }
+
+  void _showEditTaskDialog(BuildContext context, dynamic task) {
+    final taskCubit = context.read<TaskCubit>();
+    showDialog(
+      context: context,
+      builder: (_) => BlocProvider.value(
+        value: taskCubit,
+        child: EditTaskDialog(task: task),
       ),
     );
   }
@@ -168,8 +100,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
               projectId: widget.project.id,
               collaboratorsImages: widget.project.collaboratorsImages,
             ),
-
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             const Text(
               'Tasks List',
               style: TextStyle(
@@ -191,7 +122,6 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       ),
                     );
                   }
-
                   if (state is GetTasksError && cubit.tasksList.isEmpty) {
                     return Center(
                       child: Text(
@@ -200,7 +130,6 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       ),
                     );
                   }
-
                   if (cubit.tasksList.isEmpty) {
                     return const Center(
                       child: Text(
@@ -213,55 +142,15 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   return ListView.builder(
                     itemCount: cubit.tasksList.length,
                     physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 80),
                     itemBuilder: (context, index) {
                       final task = cubit.tasksList[index];
-                      return Dismissible(
-                        key: Key(task.id),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade400,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.delete_outline,
-                            color: Colors.white,
-                          ),
-                        ),
-                        onDismissed: (_) {
-                          context.read<TaskCubit>().deleteTask(task);
-                          CustomSnackBar.show(
-                            context: context,
-                            message: 'Task "${task.title}" deleted',
-                            isError: false,
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: Material(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            child: CheckboxListTile(
-                              value: task.isCompleted,
-                              activeColor: AppColors.accent,
-                              title: Text(task.title),
-                              secondary: IconButton(
-                                icon: const Icon(
-                                  Icons.edit_outlined,
-                                  size: 20,
-                                  color: AppColors.textLight,
-                                ),
-                                onPressed: () =>
-                                    _showEditTaskDialog(context, task),
-                              ),
-                              onChanged: (_) {
-                                context.read<TaskCubit>().toggleTask(task);
-                              },
-                            ),
-                          ),
-                        ),
+
+                      return TaskItem(
+                        task: task,
+                        currentUserId: currentUserId,
+                        projectOwnerId: widget.project.ownerId,
+                        onEditTap: () => _showEditTaskDialog(context, task),
                       );
                     },
                   );
@@ -274,46 +163,10 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.accent,
         onPressed: () => _showAddTaskBottomSheet(context),
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, color: AppColors.white),
       ),
     );
   }
-}
-
-void _showEditTaskDialog(BuildContext context, dynamic task) {
-  final controller = TextEditingController(text: task.title);
-
-  showDialog(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: const Text('Edit Task'),
-      content: TextField(
-        controller: controller,
-        autofocus: true,
-        decoration: const InputDecoration(hintText: 'Enter new task title'),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => dialogContext.pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-          onPressed: () {
-            final newTitle = controller.text.trim();
-            if (newTitle.isNotEmpty) {
-              context.read<TaskCubit>().updateTask(task, newTitle);
-              dialogContext.pop();
-            }
-            CustomSnackBar.show(
-              context: context,
-              message: 'Task updated successfully',
-              isError: false,
-            );
-          },
-          child: const Text('Save', style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    ),
-  );
 }

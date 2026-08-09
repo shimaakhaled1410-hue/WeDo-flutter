@@ -10,6 +10,7 @@ class ProjectModel extends ProjectEntity {
     super.totalTasks,
     super.collaboratorsIds,
     super.collaboratorsImages,
+    super.collaboratorsNames,
     required super.createdAt,
     required super.ownerId,
   });
@@ -23,6 +24,7 @@ class ProjectModel extends ProjectEntity {
       totalTasks: map['totalTasks'] ?? 0,
       collaboratorsIds: List<String>.from(map['collaboratorsIds'] ?? []),
       collaboratorsImages: List<String>.from(map['collaboratorsImages'] ?? []),
+      collaboratorsNames: List<String>.from(map['collaboratorsNames'] ?? []),
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
@@ -38,6 +40,7 @@ class ProjectModel extends ProjectEntity {
       'totalTasks': totalTasks,
       'collaboratorsIds': collaboratorsIds,
       'collaboratorsImages': collaboratorsImages,
+      'collaboratorsNames': collaboratorsNames,
       'createdAt': Timestamp.fromDate(createdAt),
       'ownerId': ownerId,
     };
@@ -52,6 +55,7 @@ class ProjectModel extends ProjectEntity {
       totalTasks: entity.totalTasks,
       collaboratorsIds: entity.collaboratorsIds,
       collaboratorsImages: entity.collaboratorsImages,
+      collaboratorsNames: entity.collaboratorsNames,
       createdAt: entity.createdAt,
       ownerId: entity.ownerId,
     );
