@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wedo_flutter/domain/entities/task_entity.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/add_task_usecase.dart';
@@ -8,6 +8,8 @@ import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/update_task_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
+
+enum TaskFilter { all, myTasks, pending, completed }
 
 class TaskCubit extends Cubit<TaskState> {
   final AddTaskUsecase addTaskUsecase;
@@ -26,6 +28,34 @@ class TaskCubit extends Cubit<TaskState> {
 
   List<TaskEntity> tasksList = [];
   StreamSubscription? _tasksSubscription;
+
+  TaskFilter currentFilter = TaskFilter.all;
+
+  void changeFilter(TaskFilter filter) {
+    if (currentFilter == filter) return;
+
+    currentFilter = filter;
+
+    emit(TaskInitial());
+    emit(GetTasksSuccess(tasksList));
+  }
+
+  List<TaskEntity> get filteredTasks {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+    switch (currentFilter) {
+      case TaskFilter.all:
+        return tasksList;
+      case TaskFilter.myTasks:
+        return tasksList
+            .where((t) => t.assignedToUserId == currentUserId)
+            .toList();
+      case TaskFilter.pending:
+        return tasksList.where((t) => !t.isCompleted).toList();
+      case TaskFilter.completed:
+        return tasksList.where((t) => t.isCompleted).toList();
+    }
+  }
 
   void startListeningToTasks(String projectId) {
     emit(GetTasksLoading());
@@ -75,53 +105,31 @@ class TaskCubit extends Cubit<TaskState> {
 
     final result = await addTaskUsecase(task: newTask);
 
-    result.fold((failure) => emit(AddTaskError(failure.message)), (
-      createdTask,
-    ) {
-      tasksList.insert(0, createdTask);
-      emit(AddTaskSuccess(createdTask));
-    });
+    result.fold(
+      (failure) => emit(AddTaskError(failure.message)),
+      (createdTask) => emit(AddTaskSuccess(createdTask)),
+    );
   }
 
   Future<void> toggleTask(TaskEntity task) async {
-    final index = tasksList.indexWhere((t) => t.id == task.id);
-    if (index == -1) return;
-
-    final updatedTask = task.copyWith(isCompleted: !task.isCompleted);
-    tasksList[index] = updatedTask;
-
-    emit(
-      ToggleTaskStatusSuccess(
-        taskId: updatedTask.id,
-        isCompleted: updatedTask.isCompleted,
-      ),
-    );
-
     final result = await toggleTaskStatusUsecase(task: task);
 
-    result.fold((failure) {
-      tasksList[index] = task;
-      emit(ToggleTaskStatusError(failure.message));
-    }, (_) {});
+    result.fold(
+      (failure) => emit(ToggleTaskStatusError(failure.message)),
+      (_) {},
+    );
   }
 
   Future<void> deleteTask(TaskEntity task) async {
-    tasksList.removeWhere((t) => t.id == task.id);
-    emit(GetTasksSuccess(List<TaskEntity>.from(tasksList)));
-
     final result = await deleteTaskUsecase(task: task);
+
     result.fold((failure) => emit(GetTasksError(failure.message)), (_) {});
   }
 
   Future<void> updateTask(TaskEntity task, String newTitle) async {
-    final index = tasksList.indexWhere((t) => t.id == task.id);
-    if (index == -1) return;
-
     final updated = task.copyWith(title: newTitle);
-    tasksList[index] = updated;
-    emit(GetTasksSuccess(List<TaskEntity>.from(tasksList)));
-
     final result = await updateTaskUsecase(task: updated);
+
     result.fold((failure) => emit(GetTasksError(failure.message)), (_) {});
   }
 }

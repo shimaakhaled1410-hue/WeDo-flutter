@@ -6,10 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
 import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/domain/entities/project_entity.dart';
-import 'package:wedo_flutter/presentation/home/widgets/project_collaborators_bar.dart';
+// import 'package:wedo_flutter/presentation/home/widgets/project_collaborators_bar.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
 import 'package:wedo_flutter/presentation/tasks/widgets/add_task_buttom_sheet.dart';
+import 'package:wedo_flutter/presentation/tasks/widgets/animated_segmanted_control.dart';
 import 'package:wedo_flutter/presentation/tasks/widgets/edit_task_dialog.dart';
 import 'package:wedo_flutter/presentation/tasks/widgets/task_item.dart';
 
@@ -95,25 +96,33 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 12),
-            ProjectCollaboratorsBar(
-              projectId: widget.project.id,
-              collaboratorsImages: widget.project.collaboratorsImages,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Tasks List',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
-              ),
+            // const SizedBox(height: 12),
+            // ProjectCollaboratorsBar(
+            //   projectId: widget.project.id,
+            //   collaboratorsImages: widget.project.collaboratorsImages,
+            // ),
+            const SizedBox(height: 16),
+
+            BlocBuilder<TaskCubit, TaskState>(
+              builder: (context, state) {
+                final cubit = context.read<TaskCubit>();
+                return AnimatedSegmentedControl(
+                  selectedIndex: cubit.currentFilter.index,
+                  options: const ['All', 'My Tasks', 'Pending', 'Done'],
+                  onOptionSelected: (index) {
+                    cubit.changeFilter(TaskFilter.values[index]);
+                  },
+                );
+              },
             ),
             const SizedBox(height: 16),
+
             Expanded(
               child: BlocBuilder<TaskCubit, TaskState>(
                 builder: (context, state) {
                   final cubit = context.read<TaskCubit>();
+
+                  final displayList = cubit.filteredTasks;
 
                   if (state is GetTasksLoading && cubit.tasksList.isEmpty) {
                     return const Center(
@@ -130,21 +139,22 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                       ),
                     );
                   }
-                  if (cubit.tasksList.isEmpty) {
+
+                  if (displayList.isEmpty) {
                     return const Center(
                       child: Text(
-                        'No tasks added yet.',
+                        'No tasks found.',
                         style: TextStyle(color: AppColors.textLight),
                       ),
                     );
                   }
 
                   return ListView.builder(
-                    itemCount: cubit.tasksList.length,
+                    itemCount: displayList.length,
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 80),
                     itemBuilder: (context, index) {
-                      final task = cubit.tasksList[index];
+                      final task = displayList[index];
 
                       return TaskItem(
                         task: task,
