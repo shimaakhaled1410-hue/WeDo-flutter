@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wedo_flutter/core/service_locator.dart' as di;
+import 'package:wedo_flutter/core/services/service_locator.dart' as di;
 import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/presentation/auth/login_screen.dart';
 import 'package:wedo_flutter/presentation/auth/register_screen.dart';
