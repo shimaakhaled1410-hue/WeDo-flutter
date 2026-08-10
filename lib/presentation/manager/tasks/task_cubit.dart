@@ -88,6 +88,7 @@ class TaskCubit extends Cubit<TaskState> {
     String? assignedToUserId,
     String? assignedToUserImage,
     String? assignedToUserName,
+    DateTime? alertTime,
   }) async {
     emit(AddTaskLoading());
 
@@ -101,6 +102,7 @@ class TaskCubit extends Cubit<TaskState> {
       assignedToUserId: assignedToUserId,
       assignedToUserImage: assignedToUserImage,
       assignedToUserName: assignedToUserName,
+      alertTime: alertTime,
     );
 
     final result = await addTaskUsecase(task: newTask);

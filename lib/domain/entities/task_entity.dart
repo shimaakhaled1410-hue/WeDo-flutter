@@ -10,6 +10,7 @@ class TaskEntity extends Equatable {
   final String? assignedToUserId;
   final String? assignedToUserName;
   final String? assignedToUserImage;
+  final DateTime? alertTime;
 
   const TaskEntity({
     required this.id,
@@ -21,6 +22,7 @@ class TaskEntity extends Equatable {
     this.assignedToUserId,
     this.assignedToUserName,
     this.assignedToUserImage,
+    this.alertTime,
   });
 
   bool canToggleCompletion(String currentUserId) {
@@ -52,6 +54,7 @@ class TaskEntity extends Equatable {
     String? assignedToUserId,
     String? assignedToUserName,
     String? assignedToUserImage,
+    DateTime? alertTime,
   }) {
     return TaskEntity(
       id: id ?? this.id,
@@ -63,6 +66,7 @@ class TaskEntity extends Equatable {
       assignedToUserId: assignedToUserId ?? this.assignedToUserId,
       assignedToUserName: assignedToUserName ?? this.assignedToUserName,
       assignedToUserImage: assignedToUserImage ?? this.assignedToUserImage,
+      alertTime: alertTime ?? this.alertTime,
     );
   }
 
@@ -77,5 +81,6 @@ class TaskEntity extends Equatable {
     assignedToUserId,
     assignedToUserName,
     assignedToUserImage,
+    alertTime,
   ];
 }

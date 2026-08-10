@@ -14,7 +14,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await di.init();
-  await NotificationService().initNotification();
+  //await NotificationService().initNotification();
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,

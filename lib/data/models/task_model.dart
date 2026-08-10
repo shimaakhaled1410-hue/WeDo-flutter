@@ -12,6 +12,7 @@ class TaskModel extends TaskEntity {
     super.assignedToUserId,
     super.assignedToUserName,
     super.assignedToUserImage,
+    super.alertTime,
   });
 
   factory TaskModel.fromMap(Map map, String docId) {
@@ -27,6 +28,9 @@ class TaskModel extends TaskEntity {
       assignedToUserId: map['assignedToUserId'],
       assignedToUserName: map['assignedToUserName'],
       assignedToUserImage: map['assignedToUserImage'],
+      alertTime: map['alertTime'] != null
+          ? (map['alertTime'] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -40,6 +44,7 @@ class TaskModel extends TaskEntity {
       'assignedToUserId': assignedToUserId,
       'assignedToUserName': assignedToUserName,
       'assignedToUserImage': assignedToUserImage,
+      'alertTime': alertTime != null ? Timestamp.fromDate(alertTime!) : null,
     };
   }
 
@@ -54,6 +59,7 @@ class TaskModel extends TaskEntity {
       assignedToUserId: entity.assignedToUserId,
       assignedToUserName: entity.assignedToUserName,
       assignedToUserImage: entity.assignedToUserImage,
+      alertTime: entity.alertTime,
     );
   }
 }
