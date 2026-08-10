@@ -28,6 +28,7 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
       assignedToUserId: task.assignedToUserId,
       assignedToUserName: task.assignedToUserName,
       assignedToUserImage: task.assignedToUserImage,
+      alertTime: task.alertTime,
     );
 
     await taskDocRef.set(taskToSave.toMap());

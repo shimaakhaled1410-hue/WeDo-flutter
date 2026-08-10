@@ -108,45 +108,83 @@ class TaskItem extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 36.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (task.assignedToUserId != null)
-                      Row(
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (task.assignedToUserImage != null &&
-                              task.assignedToUserImage!.isNotEmpty)
-                            CircleAvatar(
-                              radius: 12,
-                              backgroundImage: NetworkImage(
-                                task.assignedToUserImage!,
-                              ),
-                            )
-                          else
-                            const CircleAvatar(
-                              radius: 12,
-                              backgroundColor: AppColors.background,
-                              child: Icon(
-                                Icons.person,
-                                size: 14,
-                                color: AppColors.textLight,
-                              ),
+                          if (task.assignedToUserId != null)
+                            Row(
+                              children: [
+                                if (task.assignedToUserImage != null &&
+                                    task.assignedToUserImage!.isNotEmpty)
+                                  CircleAvatar(
+                                    radius: 12,
+                                    backgroundImage: NetworkImage(
+                                      task.assignedToUserImage!,
+                                    ),
+                                  )
+                                else
+                                  const CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: AppColors.background,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 14,
+                                      color: AppColors.textLight,
+                                    ),
+                                  ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    (task.assignedToUserName != null &&
+                                            task.assignedToUserName!.isNotEmpty)
+                                        ? task.assignedToUserName!
+                                        : 'Assigned Member',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.textLight,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
-                          const SizedBox(width: 8),
-                          Text(
-                            (task.assignedToUserName != null &&
-                                    task.assignedToUserName!.isNotEmpty)
-                                ? task.assignedToUserName!
-                                : 'Assigned Member',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textLight,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      )
-                    else
-                      const SizedBox.shrink(),
 
+                          if (task.alertTime != null) ...[
+                            if (task.assignedToUserId != null)
+                              const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.notifications_active_outlined,
+                                  size: 14,
+                                  color: task.isCompleted
+                                      ? AppColors.textLight
+                                      : AppColors.accent,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${task.alertTime!.day}/${task.alertTime!.month} - ${task.alertTime!.hour}:${task.alertTime!.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: task.isCompleted
+                                        ? AppColors.textLight
+                                        : AppColors.accent,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    // -- Right Side: Edit Button --
                     if (canEdit)
                       InkWell(
                         onTap: onEditTap,
