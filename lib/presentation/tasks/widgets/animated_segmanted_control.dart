@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
 
 class AnimatedSegmentedControl extends StatelessWidget {
-  final int selectedIndex;
-  final List<String> options;
-  final ValueChanged<int> onOptionSelected;
-
   const AnimatedSegmentedControl({
     super.key,
     required this.selectedIndex,
@@ -13,13 +9,19 @@ class AnimatedSegmentedControl extends StatelessWidget {
     required this.onOptionSelected,
   });
 
+  final int selectedIndex;
+  final List<String> options;
+  final ValueChanged<int> onOptionSelected;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 44,
+      height: 46,
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.surfaceMuted,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border),
       ),
       child: Stack(
         children: [
@@ -33,25 +35,15 @@ class AnimatedSegmentedControl extends StatelessWidget {
             child: FractionallySizedBox(
               widthFactor: 1.0 / options.length,
               heightFactor: 1.0,
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(11),
+                  boxShadow: AppColors.softShadow,
                 ),
               ),
             ),
           ),
-
           Row(
             children: List.generate(options.length, (index) {
               final isSelected = selectedIndex == index;
@@ -65,12 +57,11 @@ class AnimatedSegmentedControl extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'Cairo',
                         fontSize: 13,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.w500,
+                        fontWeight:
+                            isSelected ? FontWeight.w700 : FontWeight.w500,
                         color: isSelected
-                            ? AppColors.primary
-                            : Colors.grey.shade600,
+                            ? AppColors.white
+                            : AppColors.textLight,
                       ),
                       child: Text(options[index]),
                     ),

@@ -4,17 +4,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:wedo_flutter/data/datasource/auth_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/image_remote_datasource.dart';
+import 'package:wedo_flutter/data/datasource/notification_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/project_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/task_remote_datasource.dart';
 import 'package:wedo_flutter/data/repo_impl/auth_repo_impl.dart';
+import 'package:wedo_flutter/data/repo_impl/notification_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/project_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/task_repo_impl.dart';
 import 'package:wedo_flutter/domain/repo/auth_repo.dart';
+import 'package:wedo_flutter/domain/repo/notification_repo.dart';
 import 'package:wedo_flutter/domain/repo/project_repo.dart';
 import 'package:wedo_flutter/domain/repo/task_repo.dart';
 import 'package:wedo_flutter/domain/usecases/auth/login_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/register_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/notifications/get_notifications_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/notifications/mark_notification_as_read_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/delete_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
@@ -26,6 +31,7 @@ import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/update_task_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
+import 'package:wedo_flutter/presentation/manager/notifications/notification_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 
@@ -105,5 +111,22 @@ Future<void> init() async {
 
   sl.registerLazySingleton<TaskRemoteDataSource>(
     () => TaskRemoteDataSourceImpl(sl()),
+  );
+
+  // notifications
+  sl.registerFactory(
+    () => NotificationCubit(
+      getNotificationsUseCase: sl(),
+      markNotificationAsReadUseCase: sl(),
+    ),
+  );
+  sl.registerLazySingleton(() => GetNotificationsUseCase(sl()));
+  sl.registerLazySingleton(() => MarkNotificationAsReadUseCase(sl()));
+
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceImpl(firestore: sl(), auth: sl()),
   );
 }

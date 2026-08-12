@@ -10,9 +10,11 @@ import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_state.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
-import 'package:wedo_flutter/presentation/profile/widgets/profile_avatar.dart';
-import 'package:wedo_flutter/presentation/profile/widgets/profile_setting_tile.dart';
-import 'package:wedo_flutter/presentation/profile/widgets/profile_stat_card.dart';
+import 'package:wedo_flutter/presentation/profile/widgets/profile_setting_card.dart';
+import 'widgets/logout_button.dart';
+import 'widgets/logout_dialog.dart';
+import 'widgets/profile_header.dart';
+import 'widgets/profile_stat_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,9 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
-      setState(() {
-        _imageBytes = bytes;
-      });
+      setState(() => _imageBytes = bytes);
 
       if (mounted) {
         context.read<AuthCubit>().updateProfileImage(bytes);
@@ -82,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.error,
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -90,172 +90,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          backgroundColor: AppColors.background,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: AppColors.primary,
-            ),
-            onPressed: () => context.pop(),
-          ),
-          title: const Text(
-            'My profile',
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          centerTitle: true,
-        ),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 20),
-
-              // Profile Avatar
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  ProfileAvatar(
-                    imageBytes: _imageBytes,
-                    user: user,
-                    onTap: _isUploading ? () {} : _pickImage,
-                  ),
-                  if (_isUploading)
-                    const CircularProgressIndicator(color: AppColors.primary),
-                ],
+              ProfileHeader(
+                imageBytes: _imageBytes,
+                user: user,
+                displayName: displayName,
+                isUploading: _isUploading,
+                onAvatarTap: _pickImage,
+                onBackTap: () => context.pop(),
               ),
-              const SizedBox(height: 16),
 
-              Text(
-                displayName,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                user?.email ?? 'No Email Provided',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textLight,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Stats Row
-              Row(
-                children: [
-                  Expanded(
-                    child: ProfileStatCard(
-                      title: 'Projects',
-                      value: '$totalProjects',
-                      icon: Icons.folder_open_rounded,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ProfileStatCard(
-                      title: 'Done Tasks',
-                      value: '$completedTasksCount',
-                      icon: Icons.task_alt_rounded,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 28),
-
-              // Settings List
-              Material(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  children: [
-                    ProfileSettingsTile(
-                      icon: Icons.language_rounded,
-                      title: 'Language',
-                      trailingText: 'English',
-                      onTap: () {},
-                    ),
-                    const Divider(height: 1, indent: 16, endIndent: 16),
-                    ProfileSettingsTile(
-                      icon: Icons.notifications_none_rounded,
-                      title: 'Notifications',
-                      onTap: () {},
-                    ),
-                    const Divider(height: 1, indent: 16, endIndent: 16),
-                    ProfileSettingsTile(
-                      icon: Icons.dark_mode_outlined,
-                      title: 'Theme Mode',
-                      trailingText: 'Light',
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              // Logout Button
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade50,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  onPressed: () => _showLogoutDialog(context),
-                  icon: const Icon(Icons.logout_rounded, color: Colors.red),
-                  label: const Text(
-                    'Sign Out',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+              // Stats overlap the header's rounded bottom edge.
+              Transform.translate(
+                offset: const Offset(0, -34),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ProfileStatCard(
+                          title: 'Projects',
+                          value: '$totalProjects',
+                          icon: Icons.folder_open_rounded,
+                          iconBackground: AppColors.primaryLight,
+                          iconColor: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ProfileStatCard(
+                          title: 'Done Tasks',
+                          value: '$completedTasksCount',
+                          icon: Icons.task_alt_rounded,
+                          iconBackground: AppColors.successLight,
+                          iconColor: AppColors.success,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                child: Transform.translate(
+                  offset: const Offset(0, -20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4, bottom: 10),
+                        child: Text(
+                          'Settings',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textDark,
+                          ),
+                        ),
+                      ),
+                      const ProfileSettingsCard(),
+                      const SizedBox(height: 28),
+                      LogoutButton(
+                        onTap: () => showLogoutDialog(
+                          context,
+                          onConfirm: () =>
+                              context.read<AuthCubit>().signOut(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Sign Out'),
-        content: const Text('Are you sure you want to sign out?'),
-        actions: [
-          TextButton(
-            onPressed: () => dialogContext.pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              context.pop();
-              context.read<AuthCubit>().signOut();
-            },
-            child: const Text('Sign Out', style: TextStyle(color: Colors.red)),
-          ),
-        ],
       ),
     );
   }

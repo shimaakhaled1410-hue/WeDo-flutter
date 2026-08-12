@@ -7,6 +7,9 @@ class CustomSnackBar {
     required String message,
     bool isError = false,
   }) {
+    final Color accentColor = isError ? AppColors.error : AppColors.success;
+    final Color accentBg = isError ? AppColors.errorLight : AppColors.successLight;
+
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -19,42 +22,28 @@ class CustomSnackBar {
         content: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: isError
-                  ? Colors.red.withValues(alpha: 0.2)
-                  : Colors.green.withValues(alpha: 0.2),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
+            border: Border.all(color: accentColor.withValues(alpha: 0.2)),
+            boxShadow: AppColors.softShadow,
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isError
-                      ? Colors.red.withValues(alpha: 0.1)
-                      : Colors.green.withValues(alpha: 0.1),
+                  color: accentBg,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   isError
                       ? Icons.warning_amber_rounded
                       : Icons.check_circle_outline_rounded,
-                  color: isError ? Colors.red.shade600 : Colors.green.shade600,
+                  color: accentColor,
                   size: 24,
                 ),
               ),
               const SizedBox(width: 16),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,11 +52,9 @@ class CustomSnackBar {
                     Text(
                       isError ? 'Oops!' : 'Success!',
                       style: TextStyle(
-                        color: isError
-                            ? Colors.red.shade700
-                            : Colors.green.shade700,
+                        color: accentColor,
                         fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 4),

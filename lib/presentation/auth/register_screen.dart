@@ -7,7 +7,10 @@ import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
 import 'package:wedo_flutter/core/widgets/custom_text_field.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_state.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../core/theme/app_colors.dart';
+import 'widgets/auth_card.dart';
+import 'widgets/auth_footer_link.dart';
+import 'widgets/auth_gradient_title.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -30,6 +33,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthCubit>().register(
+            _nameController.text.trim(),
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+          );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,53 +50,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 24.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'WeDo',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Create an Account',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Join WeDo to collaborate on tasks',
-                    style: TextStyle(fontSize: 14, color: AppColors.textLight),
+                  const AuthGradientTitle(
+                    heading: 'Create an Account',
+                    subheading: 'Join WeDo to collaborate on tasks',
                   ),
                   const SizedBox(height: 32),
-
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
+                  AuthCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -92,6 +70,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           hint: 'John Doe',
                           icon: Icons.person_outline,
                           controller: _nameController,
+                          validator: (val) => (val == null || val.trim().isEmpty)
+                              ? 'Please enter your name'
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
@@ -100,6 +81,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           icon: Icons.mail_outline,
                           keyboardType: TextInputType.emailAddress,
                           controller: _emailController,
+                          validator: (val) => (val == null || val.trim().isEmpty)
+                              ? 'Please enter your email'
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
@@ -108,9 +92,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           icon: Icons.lock_outline,
                           isPassword: true,
                           controller: _passwordController,
+                          validator: (val) => (val == null || val.length < 6)
+                              ? 'Password must be at least 6 characters'
+                              : null,
                         ),
                         const SizedBox(height: 24),
-
                         BlocConsumer<AuthCubit, AuthState>(
                           listener: (context, state) {
                             if (state is AuthError) {
@@ -129,53 +115,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                           },
                           builder: (context, state) {
-                            if (state is AuthLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: AppColors.primary,
-                                ),
-                              );
-                            }
                             return CustomButton(
                               text: 'Sign Up',
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  context.read<AuthCubit>().register(
-                                    _nameController.text.trim(),
-                                    _emailController.text.trim(),
-                                    _passwordController.text.trim(),
-                                  );
-                                }
-                              },
+                              isLoading: state is AuthLoading,
+                              onPressed: _submit,
                             );
                           },
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  GestureDetector(
-                    onTap: () {
-                      context.push(AppRoutes.login);
-                    },
-                    child: RichText(
-                      text: const TextSpan(
-                        text: 'Already have an account? ',
-                        style: TextStyle(
-                          color: AppColors.textLight,
-                          fontSize: 14,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: 'Login',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  const SizedBox(height: 24),
+                  AuthFooterLink(
+                    leadingText: 'Already have an account? ',
+                    actionText: 'Login',
+                    onTap: () => context.push(AppRoutes.login),
                   ),
                 ],
               ),

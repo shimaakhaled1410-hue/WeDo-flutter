@@ -7,9 +7,9 @@ import 'package:wedo_flutter/domain/entities/task_entity.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 
 class EditTaskDialog extends StatefulWidget {
-  final TaskEntity task;
-
   const EditTaskDialog({super.key, required this.task});
+
+  final TaskEntity task;
 
   @override
   State<EditTaskDialog> createState() => _EditTaskDialogState();
@@ -30,54 +30,127 @@ class _EditTaskDialogState extends State<EditTaskDialog> {
     super.dispose();
   }
 
+  void _save() {
+    final newTitle = _controller.text.trim();
+    if (newTitle.isNotEmpty) {
+      context.read<TaskCubit>().updateTask(widget.task, newTitle);
+      context.pop();
+      CustomSnackBar.show(
+        context: context,
+        message: 'Task updated successfully',
+        isError: false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      title: const Text('Edit Task'),
-      content: TextField(
-        controller: _controller,
-        autofocus: true,
-        decoration: InputDecoration(
-          hintText: 'Enter new task title',
-          filled: true,
-          fillColor: AppColors.background,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.all(22),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: AppColors.softShadow,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(11),
+                  ),
+                  child: const Icon(Icons.edit_outlined, color: AppColors.primary, size: 18),
+                ),
+                const SizedBox(width: 12),
+                const Text(
+                  'Edit Task',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textDark,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            TextField(
+              controller: _controller,
+              autofocus: true,
+              style: const TextStyle(color: AppColors.textDark, fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
+                hintText: 'Enter new task title',
+                hintStyle: const TextStyle(color: AppColors.textMuted),
+                filled: true,
+                fillColor: AppColors.surfaceMuted,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(13),
+                  borderSide: BorderSide.none,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(13),
+                  borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => context.pop(),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      backgroundColor: AppColors.surfaceMuted,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: AppColors.textLight, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: AppColors.primaryGradient,
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: _save,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 13),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(13),
+                        ),
+                      ),
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => context.pop(),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: AppColors.textLight),
-          ),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          onPressed: () {
-            final newTitle = _controller.text.trim();
-            if (newTitle.isNotEmpty) {
-              context.read<TaskCubit>().updateTask(widget.task, newTitle);
-              context.pop();
-              CustomSnackBar.show(
-                context: context,
-                message: 'Task updated successfully',
-                isError: false,
-              );
-            }
-          },
-          child: const Text('Save', style: TextStyle(color: Colors.white)),
-        ),
-      ],
     );
   }
 }

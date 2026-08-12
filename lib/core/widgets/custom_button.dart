@@ -1,37 +1,71 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
-class CustomButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
 
+class CustomButton extends StatelessWidget {
   const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
+    this.isLoading = false,
+    this.icon,
   });
+
+  final String text;
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  final IconData? icon;
+
+  bool get _isDisabled => isLoading || onPressed == null;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 50,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 0,
+      height: 54,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: _isDisabled ? null : AppColors.primaryGradient,
+          color: _isDisabled ? AppColors.surfaceMuted : null,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: _isDisabled ? null : AppColors.softShadow,
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColors.white,
+        child: ElevatedButton(
+          onPressed: _isDisabled ? null : onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
+          child: isLoading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    color: AppColors.white,
+                    strokeWidth: 2.4,
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(icon, color: AppColors.white, size: 19),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      text,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ],
+                ),
         ),
       ),
     );

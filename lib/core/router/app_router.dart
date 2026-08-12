@@ -8,8 +8,10 @@ import 'package:wedo_flutter/presentation/auth/register_screen.dart';
 import 'package:wedo_flutter/presentation/home/home_screen.dart';
 import 'package:wedo_flutter/presentation/home/join_project_screen.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
+import 'package:wedo_flutter/presentation/manager/notifications/notification_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
+import 'package:wedo_flutter/presentation/notifications/notification_screen.dart';
 import 'package:wedo_flutter/presentation/profile/profile_screen.dart';
 import 'package:wedo_flutter/presentation/tasks/project_details_screen.dart';
 import 'app_routes.dart';
@@ -36,8 +38,13 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.home,
-        builder: (context, state) => BlocProvider(
-          create: (context) => di.sl<ProjectCubit>()..fetchProjects(),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => di.sl<ProjectCubit>()..fetchProjects(),
+            ),
+            BlocProvider(create: (context) => di.sl<NotificationCubit>()),
+          ],
           child: const HomeScreen(),
         ),
       ),
@@ -46,7 +53,8 @@ class AppRouter {
         builder: (context, state) {
           final project = state.extra as ProjectEntity;
           return BlocProvider(
-            create: (context) => di.sl<TaskCubit>()..startListeningToTasks(project.id),
+            create: (context) =>
+                di.sl<TaskCubit>()..startListeningToTasks(project.id),
             child: ProjectDetailsScreen(project: project),
           );
         },
@@ -61,6 +69,13 @@ class AppRouter {
             BlocProvider(create: (context) => di.sl<AuthCubit>()),
           ],
           child: const ProfileScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.notifications,
+        builder: (context, state) => BlocProvider(
+          create: (context) => di.sl<NotificationCubit>(),
+          child: const NotificationScreen(),
         ),
       ),
       GoRoute(

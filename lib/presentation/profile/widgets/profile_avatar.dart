@@ -4,52 +4,85 @@ import 'package:flutter/material.dart';
 import 'package:wedo_flutter/core/theme/app_colors.dart';
 
 class ProfileAvatar extends StatelessWidget {
-  final Uint8List? imageBytes;
-  final User? user;
-  final VoidCallback onTap;
-
   const ProfileAvatar({
     super.key,
     required this.imageBytes,
     required this.user,
     required this.onTap,
+    this.isUploading = false,
   });
+
+  final Uint8List? imageBytes;
+  final User? user;
+  final VoidCallback onTap;
+  final bool isUploading;
 
   @override
   Widget build(BuildContext context) {
+    final bool hasImage = imageBytes != null || user?.photoURL != null;
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: isUploading ? null : onTap,
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          CircleAvatar(
-            radius: 52,
-            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-            backgroundImage: imageBytes != null
-                ? MemoryImage(imageBytes!)
-                : (user?.photoURL != null
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.surface,
+              boxShadow: AppColors.softShadow,
+            ),
+            child: CircleAvatar(
+              radius: 50,
+              backgroundColor: AppColors.primaryLight,
+              backgroundImage: imageBytes != null
+                  ? MemoryImage(imageBytes!)
+                  : (user?.photoURL != null
                       ? NetworkImage(user!.photoURL!) as ImageProvider
                       : null),
-            child: (imageBytes == null && user?.photoURL == null)
-                ? const Icon(
-                    Icons.person_outline_rounded,
-                    color: AppColors.primary,
-                    size: 56,
-                  )
-                : null,
-          ),
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: const BoxDecoration(
-              color: AppColors.accent,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.camera_alt_rounded,
-              size: 14,
-              color: AppColors.white,
+              child: !hasImage
+                  ? const Icon(
+                      Icons.person_outline_rounded,
+                      color: AppColors.primary,
+                      size: 48,
+                    )
+                  : null,
             ),
           ),
+          if (isUploading)
+            Container(
+              width: 108,
+              height: 108,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black.withValues(alpha: 0.35),
+              ),
+              child: const Center(
+                child: SizedBox(
+                  width: 26,
+                  height: 26,
+                  child: CircularProgressIndicator(
+                    color: AppColors.white,
+                    strokeWidth: 2.5,
+                  ),
+                ),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                gradient: AppColors.accentGradient,
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.surface, width: 2.5),
+              ),
+              child: const Icon(
+                Icons.camera_alt_rounded,
+                size: 14,
+                color: AppColors.white,
+              ),
+            ),
         ],
       ),
     );

@@ -33,7 +33,7 @@ class ProjectCubit extends Cubit<ProjectState> {
 
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      emit(const AddProjectError('User not authenticated'));
+      if (!isClosed) emit(const AddProjectError('User not authenticated'));
       return;
     }
 
@@ -47,12 +47,17 @@ class ProjectCubit extends Cubit<ProjectState> {
 
     final result = await addProjectUsecase(project: newProject);
 
-    result.fold((failure) => emit(AddProjectError(failure.message)), (
-      createdProject,
-    ) {
-      projectsList.insert(0, createdProject);
-      emit(AddProjectSuccess(createdProject));
-    });
+    if (isClosed) return;
+
+    result.fold(
+      (failure) {
+        if (!isClosed) emit(AddProjectError(failure.message));
+      },
+      (createdProject) {
+        projectsList.insert(0, createdProject);
+        if (!isClosed) emit(AddProjectSuccess(createdProject));
+      },
+    );
   }
 
   Future<void> fetchProjects() async {
@@ -60,18 +65,23 @@ class ProjectCubit extends Cubit<ProjectState> {
 
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      emit(const GetProjectsError('User not authenticated'));
+      if (!isClosed) emit(const GetProjectsError('User not authenticated'));
       return;
     }
 
     final result = await getProjectsUsecase(userId: currentUser.uid);
 
-    result.fold((failure) => emit(GetProjectsError(failure.message)), (
-      projects,
-    ) {
-      projectsList = List<ProjectEntity>.from(projects);
-      emit(GetProjectsSuccess(projects));
-    });
+    if (isClosed) return;
+
+    result.fold(
+      (failure) {
+        if (!isClosed) emit(GetProjectsError(failure.message));
+      },
+      (projects) {
+        projectsList = List<ProjectEntity>.from(projects);
+        if (!isClosed) emit(GetProjectsSuccess(projects));
+      },
+    );
   }
 
   Future<void> updateProject(ProjectEntity project) async {
@@ -82,9 +92,11 @@ class ProjectCubit extends Cubit<ProjectState> {
     }
 
     final result = await updateProjectUsecase(project: project);
+    if (isClosed) return;
+
     result.fold((failure) {
       fetchProjects();
-      emit(GetProjectsError(failure.message));
+      if (!isClosed) emit(GetProjectsError(failure.message));
     }, (_) {});
   }
 
@@ -93,9 +105,11 @@ class ProjectCubit extends Cubit<ProjectState> {
     emit(GetProjectsSuccess(List<ProjectEntity>.from(projectsList)));
 
     final result = await deleteProjectUsecase(projectId: projectId);
+    if (isClosed) return;
+
     result.fold((failure) {
       fetchProjects();
-      emit(GetProjectsError(failure.message));
+      if (!isClosed) emit(GetProjectsError(failure.message));
     }, (_) {});
   }
 
@@ -103,11 +117,16 @@ class ProjectCubit extends Cubit<ProjectState> {
     emit(JoinProjectLoading());
     final result = await joinProjectByIdUsecase(projectId);
 
-    result.fold((failure) => emit(JoinProjectError(failure.message)), (
-      _,
-    ) async {
-      emit(ProjectJoinedSuccess());
-      await fetchProjects();
-    });
+    if (isClosed) return;
+
+    result.fold(
+      (failure) {
+        if (!isClosed) emit(JoinProjectError(failure.message));
+      },
+      (_) async {
+        if (!isClosed) emit(ProjectJoinedSuccess());
+        await fetchProjects();
+      },
+    );
   }
 }
