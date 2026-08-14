@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-
+import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 
 class NotificationHeader extends StatelessWidget {
   const NotificationHeader({
@@ -14,6 +13,8 @@ class NotificationHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(
@@ -22,9 +23,9 @@ class NotificationHeader extends StatelessWidget {
         left: 8,
         right: 20,
       ),
-      decoration: const BoxDecoration(
-        gradient: AppColors.heroGradient,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
+      decoration: BoxDecoration(
+        gradient: colors.heroGradient,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
       ),
       child: Row(
         children: [
@@ -40,7 +41,7 @@ class NotificationHeader extends StatelessWidget {
                 const Text(
                   'Notifications',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: Colors.white,
                     fontWeight: FontWeight.w800,
                     fontSize: 20,
                   ),
@@ -51,7 +52,7 @@ class NotificationHeader extends StatelessWidget {
                       ? '$unreadCount unread notification${unreadCount == 1 ? '' : 's'}'
                       : 'You\'re all caught up',
                   style: TextStyle(
-                    color: AppColors.white.withValues(alpha: 0.85),
+                    color: Colors.white.withValues(alpha: 0.85),
                     fontSize: 12.5,
                     fontWeight: FontWeight.w500,
                   ),
@@ -69,7 +70,7 @@ class NotificationHeader extends StatelessWidget {
               child: Text(
                 '$unreadCount',
                 style: const TextStyle(
-                  color: AppColors.white,
+                  color: Colors.white,
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
                 ),
@@ -98,7 +99,7 @@ class _CircleIconButton extends StatelessWidget {
           color: Colors.white.withValues(alpha: 0.16),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: AppColors.white, size: 16),
+        child: Icon(icon, color: Colors.white, size: 16),
       ),
     );
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 import 'package:wedo_flutter/domain/entities/notification_entity.dart';
 import 'notification_icon_badge.dart';
 
-/// A single notification row rendered as a modern elevated card.
 class NotificationCard extends StatelessWidget {
   const NotificationCard({
     super.key,
@@ -17,9 +16,10 @@ class NotificationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool unread = !item.isRead;
+    final colors = context.colors;
 
     return Material(
-      color: AppColors.surface,
+      color: colors.surface,
       borderRadius: BorderRadius.circular(18),
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
@@ -30,10 +30,10 @@ class NotificationCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: unread
-                  ? AppColors.primary.withValues(alpha: 0.16)
-                  : AppColors.border,
+                  ? colors.primary.withValues(alpha: 0.16)
+                  : colors.border,
             ),
-            boxShadow: AppColors.cardShadow,
+            boxShadow: colors.cardShadow,
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,7 @@ class NotificationCard extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              color: AppColors.textDark,
+                              color: colors.textDark,
                               fontSize: 15,
                               fontWeight:
                                   unread ? FontWeight.w700 : FontWeight.w500,
@@ -64,8 +64,8 @@ class NotificationCard extends StatelessWidget {
                           Container(
                             width: 8,
                             height: 8,
-                            decoration: const BoxDecoration(
-                              gradient: AppColors.accentGradient,
+                            decoration: BoxDecoration(
+                              gradient: colors.accentGradient,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -77,8 +77,8 @@ class NotificationCard extends StatelessWidget {
                       item.body,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.textLight,
+                      style: TextStyle(
+                        color: colors.textLight,
                         fontSize: 13,
                         height: 1.35,
                       ),

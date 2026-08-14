@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 
 class NotificationEmptyView extends StatelessWidget {
   const NotificationEmptyView({super.key, required this.onRefresh});
@@ -8,8 +8,10 @@ class NotificationEmptyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return RefreshIndicator(
-      color: AppColors.primary,
+      color: colors.primary,
       onRefresh: onRefresh,
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -26,31 +28,31 @@ class NotificationEmptyView extends StatelessWidget {
                       Container(
                         width: 84,
                         height: 84,
-                        decoration: const BoxDecoration(
-                          color: AppColors.primaryLight,
+                        decoration: BoxDecoration(
+                          color: colors.primaryLight,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.notifications_off_outlined,
-                          color: AppColors.primary,
+                          color: colors.primary,
                           size: 36,
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
+                      Text(
                         'No notifications yet',
                         style: TextStyle(
-                          color: AppColors.textDark,
+                          color: colors.textDark,
                           fontSize: 17,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text(
+                      Text(
                         'When something new comes in,\nyou\'ll see it here.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: AppColors.textLight,
+                          color: colors.textLight,
                           fontSize: 13,
                           height: 1.4,
                         ),

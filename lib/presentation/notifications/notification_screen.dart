@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/router/app_routes.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 import 'package:wedo_flutter/domain/entities/notification_entity.dart';
 import 'package:wedo_flutter/presentation/manager/notifications/notification_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/notifications/notification_state.dart';
@@ -31,16 +31,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: Column(
         children: [
           BlocBuilder<NotificationCubit, NotificationState>(
             builder: (context, state) {
               int unreadCount = 0;
               if (state is NotificationLoaded) {
-                unreadCount =
-                    state.notifications.where((n) => !n.isRead).length;
+                unreadCount = state.notifications
+                    .where((n) => !n.isRead)
+                    .length;
               }
               return NotificationHeader(
                 unreadCount: unreadCount,
@@ -52,8 +55,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: BlocBuilder<NotificationCubit, NotificationState>(
               builder: (context, state) {
                 if (state is NotificationLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(color: AppColors.primary),
+                  return Center(
+                    child: CircularProgressIndicator(color: colors.primary),
                   );
                 }
 
@@ -70,7 +73,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   }
 
                   return RefreshIndicator(
-                    color: AppColors.primary,
+                    color: colors.primary,
                     onRefresh: _onRefresh,
                     child: ListView.separated(
                       padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
@@ -84,9 +87,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           item: item,
                           onTap: () {
                             if (!item.isRead) {
-                              context
-                                  .read<NotificationCubit>()
-                                  .markAsRead(item.id);
+                              context.read<NotificationCubit>().markAsRead(
+                                item.id,
+                              );
                             }
 
                             final project = item.toProjectEntity();

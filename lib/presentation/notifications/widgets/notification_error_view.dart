@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 
 class NotificationErrorView extends StatelessWidget {
   const NotificationErrorView({
@@ -13,6 +13,8 @@ class NotificationErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -22,21 +24,21 @@ class NotificationErrorView extends StatelessWidget {
             Container(
               width: 84,
               height: 84,
-              decoration: const BoxDecoration(
-                color: AppColors.errorLight,
+              decoration: BoxDecoration(
+                color: colors.errorLight,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.error_outline_rounded,
-                color: AppColors.error,
+                color: colors.error,
                 size: 36,
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Something went wrong',
               style: TextStyle(
-                color: AppColors.textDark,
+                color: colors.textDark,
                 fontSize: 17,
                 fontWeight: FontWeight.w600,
               ),
@@ -45,14 +47,14 @@ class NotificationErrorView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textLight, fontSize: 13),
+              style: TextStyle(color: colors.textLight, fontSize: 13),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
+                backgroundColor: colors.primary,
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

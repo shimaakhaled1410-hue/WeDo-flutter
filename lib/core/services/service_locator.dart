@@ -7,14 +7,17 @@ import 'package:wedo_flutter/data/datasource/image_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/notification_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/project_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/task_remote_datasource.dart';
+import 'package:wedo_flutter/data/datasource/theme_local_datasource.dart';
 import 'package:wedo_flutter/data/repo_impl/auth_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/notification_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/project_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/task_repo_impl.dart';
+import 'package:wedo_flutter/data/repo_impl/theme_repo_impl.dart';
 import 'package:wedo_flutter/domain/repo/auth_repo.dart';
 import 'package:wedo_flutter/domain/repo/notification_repo.dart';
 import 'package:wedo_flutter/domain/repo/project_repo.dart';
 import 'package:wedo_flutter/domain/repo/task_repo.dart';
+import 'package:wedo_flutter/domain/repo/theme_repo.dart';
 import 'package:wedo_flutter/domain/usecases/auth/login_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/register_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/sign_out_usecase.dart';
@@ -30,10 +33,13 @@ import 'package:wedo_flutter/domain/usecases/tasks/delete_task_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/get_tasks_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/toggle_task_status_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/tasks/update_task_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/theme/get_theme_mode_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/theme/set_theme_mode_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/notifications/notification_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
+import 'package:wedo_flutter/presentation/manager/theme/theme_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -128,5 +134,19 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<NotificationRemoteDataSource>(
     () => NotificationRemoteDataSourceImpl(firestore: sl(), auth: sl()),
+  );
+
+  //theme
+  sl.registerFactory(
+    () => ThemeCubit(sl(), sl()),
+  );
+
+  sl.registerLazySingleton(() => GetThemeModeUseCase(sl()));
+  sl.registerLazySingleton(() => SetThemeModeUseCase(sl()));
+
+  sl.registerLazySingleton<ThemeRepo>(() => ThemeRepoImpl(sl()));
+
+  sl.registerLazySingleton<ThemeLocalDataSource>(
+    () => ThemeLocalDataSourceImpl(),
   );
 }
