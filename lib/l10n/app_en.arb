@@ -1,0 +1,56 @@
+{
+  "@@locale": "en",
+  "appTitle": "WeDo",
+
+  "welcomeBack": "Welcome Back!",
+  "loginSubtitle": "Log in to continue your tasks",
+  "createAccount": "Create an Account",
+  "registerSubtitle": "Join WeDo to collaborate on tasks",
+  "email": "Email",
+  "password": "Password",
+  "fullName": "Full Name",
+  "login": "Login",
+  "signUp": "Sign Up",
+  "dontHaveAccount": "Don't have an account? ",
+  "alreadyHaveAccount": "Already have an account? ",
+
+  "myLists": "My Lists",
+  "activeProjectsCount": "You have {count} active project{count, plural, =1{} other{s}}",
+  "@activeProjectsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noProjectsYet": "No projects yet",
+  "tapAddToCreate": "Tap \"add\" below to create your first project.",
+
+  "notifications": "Notifications",
+  "unreadNotifications": "{count} unread notification{count, plural, =1{} other{s}}",
+  "@unreadNotifications": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "allCaughtUp": "You're all caught up",
+  "noNotificationsYet": "No notifications yet",
+  "notificationsEmptyHint": "When something new comes in, you'll see it here.",
+  "somethingWentWrong": "Something went wrong",
+  "tryAgain": "Try again",
+
+  "myProfile": "My Profile",
+  "projects": "Projects",
+  "doneTasks": "Done Tasks",
+  "settings": "Settings",
+  "language": "Language",
+  "themeMode": "Theme Mode",
+  "signOut": "Sign Out",
+  "signOutConfirm": "Are you sure you want to sign out\nof your account?",
+  "cancel": "Cancel",
+
+  "themeModeLight": "Light",
+  "themeModeDark": "Dark",
+  "themeModeSystem": "System",
+
+  "languageEnglish": "English",
+  "languageArabic": "Arabic"
+}

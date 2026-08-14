@@ -1,0 +1,56 @@
+{
+  "@@locale": "ar",
+  "appTitle": "WeDo",
+
+  "welcomeBack": "أهلاً بعودتك!",
+  "loginSubtitle": "سجّل الدخول عشان تكمل مهامك",
+  "createAccount": "إنشاء حساب",
+  "registerSubtitle": "انضم لـ WeDo عشان تتعاون في المهام",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "fullName": "الاسم بالكامل",
+  "login": "تسجيل الدخول",
+  "signUp": "إنشاء حساب",
+  "dontHaveAccount": "معندكش حساب؟ ",
+  "alreadyHaveAccount": "عندك حساب بالفعل؟ ",
+
+  "myLists": "قوائمي",
+  "activeProjectsCount": "عندك {count} مشروع نشط",
+  "@activeProjectsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noProjectsYet": "لسه معملتش أي مشروع",
+  "tapAddToCreate": "دوسي على \"إضافة\" تحت عشان تعملي أول مشروع.",
+
+  "notifications": "الإشعارات",
+  "unreadNotifications": "{count} إشعار غير مقروء",
+  "@unreadNotifications": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "allCaughtUp": "مفيش حاجة جديدة",
+  "noNotificationsYet": "لسه مفيش إشعارات",
+  "notificationsEmptyHint": "لما يجيلك حاجة جديدة، هتلاقيها هنا.",
+  "somethingWentWrong": "حصلت مشكلة",
+  "tryAgain": "حاول تاني",
+
+  "myProfile": "بروفايلي",
+  "projects": "المشاريع",
+  "doneTasks": "المهام المخلصة",
+  "settings": "الإعدادات",
+  "language": "اللغة",
+  "themeMode": "وضع الثيم",
+  "signOut": "تسجيل الخروج",
+  "signOutConfirm": "متأكدة إنك عايزة تسجلي خروج\nمن حسابك؟",
+  "cancel": "إلغاء",
+
+  "themeModeLight": "فاتح",
+  "themeModeDark": "غامق",
+  "themeModeSystem": "حسب النظام",
+
+  "languageEnglish": "الإنجليزية",
+  "languageArabic": "العربية"
+}

@@ -9,9 +9,14 @@ import 'package:wedo_flutter/core/services/notification_service.dart';
 import 'package:wedo_flutter/core/services/service_locator.dart' as di;
 import 'package:wedo_flutter/core/theme/app_theme.dart';
 import 'package:wedo_flutter/firebase_options.dart';
+import 'package:wedo_flutter/l10n/app_localizations.dart';
+import 'package:wedo_flutter/presentation/manager/locale/locale_cubit.dart';
+import 'package:wedo_flutter/presentation/manager/locale/locale_state.dart';
+import 'package:wedo_flutter/presentation/manager/locale/locale_x.dart';
 import 'package:wedo_flutter/presentation/manager/theme/theme_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/theme/theme_mode_x.dart';
 import 'package:wedo_flutter/presentation/manager/theme/theme_state.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,8 +30,11 @@ void main() async {
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) => BlocProvider(
-        create: (_) => di.sl<ThemeCubit>(),
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => di.sl<ThemeCubit>()),
+          BlocProvider(create: (_) => di.sl<LocaleCubit>()),
+        ],
         child: const WeDoApp(),
       ),
     ),
@@ -39,16 +47,32 @@ class WeDoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
-      builder: (context, state) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          title: 'WeDo',
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: state.mode.toFlutterThemeMode,
-          routerConfig: AppRouter.router,
+      builder: (context, themeState) {
+        return BlocBuilder<LocaleCubit, LocaleState>(
+          builder: (context, localeState) {
+            return MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              title: 'WeDo',
+              locale: DevicePreview.locale(context) ??
+                  localeState.locale.toFlutterLocale,
+              builder: DevicePreview.appBuilder,
+
+              // Localization setup — RTL is handled automatically by
+              // Flutter when locale is Arabic, no manual config needed.
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+
+              theme: AppTheme.light,
+              darkTheme: AppTheme.dark,
+              themeMode: themeState.mode.toFlutterThemeMode,
+              routerConfig: AppRouter.router,
+            );
+          },
         );
       },
     );

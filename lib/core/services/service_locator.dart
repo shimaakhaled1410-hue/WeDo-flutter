@@ -4,16 +4,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:wedo_flutter/data/datasource/auth_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/image_remote_datasource.dart';
+import 'package:wedo_flutter/data/datasource/locale_local_datasource.dart';
 import 'package:wedo_flutter/data/datasource/notification_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/project_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/task_remote_datasource.dart';
 import 'package:wedo_flutter/data/datasource/theme_local_datasource.dart';
 import 'package:wedo_flutter/data/repo_impl/auth_repo_impl.dart';
+import 'package:wedo_flutter/data/repo_impl/locale_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/notification_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/project_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/task_repo_impl.dart';
 import 'package:wedo_flutter/data/repo_impl/theme_repo_impl.dart';
 import 'package:wedo_flutter/domain/repo/auth_repo.dart';
+import 'package:wedo_flutter/domain/repo/locale_repo.dart';
 import 'package:wedo_flutter/domain/repo/notification_repo.dart';
 import 'package:wedo_flutter/domain/repo/project_repo.dart';
 import 'package:wedo_flutter/domain/repo/task_repo.dart';
@@ -21,6 +24,8 @@ import 'package:wedo_flutter/domain/repo/theme_repo.dart';
 import 'package:wedo_flutter/domain/usecases/auth/login_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/register_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/locale/get_locale_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/locale/set_locale_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/notifications/get_notifications_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/notifications/mark_notification_as_read_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
@@ -36,6 +41,7 @@ import 'package:wedo_flutter/domain/usecases/tasks/update_task_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/theme/get_theme_mode_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/theme/set_theme_mode_usecase.dart';
 import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
+import 'package:wedo_flutter/presentation/manager/locale/locale_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/notifications/notification_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
@@ -137,9 +143,7 @@ Future<void> init() async {
   );
 
   //theme
-  sl.registerFactory(
-    () => ThemeCubit(sl(), sl()),
-  );
+  sl.registerFactory(() => ThemeCubit(sl(), sl()));
 
   sl.registerLazySingleton(() => GetThemeModeUseCase(sl()));
   sl.registerLazySingleton(() => SetThemeModeUseCase(sl()));
@@ -148,5 +152,17 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ThemeLocalDataSource>(
     () => ThemeLocalDataSourceImpl(),
+  );
+
+  // locale
+  sl.registerFactory(() => LocaleCubit(sl(), sl()));
+
+  sl.registerLazySingleton(() => GetLocaleUseCase(sl()));
+  sl.registerLazySingleton(() => SetLocaleUseCase(sl()));
+
+  sl.registerLazySingleton<LocaleRepo>(() => LocaleRepoImpl(sl()));
+
+  sl.registerLazySingleton<LocaleLocalDataSource>(
+    () => LocaleLocalDataSourceImpl(),
   );
 }
