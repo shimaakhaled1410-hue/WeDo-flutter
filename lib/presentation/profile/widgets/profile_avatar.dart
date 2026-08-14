@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
@@ -19,6 +19,7 @@ class ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final bool hasImage = imageBytes != null || user?.photoURL != null;
 
     return GestureDetector(
@@ -30,21 +31,21 @@ class ProfileAvatar extends StatelessWidget {
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.surface,
-              boxShadow: AppColors.softShadow,
+              color: colors.surface,
+              boxShadow: colors.softShadow,
             ),
             child: CircleAvatar(
               radius: 50,
-              backgroundColor: AppColors.primaryLight,
+              backgroundColor: colors.primaryLight,
               backgroundImage: imageBytes != null
                   ? MemoryImage(imageBytes!)
                   : (user?.photoURL != null
-                      ? NetworkImage(user!.photoURL!) as ImageProvider
-                      : null),
+                        ? NetworkImage(user!.photoURL!) as ImageProvider
+                        : null),
               child: !hasImage
-                  ? const Icon(
+                  ? Icon(
                       Icons.person_outline_rounded,
-                      color: AppColors.primary,
+                      color: colors.primary,
                       size: 48,
                     )
                   : null,
@@ -63,7 +64,7 @@ class ProfileAvatar extends StatelessWidget {
                   width: 26,
                   height: 26,
                   child: CircularProgressIndicator(
-                    color: AppColors.white,
+                    color: Colors.white,
                     strokeWidth: 2.5,
                   ),
                 ),
@@ -73,14 +74,14 @@ class ProfileAvatar extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                gradient: AppColors.accentGradient,
+                gradient: colors.accentGradient,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.surface, width: 2.5),
+                border: Border.all(color: colors.surface, width: 2.5),
               ),
               child: const Icon(
                 Icons.camera_alt_rounded,
                 size: 14,
-                color: AppColors.white,
+                color: Colors.white,
               ),
             ),
         ],

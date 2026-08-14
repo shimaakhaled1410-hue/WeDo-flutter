@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class AuthFooterLink extends StatelessWidget {
   const AuthFooterLink({
@@ -15,17 +15,19 @@ class AuthFooterLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return GestureDetector(
       onTap: onTap,
       child: RichText(
         text: TextSpan(
           text: leadingText,
-          style: const TextStyle(color: AppColors.textLight, fontSize: 14),
+          style: TextStyle(color: colors.textLight, fontSize: 14),
           children: [
             TextSpan(
               text: actionText,
-              style: const TextStyle(
-                color: AppColors.primary,
+              style: TextStyle(
+                color: colors.primary,
                 fontWeight: FontWeight.w700,
               ),
             ),

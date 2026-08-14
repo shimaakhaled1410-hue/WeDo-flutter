@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
-import 'package:wedo_flutter/domain/entities/task_entity.dart';
-import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
 import 'package:wedo_flutter/presentation/tasks/widgets/task_item/task_assign_chip.dart';
+import '../../../../core/extensions/localization_x.dart';
+import '../../../../core/theme/app_color_scheme.dart';
+import '../../../../core/widgets/custom_snackbar.dart';
+import '../../../../domain/entities/task_entity.dart';
+import '../../../manager/tasks/task_cubit.dart';
 import 'task_alert_badge.dart';
 import 'task_checkbox.dart';
 
@@ -24,6 +25,9 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     final canDelete = task.canDelete(currentUserId, projectOwnerId);
     final canEdit = task.canEditTitle(currentUserId);
     final canToggle = task.canToggleCompletion(currentUserId);
@@ -31,34 +35,26 @@ class TaskItem extends StatelessWidget {
 
     return Dismissible(
       key: Key(task.id),
-      direction:
-          canDelete ? DismissDirection.endToStart : DismissDirection.none,
+      direction: canDelete ? DismissDirection.endToStart : DismissDirection.none,
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 22),
         margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: AppColors.error,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: const Icon(Icons.delete_outline_rounded, color: AppColors.white),
+        decoration: BoxDecoration(color: colors.error, borderRadius: BorderRadius.circular(18)),
+        child: const Icon(Icons.delete_outline_rounded, color: Colors.white),
       ),
       onDismissed: (_) {
         context.read<TaskCubit>().deleteTask(task);
-        CustomSnackBar.show(
-          context: context,
-          message: 'Task "${task.title}" deleted',
-          isError: false,
-        );
+        CustomSnackBar.show(context: context, message: l10n.taskDeleted(task.title), isError: false);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colors.surface,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: AppColors.border),
-          boxShadow: AppColors.cardShadow,
+          border: Border.all(color: colors.border),
+          boxShadow: colors.cardShadow,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,12 +74,8 @@ class TaskItem extends StatelessWidget {
                     child: Text(
                       task.title,
                       style: TextStyle(
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
-                        color: task.isCompleted
-                            ? AppColors.textMuted
-                            : AppColors.textDark,
+                        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                        color: task.isCompleted ? colors.textMuted : colors.textDark,
                         fontWeight: FontWeight.w600,
                         fontSize: 15.5,
                       ),
@@ -94,13 +86,9 @@ class TaskItem extends StatelessWidget {
                   InkWell(
                     borderRadius: BorderRadius.circular(8),
                     onTap: onEditTap,
-                    child: const Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Icon(
-                        Icons.edit_outlined,
-                        size: 17,
-                        color: AppColors.textMuted,
-                      ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Icon(Icons.edit_outlined, size: 17, color: colors.textMuted),
                     ),
                   ),
               ],
@@ -115,15 +103,9 @@ class TaskItem extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     if (hasAssignee)
-                      TaskAssignChip(
-                        userImage: task.assignedToUserImage,
-                        userName: task.assignedToUserName,
-                      ),
+                      TaskAssignChip(userImage: task.assignedToUserImage, userName: task.assignedToUserName),
                     if (task.alertTime != null)
-                      TaskAlertBadge(
-                        alertTime: task.alertTime!,
-                        isCompleted: task.isCompleted,
-                      ),
+                      TaskAlertBadge(alertTime: task.alertTime!, isCompleted: task.isCompleted),
                   ],
                 ),
               ),

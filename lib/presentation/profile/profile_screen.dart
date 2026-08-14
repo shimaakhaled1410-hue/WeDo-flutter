@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:wedo_flutter/core/router/app_routes.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
-import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
-import 'package:wedo_flutter/presentation/manager/auth/auth_state.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
 import 'package:wedo_flutter/presentation/profile/widgets/profile_setting_card.dart';
+import '../../core/extensions/localization_x.dart';
+import '../../core/router/app_routes.dart';
+import '../../core/theme/app_color_scheme.dart';
+import '../../core/widgets/custom_snackbar.dart';
+import '../manager/auth/auth_cubit.dart';
+import '../manager/auth/auth_state.dart';
+import '../manager/project/project_cubit.dart';
 import 'widgets/logout_button.dart';
 import 'widgets/logout_dialog.dart';
 import 'widgets/profile_header.dart';
@@ -37,7 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (pickedFile != null) {
       final bytes = await pickedFile.readAsBytes();
       setState(() => _imageBytes = bytes);
-
       if (mounted) {
         context.read<AuthCubit>().updateProfileImage(bytes);
       }
@@ -52,6 +52,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
     final user = FirebaseAuth.instance.currentUser;
     final projectsList = context.watch<ProjectCubit>().projectsList;
 
@@ -75,21 +77,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           setState(() => _isUploading = false);
           CustomSnackBar.show(
             context: context,
-            message: 'Profile image updated successfully!',
+            message: l10n.profileImageUpdatedSuccess,
           );
         } else if (state is AuthError) {
           setState(() => _isUploading = false);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppColors.error,
+              backgroundColor: colors.error,
               behavior: SnackBarBehavior.floating,
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -103,8 +105,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onAvatarTap: _pickImage,
                 onBackTap: () => context.pop(),
               ),
-
-              // Stats overlap the header's rounded bottom edge.
               Transform.translate(
                 offset: const Offset(0, -34),
                 child: Padding(
@@ -113,28 +113,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       Expanded(
                         child: ProfileStatCard(
-                          title: 'Projects',
+                          title: l10n.projects,
                           value: '$totalProjects',
                           icon: Icons.folder_open_rounded,
-                          iconBackground: AppColors.primaryLight,
-                          iconColor: AppColors.primary,
+                          iconBackground: colors.primaryLight,
+                          iconColor: colors.primary,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: ProfileStatCard(
-                          title: 'Done Tasks',
+                          title: l10n.doneTasks,
                           value: '$completedTasksCount',
                           icon: Icons.task_alt_rounded,
-                          iconBackground: AppColors.successLight,
-                          iconColor: AppColors.success,
+                          iconBackground: colors.successLight,
+                          iconColor: colors.success,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                 child: Transform.translate(
@@ -142,14 +141,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 4, bottom: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4, bottom: 10),
                         child: Text(
-                          'Settings',
+                          l10n.settings,
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textDark,
+                            color: colors.textDark,
                           ),
                         ),
                       ),
@@ -158,8 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       LogoutButton(
                         onTap: () => showLogoutDialog(
                           context,
-                          onConfirm: () =>
-                              context.read<AuthCubit>().signOut(),
+                          onConfirm: () => context.read<AuthCubit>().signOut(),
                         ),
                       ),
                     ],

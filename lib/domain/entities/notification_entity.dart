@@ -3,8 +3,10 @@ import 'package:wedo_flutter/domain/entities/project_entity.dart';
 
 class NotificationEntity extends Equatable {
   final String id;
-  final String title;
-  final String body;
+  final String titleEn;
+  final String titleAr;
+  final String bodyEn;
+  final String bodyAr;
   final String? taskId;
   final String? projectName;
   final String? projectId;
@@ -13,18 +15,33 @@ class NotificationEntity extends Equatable {
 
   const NotificationEntity({
     required this.id,
-    required this.title,
-    required this.body,
+    required this.titleEn,
+    required this.titleAr,
+    required this.bodyEn,
+    required this.bodyAr,
     this.taskId,
     this.projectName,
     this.projectId,
     required this.createdAt,
     required this.isRead,
   });
-  
+
+  String title(String localeCode) => localeCode == 'ar' ? titleAr : titleEn;
+  String body(String localeCode) => localeCode == 'ar' ? bodyAr : bodyEn;
 
   @override
-  List<Object?> get props => [id, title, body, taskId, projectName, projectId, createdAt, isRead];
+  List<Object?> get props => [
+    id,
+    titleEn,
+    titleAr,
+    bodyEn,
+    bodyAr,
+    taskId,
+    projectName,
+    projectId,
+    createdAt,
+    isRead,
+  ];
 }
 
 extension NotificationProjectX on NotificationEntity {

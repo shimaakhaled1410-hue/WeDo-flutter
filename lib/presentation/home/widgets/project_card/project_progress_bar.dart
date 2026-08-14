@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/extensions/localization_x.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
 class ProjectProgressBar extends StatelessWidget {
   const ProjectProgressBar({
@@ -16,6 +17,9 @@ class ProjectProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -23,17 +27,17 @@ class ProjectProgressBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              '$completedTasks/$totalTasks tasks',
-              style: const TextStyle(
-                color: AppColors.textLight,
+              l10n.tasksCount(completedTasks, totalTasks),
+              style: TextStyle(
+                color: colors.textLight,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
             ),
             Text(
-              _hasStarted ? '${(_progress * 100).round()}%' : 'Not started',
+              _hasStarted ? '${(_progress * 100).round()}%' : l10n.notStarted,
               style: TextStyle(
-                color: _hasStarted ? AppColors.primary : AppColors.textMuted,
+                color: _hasStarted ? colors.primary : colors.textMuted,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),
@@ -44,17 +48,15 @@ class ProjectProgressBar extends StatelessWidget {
         Stack(
           alignment: Alignment.centerLeft,
           children: [
-            // Track — always visible with a border so it never disappears.
             Container(
               height: 8,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.surfaceMuted,
+                color: colors.surfaceMuted,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.border, width: 1),
+                border: Border.all(color: colors.border, width: 1),
               ),
             ),
-            // Fill — only rendered once there's real progress.
             if (_hasStarted)
               FractionallySizedBox(
                 alignment: Alignment.centerLeft,
@@ -62,11 +64,11 @@ class ProjectProgressBar extends StatelessWidget {
                 child: Container(
                   height: 8,
                   decoration: BoxDecoration(
-                    gradient: AppColors.accentGradient,
+                    gradient: colors.accentGradient,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.accent.withValues(alpha: 0.35),
+                        color: colors.accent.withValues(alpha: 0.35),
                         blurRadius: 4,
                         offset: const Offset(0, 1),
                       ),

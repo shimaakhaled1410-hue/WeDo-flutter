@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_color_scheme.dart';
 
-/// Shared text field used across all forms in the app
-/// (auth, add task, add project...). Handles password visibility
-/// toggling internally when [isPassword] is true.
 class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
@@ -33,15 +30,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12.5,
             fontWeight: FontWeight.w700,
-            color: AppColors.textDark,
+            color: colors.textDark,
           ),
         ),
         const SizedBox(height: 8),
@@ -50,22 +49,22 @@ class _CustomTextFieldState extends State<CustomTextField> {
           obscureText: _obscureText,
           keyboardType: widget.keyboardType,
           validator: widget.validator,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
-            color: AppColors.textDark,
+            color: colors.textDark,
             fontWeight: FontWeight.w500,
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
-            hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 14),
-            prefixIcon: Icon(widget.icon, color: AppColors.textLight, size: 20),
+            hintStyle: TextStyle(color: colors.textMuted, fontSize: 14),
+            prefixIcon: Icon(widget.icon, color: colors.textLight, size: 20),
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(
                       _obscureText
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: AppColors.textLight,
+                      color: colors.textLight,
                       size: 20,
                     ),
                     onPressed: () =>
@@ -73,7 +72,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   )
                 : null,
             filled: true,
-            fillColor: AppColors.surfaceMuted,
+            fillColor: colors.surfaceMuted,
             contentPadding: const EdgeInsets.symmetric(vertical: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
@@ -81,19 +80,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: colors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: BorderSide(color: colors.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
-              borderSide: const BorderSide(color: AppColors.error, width: 1.2),
+              borderSide: BorderSide(color: colors.error, width: 1.2),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(13),
-              borderSide: const BorderSide(color: AppColors.error, width: 1.5),
+              borderSide: BorderSide(color: colors.error, width: 1.5),
             ),
           ),
         ),

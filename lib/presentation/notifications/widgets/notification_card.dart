@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 import 'package:wedo_flutter/domain/entities/notification_entity.dart';
+import '../../../core/utils/notification_time_formatter.dart';
 import 'notification_icon_badge.dart';
 
 class NotificationCard extends StatelessWidget {
@@ -17,6 +18,7 @@ class NotificationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool unread = !item.isRead;
     final colors = context.colors;
+    final localeCode = Localizations.localeOf(context).languageCode;
 
     return Material(
       color: colors.surface,
@@ -48,7 +50,7 @@ class NotificationCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            item.title,
+                            item.title(localeCode),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -74,13 +76,22 @@ class NotificationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      item.body,
+                      item.body(localeCode),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: colors.textLight,
                         fontSize: 13,
                         height: 1.35,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      item.createdAt.toRelativeLabel(context),
+                      style: TextStyle(
+                        color: colors.textMuted,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],

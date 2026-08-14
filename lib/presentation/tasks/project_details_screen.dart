@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
-import 'package:wedo_flutter/domain/entities/project_entity.dart';
-import 'package:wedo_flutter/presentation/manager/tasks/task_cubit.dart';
-import 'package:wedo_flutter/presentation/manager/tasks/task_state.dart';
-import 'package:wedo_flutter/presentation/tasks/widgets/add_task_buttom_sheet.dart';
-import 'package:wedo_flutter/presentation/tasks/widgets/animated_segmanted_control.dart';
-import 'package:wedo_flutter/presentation/tasks/widgets/edit_task_dialog.dart';
-import 'package:wedo_flutter/presentation/tasks/widgets/task_item/task_item.dart';
+import '../../core/extensions/localization_x.dart';
+import '../../core/theme/app_color_scheme.dart';
+import '../../core/widgets/custom_snackbar.dart';
+import '../../domain/entities/project_entity.dart';
+import '../manager/tasks/task_cubit.dart';
+import '../manager/tasks/task_state.dart';
+import '../tasks/widgets/add_task_buttom_sheet.dart';
+import '../tasks/widgets/animated_segmanted_control.dart';
+import '../tasks/widgets/edit_task_dialog.dart';
+import '../tasks/widgets/task_item/task_item.dart';
 
 class ProjectDetailsScreen extends StatefulWidget {
   const ProjectDetailsScreen({super.key, required this.project});
@@ -31,10 +32,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: taskCubit,
-        child: AddTaskBottomSheet(project: widget.project),
-      ),
+      builder: (_) => BlocProvider.value(value: taskCubit, child: AddTaskBottomSheet(project: widget.project)),
     );
   }
 
@@ -42,44 +40,32 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     final taskCubit = context.read<TaskCubit>();
     showDialog(
       context: context,
-      builder: (_) => BlocProvider.value(
-        value: taskCubit,
-        child: EditTaskDialog(task: task),
-      ),
+      builder: (_) => BlocProvider.value(value: taskCubit, child: EditTaskDialog(task: task)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: colors.background,
         elevation: 0,
         leading: IconButton(
           icon: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: AppColors.cardShadow,
-            ),
-            child: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: AppColors.primary,
-              size: 16,
-            ),
+            decoration: BoxDecoration(color: colors.surface, borderRadius: BorderRadius.circular(12), boxShadow: colors.cardShadow),
+            child: Icon(Icons.arrow_back_ios_new_rounded, color: colors.primary, size: 16),
           ),
           onPressed: () => context.pop(),
         ),
         title: Text(
           widget.project.name,
-          style: const TextStyle(
-            color: AppColors.textDark,
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-          ),
+          style: TextStyle(color: colors.textDark, fontWeight: FontWeight.w800, fontSize: 18),
         ),
         centerTitle: true,
         actions: [
@@ -88,25 +74,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             child: IconButton(
               icon: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: AppColors.cardShadow,
-                ),
-                child: const Icon(
-                  Icons.person_add_alt_1_rounded,
-                  color: AppColors.primary,
-                  size: 18,
-                ),
+                decoration: BoxDecoration(color: colors.surface, borderRadius: BorderRadius.circular(12), boxShadow: colors.cardShadow),
+                child: Icon(Icons.person_add_alt_1_rounded, color: colors.primary, size: 18),
               ),
-              tooltip: 'Invite Collaborator',
+              tooltip: l10n.inviteCollaborator,
               onPressed: () {
                 final inviteUrl = 'wedo://join?projectId=${widget.project.id}';
                 Clipboard.setData(ClipboardData(text: inviteUrl));
-                CustomSnackBar.show(
-                  context: context,
-                  message: 'Invite link copied to clipboard!',
-                );
+                CustomSnackBar.show(context: context, message: l10n.inviteLinkCopied);
               },
             ),
           ),
@@ -123,10 +98,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                 final cubit = context.read<TaskCubit>();
                 return AnimatedSegmentedControl(
                   selectedIndex: cubit.currentFilter.index,
-                  options: const ['All', 'My Tasks', 'Pending', 'Done'],
-                  onOptionSelected: (index) {
-                    cubit.changeFilter(TaskFilter.values[index]);
-                  },
+                  options: [l10n.filterAll, l10n.filterMyTasks, l10n.filterPending, l10n.filterDone],
+                  onOptionSelected: (index) => cubit.changeFilter(TaskFilter.values[index]),
                 );
               },
             ),
@@ -138,17 +111,10 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   final displayList = cubit.filteredTasks;
 
                   if (state is GetTasksLoading && cubit.tasksList.isEmpty) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
-                    );
+                    return Center(child: CircularProgressIndicator(color: colors.primary));
                   }
                   if (state is GetTasksError && cubit.tasksList.isEmpty) {
-                    return Center(
-                      child: Text(
-                        state.message,
-                        style: const TextStyle(color: AppColors.error),
-                      ),
-                    );
+                    return Center(child: Text(state.message, style: TextStyle(color: colors.error)));
                   }
                   if (displayList.isEmpty) {
                     return Center(
@@ -158,25 +124,11 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           Container(
                             width: 72,
                             height: 72,
-                            decoration: const BoxDecoration(
-                              color: AppColors.primaryLight,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.task_alt_rounded,
-                              color: AppColors.primary,
-                              size: 30,
-                            ),
+                            decoration: BoxDecoration(color: colors.primaryLight, shape: BoxShape.circle),
+                            child: Icon(Icons.task_alt_rounded, color: colors.primary, size: 30),
                           ),
                           const SizedBox(height: 14),
-                          const Text(
-                            'No tasks found',
-                            style: TextStyle(
-                              color: AppColors.textDark,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15,
-                            ),
-                          ),
+                          Text(l10n.noTasksFound, style: TextStyle(color: colors.textDark, fontWeight: FontWeight.w600, fontSize: 15)),
                         ],
                       ),
                     );
@@ -203,17 +155,13 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         ),
       ),
       floatingActionButton: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: AppColors.accentGradient,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: AppColors.accentShadow,
-        ),
+        decoration: BoxDecoration(gradient: colors.accentGradient, borderRadius: BorderRadius.circular(18), boxShadow: colors.accentShadow),
         child: FloatingActionButton(
           backgroundColor: Colors.transparent,
           elevation: 0,
           onPressed: () => _showAddTaskBottomSheet(context),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-          child: const Icon(Icons.add_rounded, color: AppColors.white),
+          child: const Icon(Icons.add_rounded, color: Colors.white),
         ),
       ),
     );

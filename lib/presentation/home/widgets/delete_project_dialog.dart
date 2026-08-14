@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
-import 'package:wedo_flutter/domain/entities/project_entity.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
+import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
+import '../../../core/widgets/custom_snackbar.dart';
+import '../../../domain/entities/project_entity.dart';
+import '../../manager/project/project_cubit.dart';
 
 Future<void> showDeleteProjectDialog(
   BuildContext context,
   ProjectEntity project,
 ) {
   final projectCubit = context.read<ProjectCubit>();
+  final colors = context.colors;
+  final l10n = context.l10n;
 
   return showDialog(
     context: context,
@@ -19,9 +22,9 @@ Future<void> showDeleteProjectDialog(
       child: Container(
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colors.surface,
           borderRadius: BorderRadius.circular(22),
-          boxShadow: AppColors.softShadow,
+          boxShadow: colors.softShadow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -29,32 +32,32 @@ Future<void> showDeleteProjectDialog(
             Container(
               width: 56,
               height: 56,
-              decoration: const BoxDecoration(
-                color: AppColors.errorLight,
+              decoration: BoxDecoration(
+                color: colors.errorLight,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.delete_outline_rounded,
-                color: AppColors.error,
+                color: colors.error,
                 size: 24,
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Delete Project',
+            Text(
+              l10n.deleteProjectTitle,
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textDark,
+                color: colors.textDark,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              'Are you sure you want to delete "${project.name}"?\nThis cannot be undone.',
+              l10n.deleteProjectConfirm(project.name),
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textLight,
+                color: colors.textLight,
                 height: 1.4,
               ),
             ),
@@ -65,16 +68,16 @@ Future<void> showDeleteProjectDialog(
                   child: TextButton(
                     onPressed: () => Navigator.of(dialogContext).pop(),
                     style: TextButton.styleFrom(
-                      backgroundColor: AppColors.surfaceMuted,
+                      backgroundColor: colors.surfaceMuted,
                       padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(13),
                       ),
                     ),
-                    child: const Text(
-                      'Cancel',
+                    child: Text(
+                      l10n.cancel,
                       style: TextStyle(
-                        color: AppColors.textLight,
+                        color: colors.textLight,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -88,22 +91,22 @@ Future<void> showDeleteProjectDialog(
                       Navigator.of(dialogContext).pop();
                       CustomSnackBar.show(
                         context: context,
-                        message: 'Project "${project.name}" deleted',
+                        message: l10n.projectDeleted(project.name),
                         isError: false,
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.error,
+                      backgroundColor: colors.error,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(13),
                       ),
                     ),
-                    child: const Text(
-                      'Delete',
-                      style: TextStyle(
-                        color: AppColors.white,
+                    child: Text(
+                      l10n.delete,
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

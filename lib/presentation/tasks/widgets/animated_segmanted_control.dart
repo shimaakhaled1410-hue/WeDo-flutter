@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class AnimatedSegmentedControl extends StatelessWidget {
   const AnimatedSegmentedControl({
@@ -15,20 +15,22 @@ class AnimatedSegmentedControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Container(
       height: 46,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+        color: colors.surfaceMuted,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: colors.border),
       ),
       child: Stack(
         children: [
           AnimatedAlign(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
-            alignment: Alignment(
+            alignment: AlignmentDirectional(
               -1.0 + (selectedIndex * (2.0 / (options.length - 1))),
               0.0,
             ),
@@ -37,9 +39,9 @@ class AnimatedSegmentedControl extends StatelessWidget {
               heightFactor: 1.0,
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
+                  gradient: colors.primaryGradient,
                   borderRadius: BorderRadius.circular(11),
-                  boxShadow: AppColors.softShadow,
+                  boxShadow: colors.softShadow,
                 ),
               ),
             ),
@@ -57,11 +59,10 @@ class AnimatedSegmentedControl extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'Cairo',
                         fontSize: 13,
-                        fontWeight:
-                            isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected
-                            ? AppColors.white
-                            : AppColors.textLight,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        color: isSelected ? Colors.white : colors.textLight,
                       ),
                       child: Text(options[index]),
                     ),

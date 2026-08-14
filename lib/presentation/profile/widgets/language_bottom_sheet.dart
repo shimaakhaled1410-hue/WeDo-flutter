@@ -1,30 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
-import 'package:wedo_flutter/domain/entities/app_theme_mode.dart';
-import 'package:wedo_flutter/presentation/manager/theme/theme_cubit.dart';
-import 'package:wedo_flutter/presentation/manager/theme/theme_state.dart';
 import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
+import '../../../domain/entities/app_locale.dart';
+import '../../manager/locale/locale_cubit.dart';
+import '../../manager/locale/locale_state.dart';
 
-Future<void> showThemeModeSheet(BuildContext context) {
-  final themeCubit = context.read<ThemeCubit>();
+Future<void> showLanguageSheet(BuildContext context) {
+  final localeCubit = context.read<LocaleCubit>();
   return showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
-    builder: (_) =>
-        BlocProvider.value(value: themeCubit, child: const _ThemeModeSheet()),
+    builder: (_) => BlocProvider.value(
+      value: localeCubit,
+      child: const _LanguageSheet(),
+    ),
   );
 }
 
-class _ThemeModeSheet extends StatelessWidget {
-  const _ThemeModeSheet();
+class _LanguageSheet extends StatelessWidget {
+  const _LanguageSheet();
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final l10n = context.l10n;
 
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<LocaleCubit, LocaleState>(
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
@@ -48,7 +50,7 @@ class _ThemeModeSheet extends StatelessWidget {
                 ),
               ),
               Text(
-                l10n.themeMode,
+                l10n.chooseLanguage,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
@@ -56,15 +58,25 @@ class _ThemeModeSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              ...AppThemeMode.values.map(
-                (mode) => _ThemeOptionTile(
-                  mode: mode,
-                  isSelected: state.mode == mode,
-                  onTap: () {
-                    context.read<ThemeCubit>().changeThemeMode(mode);
-                    Navigator.of(context).pop();
-                  },
-                ),
+              _LanguageOptionTile(
+                locale: AppLocale.english,
+                label: l10n.languageEnglish,
+                flagEmoji: '🇬🇧',
+                isSelected: state.locale == AppLocale.english,
+                onTap: () {
+                  context.read<LocaleCubit>().changeLocale(AppLocale.english);
+                  Navigator.of(context).pop();
+                },
+              ),
+              _LanguageOptionTile(
+                locale: AppLocale.arabic,
+                label: l10n.languageArabic,
+                flagEmoji: '🇪🇬',
+                isSelected: state.locale == AppLocale.arabic,
+                onTap: () {
+                  context.read<LocaleCubit>().changeLocale(AppLocale.arabic);
+                  Navigator.of(context).pop();
+                },
               ),
             ],
           ),
@@ -74,22 +86,20 @@ class _ThemeModeSheet extends StatelessWidget {
   }
 }
 
-class _ThemeOptionTile extends StatelessWidget {
-  const _ThemeOptionTile({
-    required this.mode,
+class _LanguageOptionTile extends StatelessWidget {
+  const _LanguageOptionTile({
+    required this.locale,
+    required this.label,
+    required this.flagEmoji,
     required this.isSelected,
     required this.onTap,
   });
 
-  final AppThemeMode mode;
+  final AppLocale locale;
+  final String label;
+  final String flagEmoji;
   final bool isSelected;
   final VoidCallback onTap;
-
-  IconData get _icon => switch (mode) {
-    AppThemeMode.light => Icons.light_mode_rounded,
-    AppThemeMode.dark => Icons.dark_mode_rounded,
-    AppThemeMode.system => Icons.settings_suggest_rounded,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -110,15 +120,11 @@ class _ThemeOptionTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              _icon,
-              size: 20,
-              color: isSelected ? colors.primary : colors.textLight,
-            ),
+            Text(flagEmoji, style: const TextStyle(fontSize: 20)),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                mode.label,
+                label,
                 style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,

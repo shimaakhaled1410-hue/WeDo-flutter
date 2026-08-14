@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
-
+import '../../../core/theme/app_color_scheme.dart';
 
 class AuthCard extends StatelessWidget {
   const AuthCard({super.key, required this.child});
@@ -9,13 +8,15 @@ class AuthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.border),
-        boxShadow: AppColors.cardShadow,
+        border: Border.all(color: colors.border),
+        boxShadow: colors.cardShadow,
       ),
       child: child,
     );

@@ -319,6 +319,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arabic'**
   String get languageArabic;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'you@example.com'**
+  String get emailHint;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'••••••••'**
+  String get passwordHint;
+
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get emailRequired;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get passwordRequired;
+
+  /// No description provided for @chooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Language'**
+  String get chooseLanguage;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @accountCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Created Successfully!'**
+  String get accountCreatedSuccess;
+
+  /// No description provided for @nameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name'**
+  String get nameRequired;
+
+  /// No description provided for @createProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Create New Project'**
+  String get createProject;
+
+  /// No description provided for @editProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Project'**
+  String get editProject;
+
+  /// No description provided for @projectNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Name'**
+  String get projectNameLabel;
+
+  /// No description provided for @projectNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Name (e.g. Groceries)'**
+  String get projectNameHint;
+
+  /// No description provided for @projectNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a project name'**
+  String get projectNameRequired;
+
+  /// No description provided for @chooseIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Icon'**
+  String get chooseIcon;
+
+  /// No description provided for @createProjectSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your project a name and pick an icon.'**
+  String get createProjectSubtitle;
+
+  /// No description provided for @editProjectSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the name or icon of your project.'**
+  String get editProjectSubtitle;
+
+  /// No description provided for @createProjectButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Project'**
+  String get createProjectButton;
+
+  /// No description provided for @saveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Changes'**
+  String get saveChanges;
+
+  /// No description provided for @projectCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Project created successfully!'**
+  String get projectCreatedSuccess;
+
+  /// No description provided for @projectUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Project updated successfully'**
+  String get projectUpdatedSuccess;
+
+  /// No description provided for @tasksCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{completed}/{total} tasks'**
+  String tasksCount(int completed, int total);
+
+  /// No description provided for @notStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Not started'**
+  String get notStarted;
+
+  /// No description provided for @deleteProjectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Project'**
+  String get deleteProjectTitle;
+
+  /// No description provided for @deleteProjectConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{name}\"?\nThis cannot be undone.'**
+  String deleteProjectConfirm(String name);
+
+  /// No description provided for @projectDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Project \"{name}\" deleted'**
+  String projectDeleted(String name);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @inviteCollaborator.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Collaborator'**
+  String get inviteCollaborator;
+
+  /// No description provided for @inviteLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite link copied to clipboard!'**
+  String get inviteLinkCopied;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @filterMyTasks.
+  ///
+  /// In en, this message translates to:
+  /// **'My Tasks'**
+  String get filterMyTasks;
+
+  /// No description provided for @filterPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get filterPending;
+
+  /// No description provided for @filterDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get filterDone;
+
+  /// No description provided for @noTasksFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No tasks found'**
+  String get noTasksFound;
+
+  /// No description provided for @addNewTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Task'**
+  String get addNewTask;
+
+  /// No description provided for @whatNeedsToBeDone.
+  ///
+  /// In en, this message translates to:
+  /// **'What needs to be done?'**
+  String get whatNeedsToBeDone;
+
+  /// No description provided for @taskTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter task title'**
+  String get taskTitleRequired;
+
+  /// No description provided for @assignTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to'**
+  String get assignTo;
+
+  /// No description provided for @assignedMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned Member'**
+  String get assignedMember;
+
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
+
+  /// No description provided for @setAlertTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Alert Time'**
+  String get setAlertTime;
+
+  /// No description provided for @alertLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert: {date} · {time}'**
+  String alertLabel(String date, String time);
+
+  /// No description provided for @addTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Task'**
+  String get addTask;
+
+  /// No description provided for @taskDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Task \"{title}\" deleted'**
+  String taskDeleted(String title);
+
+  /// No description provided for @editTask.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Task'**
+  String get editTask;
+
+  /// No description provided for @enterNewTaskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new task title'**
+  String get enterNewTaskTitle;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @taskUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Task updated successfully'**
+  String get taskUpdatedSuccess;
+
+  /// No description provided for @profileImageUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile image updated successfully!'**
+  String get profileImageUpdatedSuccess;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 minute ago} other{{count} minutes ago}}'**
+  String minutesAgo(int count);
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 hour ago} other{{count} hours ago}}'**
+  String hoursAgo(int count);
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{1 day ago} other{{count} days ago}}'**
+  String daysAgo(int count);
 }
 
 class _AppLocalizationsDelegate

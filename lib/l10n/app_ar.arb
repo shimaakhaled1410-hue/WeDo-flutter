@@ -3,26 +3,26 @@
   "appTitle": "WeDo",
 
   "welcomeBack": "أهلاً بعودتك!",
-  "loginSubtitle": "سجّل الدخول عشان تكمل مهامك",
+  "loginSubtitle": "سجّل الدخول لمتابعة مهامك",
   "createAccount": "إنشاء حساب",
-  "registerSubtitle": "انضم لـ WeDo عشان تتعاون في المهام",
+  "registerSubtitle": "انضم إلى WeDo للتعاون في المهام",
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
-  "fullName": "الاسم بالكامل",
+  "fullName": "الاسم الكامل",
   "login": "تسجيل الدخول",
   "signUp": "إنشاء حساب",
-  "dontHaveAccount": "معندكش حساب؟ ",
-  "alreadyHaveAccount": "عندك حساب بالفعل؟ ",
+  "dontHaveAccount": "ليس لديك حساب؟ ",
+  "alreadyHaveAccount": "لديك حساب بالفعل؟ ",
 
   "myLists": "قوائمي",
-  "activeProjectsCount": "عندك {count} مشروع نشط",
+  "activeProjectsCount": "لديك {count} مشروع نشط",
   "@activeProjectsCount": {
     "placeholders": {
       "count": { "type": "int" }
     }
   },
-  "noProjectsYet": "لسه معملتش أي مشروع",
-  "tapAddToCreate": "دوسي على \"إضافة\" تحت عشان تعملي أول مشروع.",
+  "noProjectsYet": "لا توجد مشاريع بعد",
+  "tapAddToCreate": "اضغط على \"إضافة\" أدناه لإنشاء أول مشروع لك.",
 
   "notifications": "الإشعارات",
   "unreadNotifications": "{count} إشعار غير مقروء",
@@ -31,26 +31,125 @@
       "count": { "type": "int" }
     }
   },
-  "allCaughtUp": "مفيش حاجة جديدة",
-  "noNotificationsYet": "لسه مفيش إشعارات",
-  "notificationsEmptyHint": "لما يجيلك حاجة جديدة، هتلاقيها هنا.",
-  "somethingWentWrong": "حصلت مشكلة",
-  "tryAgain": "حاول تاني",
+  "allCaughtUp": "لا توجد إشعارات جديدة",
+  "noNotificationsYet": "لا توجد إشعارات بعد",
+  "notificationsEmptyHint": "عند وصول أي جديد، ستجده هنا.",
+  "somethingWentWrong": "حدث خطأ ما",
+  "tryAgain": "حاول مرة أخرى",
 
-  "myProfile": "بروفايلي",
+  "myProfile": "الملف الشخصي",
   "projects": "المشاريع",
-  "doneTasks": "المهام المخلصة",
+  "doneTasks": "المهام المنجزة",
   "settings": "الإعدادات",
   "language": "اللغة",
-  "themeMode": "وضع الثيم",
+  "themeMode": "وضع المظهر",
   "signOut": "تسجيل الخروج",
-  "signOutConfirm": "متأكدة إنك عايزة تسجلي خروج\nمن حسابك؟",
+  "signOutConfirm": "هل أنت متأكد من رغبتك في تسجيل الخروج\nمن حسابك؟",
   "cancel": "إلغاء",
 
   "themeModeLight": "فاتح",
-  "themeModeDark": "غامق",
+  "themeModeDark": "داكن",
   "themeModeSystem": "حسب النظام",
 
   "languageEnglish": "الإنجليزية",
-  "languageArabic": "العربية"
+  "languageArabic": "العربية",
+
+  "emailHint": "you@example.com",
+  "passwordHint": "••••••••",
+  "emailRequired": "الرجاء إدخال البريد الإلكتروني",
+  "passwordRequired": "الرجاء إدخال كلمة المرور",
+
+  "chooseLanguage": "اختر اللغة",
+  "passwordMinLength": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل",
+  "accountCreatedSuccess": "تم إنشاء الحساب بنجاح!",
+  "nameRequired": "الرجاء إدخال الاسم",
+
+  "createProject": "إنشاء مشروع جديد",
+  "editProject": "تعديل المشروع",
+  "projectNameLabel": "اسم المشروع",
+  "projectNameHint": "اسم المشروع (مثال: مشتريات)",
+  "projectNameRequired": "الرجاء إدخال اسم المشروع",
+  "chooseIcon": "اختر أيقونة",
+  "createProjectSubtitle": "أعطِ مشروعك اسمًا واختر أيقونة مناسبة.",
+  "editProjectSubtitle": "قم بتحديث اسم المشروع أو أيقونته.",
+  "createProjectButton": "إنشاء المشروع",
+  "saveChanges": "حفظ التغييرات",
+  "projectCreatedSuccess": "تم إنشاء المشروع بنجاح!",
+  "projectUpdatedSuccess": "تم تحديث المشروع بنجاح",
+  "tasksCount": "{completed}/{total} مهمة",
+  "@tasksCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "notStarted": "لم يبدأ بعد",
+  "deleteProjectTitle": "حذف المشروع",
+  "deleteProjectConfirm": "هل أنت متأكد من رغبتك في حذف \"{name}\"؟\nلا يمكن التراجع عن هذا الإجراء.",
+  "@deleteProjectConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "projectDeleted": "تم حذف \"{name}\"",
+  "@projectDeleted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "delete": "حذف",
+  "edit": "تعديل",
+
+  "inviteCollaborator": "دعوة عضو",
+  "inviteLinkCopied": "تم نسخ رابط الدعوة!",
+  "filterAll": "الكل",
+  "filterMyTasks": "مهامي",
+  "filterPending": "قيد الانتظار",
+  "filterDone": "منجزة",
+  "noTasksFound": "لا توجد مهام",
+
+  "addNewTask": "إضافة مهمة جديدة",
+  "whatNeedsToBeDone": "ما الذي يجب إنجازه؟",
+  "taskTitleRequired": "الرجاء إدخال عنوان المهمة",
+  "assignTo": "إسناد إلى",
+  "assignedMember": "العضو المسند إليه",
+  "member": "عضو",
+  "setAlertTime": "تحديد وقت التنبيه",
+  "alertLabel": "تنبيه: {date} · {time}",
+  "@alertLabel": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "addTask": "إضافة المهمة",
+  "taskDeleted": "تم حذف \"{title}\"",
+  "@taskDeleted": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+
+  "editTask": "تعديل المهمة",
+  "enterNewTaskTitle": "أدخل عنوان المهمة الجديد",
+  "save": "حفظ",
+  "taskUpdatedSuccess": "تم تحديث المهمة بنجاح",
+
+  "profileImageUpdatedSuccess": "تم تحديث الصورة الشخصية بنجاح!",
+
+  "justNow": "الآن",
+  "minutesAgo": "{count, plural, one{منذ دقيقة} two{منذ دقيقتين} few{منذ {count} دقائق} other{منذ {count} دقيقة}}",
+  "@minutesAgo": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "hoursAgo": "{count, plural, one{منذ ساعة} two{منذ ساعتين} few{منذ {count} ساعات} other{منذ {count} ساعة}}",
+  "@hoursAgo": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "yesterday": "أمس",
+  "daysAgo": "{count, plural, one{منذ يوم} two{منذ يومين} few{منذ {count} أيام} other{منذ {count} يومًا}}",
+  "@daysAgo": {
+    "placeholders": { "count": { "type": "int" } }
+  }
+
 }

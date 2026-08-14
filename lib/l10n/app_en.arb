@@ -52,5 +52,106 @@
   "themeModeSystem": "System",
 
   "languageEnglish": "English",
-  "languageArabic": "Arabic"
+  "languageArabic": "Arabic",
+
+  "emailHint": "you@example.com",
+  "passwordHint": "••••••••",
+  "emailRequired": "Please enter your email",
+  "passwordRequired": "Please enter your password",
+
+  
+  "chooseLanguage": "Choose Language",
+  "passwordMinLength": "Password must be at least 6 characters",
+  "accountCreatedSuccess": "Account Created Successfully!",
+  "nameRequired": "Please enter your name",
+
+  "createProject": "Create New Project",
+  "editProject": "Edit Project",
+  "projectNameLabel": "Project Name",
+  "projectNameHint": "Project Name (e.g. Groceries)",
+  "projectNameRequired": "Please enter a project name",
+  "chooseIcon": "Choose Icon",
+  "createProjectSubtitle": "Give your project a name and pick an icon.",
+  "editProjectSubtitle": "Update the name or icon of your project.",
+  "createProjectButton": "Create Project",
+  "saveChanges": "Save Changes",
+  "projectCreatedSuccess": "Project created successfully!",
+  "projectUpdatedSuccess": "Project updated successfully",
+  "tasksCount": "{completed}/{total} tasks",
+  "@tasksCount": {
+    "placeholders": {
+      "completed": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "notStarted": "Not started",
+  "deleteProjectTitle": "Delete Project",
+  "deleteProjectConfirm": "Are you sure you want to delete \"{name}\"?\nThis cannot be undone.",
+  "@deleteProjectConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "projectDeleted": "Project \"{name}\" deleted",
+  "@projectDeleted": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "delete": "Delete",
+  "edit": "Edit",
+
+  "inviteCollaborator": "Invite Collaborator",
+  "inviteLinkCopied": "Invite link copied to clipboard!",
+  "filterAll": "All",
+  "filterMyTasks": "My Tasks",
+  "filterPending": "Pending",
+  "filterDone": "Done",
+  "noTasksFound": "No tasks found",
+
+  "addNewTask": "Add New Task",
+  "whatNeedsToBeDone": "What needs to be done?",
+  "taskTitleRequired": "Please enter task title",
+  "assignTo": "Assign to",
+  "assignedMember": "Assigned Member",
+  "member": "Member",
+  "setAlertTime": "Set Alert Time",
+  "alertLabel": "Alert: {date} · {time}",
+  "@alertLabel": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "addTask": "Add Task",
+  "taskDeleted": "Task \"{title}\" deleted",
+  "@taskDeleted": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+
+  "editTask": "Edit Task",
+  "enterNewTaskTitle": "Enter new task title",
+  "save": "Save",
+  "taskUpdatedSuccess": "Task updated successfully",
+
+  "profileImageUpdatedSuccess": "Profile image updated successfully!",
+
+  "justNow": "Just now",
+  "minutesAgo": "{count, plural, one{1 minute ago} other{{count} minutes ago}}",
+  "@minutesAgo": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "hoursAgo": "{count, plural, one{1 hour ago} other{{count} hours ago}}",
+  "@hoursAgo": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "yesterday": "Yesterday",
+  "daysAgo": "{count, plural, one{1 day ago} other{{count} days ago}}",
+  "@daysAgo": {
+    "placeholders": { "count": { "type": "int" } }
+  }
+
+
 }

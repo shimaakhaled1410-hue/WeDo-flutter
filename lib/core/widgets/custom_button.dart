@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-
+import '../theme/app_color_scheme.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -20,15 +19,17 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return SizedBox(
       width: double.infinity,
       height: 54,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: _isDisabled ? null : AppColors.primaryGradient,
-          color: _isDisabled ? AppColors.surfaceMuted : null,
+          gradient: _isDisabled ? null : colors.primaryGradient,
+          color: _isDisabled ? colors.surfaceMuted : null,
           borderRadius: BorderRadius.circular(14),
-          boxShadow: _isDisabled ? null : AppColors.softShadow,
+          boxShadow: _isDisabled ? null : colors.softShadow,
         ),
         child: ElevatedButton(
           onPressed: _isDisabled ? null : onPressed,
@@ -45,7 +46,7 @@ class CustomButton extends StatelessWidget {
                   width: 22,
                   height: 22,
                   child: CircularProgressIndicator(
-                    color: AppColors.white,
+                    color: Colors.white,
                     strokeWidth: 2.4,
                   ),
                 )
@@ -53,7 +54,7 @@ class CustomButton extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) ...[
-                      Icon(icon, color: AppColors.white, size: 19),
+                      Icon(icon, color: Colors.white, size: 19),
                       const SizedBox(width: 8),
                     ],
                     Text(
@@ -61,7 +62,7 @@ class CustomButton extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.white,
+                        color: Colors.white,
                       ),
                     ),
                   ],

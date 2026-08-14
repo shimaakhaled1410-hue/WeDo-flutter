@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wedo_flutter/core/router/app_routes.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/presentation/home/add_project_sheet/add_project_bottom_sheet.dart';
-import 'package:wedo_flutter/presentation/home/add_project_sheet/edit_project_bottom_sheet.dart';
-import 'package:wedo_flutter/presentation/home/widgets/delete_project_dialog.dart';
-import 'package:wedo_flutter/presentation/home/widgets/home_greeting_section.dart';
-import 'package:wedo_flutter/presentation/home/widgets/home_top_bar.dart';
-import 'package:wedo_flutter/presentation/home/widgets/project_card/project_card.dart';
 import 'package:wedo_flutter/core/widgets/project_icon_helper.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_state.dart';
+import '../../core/extensions/localization_x.dart';
+import '../../core/router/app_routes.dart';
+import '../../core/theme/app_color_scheme.dart';
+import 'add_project_sheet/add_project_bottom_sheet.dart';
+import 'add_project_sheet/edit_project_bottom_sheet.dart';
+import 'widgets/delete_project_dialog.dart';
+import 'widgets/home_greeting_section.dart';
+import 'widgets/home_top_bar.dart';
+import 'widgets/project_card/project_card.dart';
+import '../manager/project/project_cubit.dart';
+import '../manager/project/project_state.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -44,16 +45,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const HomeTopBar(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
-              child: const HomeGreetingSection(),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(24, 20, 24, 20),
+              child: HomeGreetingSection(),
             ),
             Expanded(
               child: BlocBuilder<ProjectCubit, ProjectState>(
@@ -62,19 +66,16 @@ class HomeScreen extends StatelessWidget {
 
                   if (state is GetProjectsLoading &&
                       cubit.projectsList.isEmpty) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.primary,
-                      ),
+                    return Center(
+                      child: CircularProgressIndicator(color: colors.primary),
                     );
                   }
 
-                  if (state is GetProjectsError &&
-                      cubit.projectsList.isEmpty) {
+                  if (state is GetProjectsError && cubit.projectsList.isEmpty) {
                     return Center(
                       child: Text(
                         state.message,
-                        style: const TextStyle(color: AppColors.error),
+                        style: TextStyle(color: colors.error),
                       ),
                     );
                   }
@@ -89,31 +90,31 @@ class HomeScreen extends StatelessWidget {
                             Container(
                               width: 84,
                               height: 84,
-                              decoration: const BoxDecoration(
-                                gradient: AppColors.primaryGradient,
+                              decoration: BoxDecoration(
+                                gradient: colors.primaryGradient,
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(
                                 Icons.folder_open_rounded,
-                                color: AppColors.white,
+                                color: Colors.white,
                                 size: 34,
                               ),
                             ),
                             const SizedBox(height: 18),
-                            const Text(
-                              'No projects yet',
+                            Text(
+                              l10n.noProjectsYet,
                               style: TextStyle(
-                                color: AppColors.textDark,
+                                color: colors.textDark,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             const SizedBox(height: 6),
-                            const Text(
-                              'Tap "add" below to create your first project.',
+                            Text(
+                              l10n.tapAddToCreate,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: AppColors.textLight,
+                                color: colors.textLight,
                                 fontSize: 13,
                               ),
                             ),
@@ -160,9 +161,9 @@ class HomeScreen extends StatelessWidget {
         builder: (buttonContext) {
           return DecoratedBox(
             decoration: BoxDecoration(
-              gradient: AppColors.accentGradient,
+              gradient: colors.accentGradient,
               shape: BoxShape.circle,
-              boxShadow: AppColors.accentShadow,
+              boxShadow: colors.accentShadow,
             ),
             child: FloatingActionButton(
               onPressed: () => _openAddProjectSheet(buttonContext),
@@ -171,7 +172,7 @@ class HomeScreen extends StatelessWidget {
               shape: const CircleBorder(),
               child: const Icon(
                 Icons.add_rounded,
-                color: AppColors.white,
+                color: Colors.white,
                 size: 26,
               ),
             ),

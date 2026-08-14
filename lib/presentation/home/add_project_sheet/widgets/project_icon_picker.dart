@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
 class ProjectIconPicker extends StatelessWidget {
   const ProjectIconPicker({
@@ -17,6 +17,8 @@ class ProjectIconPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return SizedBox(
       height: 54,
       child: ListView.builder(
@@ -34,19 +36,17 @@ class ProjectIconPicker extends StatelessWidget {
               width: 54,
               height: 54,
               decoration: BoxDecoration(
-                gradient: isSelected ? AppColors.primaryGradient : null,
-                color: isSelected ? null : AppColors.surfaceMuted,
+                gradient: isSelected ? colors.primaryGradient : null,
+                color: isSelected ? null : colors.surfaceMuted,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: isSelected
-                      ? Colors.transparent
-                      : AppColors.border,
+                  color: isSelected ? Colors.transparent : colors.border,
                 ),
-                boxShadow: isSelected ? AppColors.softShadow : null,
+                boxShadow: isSelected ? colors.softShadow : null,
               ),
               child: Icon(
                 icons[index],
-                color: isSelected ? AppColors.white : AppColors.textLight,
+                color: isSelected ? Colors.white : colors.textLight,
                 size: 22,
               ),
             ),

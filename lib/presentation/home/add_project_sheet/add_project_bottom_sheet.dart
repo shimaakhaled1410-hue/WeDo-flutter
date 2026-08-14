@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_state.dart';
+import 'package:wedo_flutter/core/widgets/project_icon_helper.dart';
+import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
+import '../../../core/widgets/custom_snackbar.dart';
+import '../../manager/project/project_cubit.dart';
+import '../../manager/project/project_state.dart';
 import 'widgets/create_project_button.dart';
 import 'widgets/project_icon_picker.dart';
 import 'widgets/project_name_field.dart';
@@ -20,16 +22,6 @@ class AddProjectBottomSheet extends StatefulWidget {
 class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-
-  final List<IconData> _availableIcons = const [
-    Icons.folder_outlined,
-    Icons.shopping_cart_outlined,
-    Icons.code_rounded,
-    Icons.flight_takeoff_rounded,
-    Icons.work_outline_rounded,
-    Icons.favorite_border_rounded,
-  ];
-
   int _selectedIconIndex = 0;
 
   @override
@@ -38,24 +30,18 @@ class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
     super.dispose();
   }
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      context.read<ProjectCubit>().createProject(
-            name: _nameController.text.trim(),
-            iconCodePoint: _availableIcons[_selectedIconIndex].codePoint,
-          );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return BlocConsumer<ProjectCubit, ProjectState>(
       listener: (context, state) {
         if (state is AddProjectSuccess) {
           context.pop();
           CustomSnackBar.show(
             context: context,
-            message: 'Project created successfully!',
+            message: l10n.projectCreatedSuccess,
             isError: false,
           );
         } else if (state is AddProjectError) {
@@ -67,7 +53,7 @@ class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
         }
       },
       builder: (context, state) {
-        final bool isLoading = state is AddProjectLoading;
+        final isLoading = state is AddProjectLoading;
 
         return Padding(
           padding: EdgeInsets.only(
@@ -75,9 +61,11 @@ class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
           ),
           child: Container(
             padding: const EdgeInsets.fromLTRB(24, 14, 24, 24),
-            decoration: const BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            decoration: BoxDecoration(
+              color: colors.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
             ),
             child: Form(
               key: _formKey,
@@ -86,21 +74,18 @@ class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SheetDragHandle(),
-                  const Text(
-                    'Create New Project',
+                  Text(
+                    l10n.createProject,
                     style: TextStyle(
-                      color: AppColors.textDark,
+                      color: colors.textDark,
                       fontSize: 21,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Give your project a name and pick an icon.',
-                    style: TextStyle(
-                      color: AppColors.textLight,
-                      fontSize: 13,
-                    ),
+                  Text(
+                    l10n.createProjectSubtitle,
+                    style: TextStyle(color: colors.textLight, fontSize: 13),
                   ),
                   const SizedBox(height: 24),
                   ProjectNameField(
@@ -108,27 +93,36 @@ class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
                     enabled: !isLoading,
                   ),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Choose Icon',
+                  Text(
+                    l10n.chooseIcon,
                     style: TextStyle(
-                      color: AppColors.textDark,
+                      color: colors.textDark,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 12),
                   ProjectIconPicker(
-                    icons: _availableIcons,
+                    icons: availableProjectIcons,
                     selectedIndex: _selectedIconIndex,
                     enabled: !isLoading,
-                    onSelected: (index) {
-                      setState(() => _selectedIconIndex = index);
-                    },
+                    onSelected: (index) =>
+                        setState(() => _selectedIconIndex = index),
                   ),
                   const SizedBox(height: 32),
                   CreateProjectButton(
                     isLoading: isLoading,
-                    onPressed: _submit,
+                    label: l10n.createProjectButton,
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context.read<ProjectCubit>().createProject(
+                          name: _nameController.text.trim(),
+                          iconCodePoint:
+                              availableProjectIcons[_selectedIconIndex]
+                                  .codePoint,
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: 8),
                 ],

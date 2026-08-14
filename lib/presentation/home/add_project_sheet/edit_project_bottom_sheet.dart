@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
-import 'package:wedo_flutter/core/widgets/custom_snackbar.dart';
-import 'package:wedo_flutter/domain/entities/project_entity.dart';
 import 'package:wedo_flutter/core/widgets/project_icon_helper.dart';
-import 'package:wedo_flutter/presentation/manager/project/project_cubit.dart';
+import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
+import '../../../core/widgets/custom_snackbar.dart';
+import '../../../domain/entities/project_entity.dart';
+import '../../manager/project/project_cubit.dart';
 import 'widgets/create_project_button.dart';
 import 'widgets/project_icon_picker.dart';
 import 'widgets/project_name_field.dart';
@@ -17,8 +18,7 @@ class EditProjectBottomSheet extends StatefulWidget {
   final ProjectEntity project;
 
   @override
-  State<EditProjectBottomSheet> createState() =>
-      _EditProjectBottomSheetState();
+  State<EditProjectBottomSheet> createState() => _EditProjectBottomSheetState();
 }
 
 class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
@@ -45,7 +45,6 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isSaving = true);
 
     final updatedProject = widget.project.copyWith(
@@ -54,25 +53,23 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
     );
 
     context.read<ProjectCubit>().updateProject(updatedProject);
+    final l10n = context.l10n;
     context.pop();
-    CustomSnackBar.show(
-      context: context,
-      message: 'Project updated successfully',
-      isError: false,
-    );
+    CustomSnackBar.show(context: context, message: l10n.projectUpdatedSuccess, isError: false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.fromLTRB(24, 14, 24, 24),
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: Form(
           key: _formKey,
@@ -81,47 +78,28 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SheetDragHandle(),
-              const Text(
-                'Edit Project',
-                style: TextStyle(
-                  color: AppColors.textDark,
-                  fontSize: 21,
-                  fontWeight: FontWeight.w800,
-                ),
+              Text(
+                l10n.editProject,
+                style: TextStyle(color: colors.textDark, fontSize: 21, fontWeight: FontWeight.w800),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Update the name or icon of your project.',
-                style: TextStyle(color: AppColors.textLight, fontSize: 13),
-              ),
+              Text(l10n.editProjectSubtitle, style: TextStyle(color: colors.textLight, fontSize: 13)),
               const SizedBox(height: 24),
-              ProjectNameField(
-                controller: _nameController,
-                enabled: !_isSaving,
-              ),
+              ProjectNameField(controller: _nameController, enabled: !_isSaving),
               const SizedBox(height: 24),
-              const Text(
-                'Choose Icon',
-                style: TextStyle(
-                  color: AppColors.textDark,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
+              Text(
+                l10n.chooseIcon,
+                style: TextStyle(color: colors.textDark, fontSize: 15, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 12),
               ProjectIconPicker(
                 icons: availableProjectIcons,
                 selectedIndex: _selectedIconIndex,
                 enabled: !_isSaving,
-                onSelected: (index) {
-                  setState(() => _selectedIconIndex = index);
-                },
+                onSelected: (index) => setState(() => _selectedIconIndex = index),
               ),
               const SizedBox(height: 32),
-              CreateProjectButton(
-                isLoading: _isSaving,
-                onPressed: _submit,
-              ),
+              CreateProjectButton(isLoading: _isSaving, label: l10n.saveChanges, onPressed: _submit),
               const SizedBox(height: 8),
             ],
           ),

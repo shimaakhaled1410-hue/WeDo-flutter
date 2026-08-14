@@ -1,10 +1,12 @@
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { onDocumentWritten, onDocumentUpdated } = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
+const { t } = require("./notifications_i18n");
 
 if (!admin.apps.length) {
   admin.initializeApp();
 }
+
 exports.sendTaskAlerts = onSchedule("every 1 minutes", async (event) => {
   const now = new Date();
   try {
@@ -23,13 +25,23 @@ exports.sendTaskAlerts = onSchedule("every 1 minutes", async (event) => {
         const userDoc = await admin.firestore().collection("users").doc(assignedUserId).get();
         if (!userDoc.exists) continue;
 
-        const fcmToken = userDoc.data()?.fcmToken;
-        const title = "⏰ Task Alert!";
-        const body = `Don't forget: ${task.title}`;
+        const userData = userDoc.data();
+        const fcmToken = userData?.fcmToken;
+        const pushLocale = userData?.locale || "en";
+
+        const msgEn = t("en");
+        const msgAr = t("ar");
+
+        const titleEn = msgEn.taskAlertTitle;
+        const titleAr = msgAr.taskAlertTitle;
+        const bodyEn = msgEn.taskAlertBody(task.title);
+        const bodyAr = msgAr.taskAlertBody(task.title);
 
         await admin.firestore().collection("users").doc(assignedUserId).collection("notifications").add({
-          title,
-          body,
+          titleEn,
+          titleAr,
+          bodyEn,
+          bodyAr,
           taskId: doc.id,
           projectId: task.projectId || "",
           projectName: task.projectName || "Project",
@@ -38,8 +50,12 @@ exports.sendTaskAlerts = onSchedule("every 1 minutes", async (event) => {
         });
 
         if (fcmToken) {
+          const pushMsg = t(pushLocale);
           await admin.messaging().send({
-            notification: { title, body },
+            notification: {
+              title: pushMsg.taskAlertTitle,
+              body: pushMsg.taskAlertBody(task.title),
+            },
             data: {
               taskId: doc.id,
               projectId: task.projectId || "",
@@ -56,6 +72,7 @@ exports.sendTaskAlerts = onSchedule("every 1 minutes", async (event) => {
     console.error("Error in sendTaskAlerts:", error);
   }
 });
+
 exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
   if (!event.data || !event.data.after.exists) return;
 
@@ -79,12 +96,21 @@ exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
     return;
   }
 
-  let assignerName = "Someone";
+  const msgEn = t("en");
+  const msgAr = t("ar");
+
+  let assignerName = msgEn.defaultAssignerName; // same value used for both locales unless overwritten
+  let assignerNameAr = msgAr.defaultAssignerName;
+
   if (creatorId) {
     try {
       const creatorDoc = await admin.firestore().collection("users").doc(creatorId).get();
       if (creatorDoc.exists) {
-        assignerName = creatorDoc.data()?.name || "Someone";
+        const creatorName = creatorDoc.data()?.name;
+        if (creatorName) {
+          assignerName = creatorName;
+          assignerNameAr = creatorName;
+        }
       }
     } catch (e) {
       console.error("Error fetching creator name:", e);
@@ -95,13 +121,20 @@ exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
     const userDoc = await admin.firestore().collection("users").doc(assignedUserId).get();
     if (!userDoc.exists) return;
 
-    const fcmToken = userDoc.data()?.fcmToken;
-    const title = "📌 New Task Assigned!";
-    const body = `${assignerName} assigned you a new task: "${newTask.title}"`;
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcmToken;
+    const pushLocale = userData?.locale || "en";
+
+    const titleEn = msgEn.taskAssignedTitle;
+    const titleAr = msgAr.taskAssignedTitle;
+    const bodyEn = msgEn.taskAssignedBody(assignerName, newTask.title);
+    const bodyAr = msgAr.taskAssignedBody(assignerNameAr, newTask.title);
 
     await admin.firestore().collection("users").doc(assignedUserId).collection("notifications").add({
-      title,
-      body,
+      titleEn,
+      titleAr,
+      bodyEn,
+      bodyAr,
       taskId: event.params.taskId,
       projectId: newTask.projectId || "",
       projectName: newTask.projectName || "Project",
@@ -110,8 +143,13 @@ exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
     });
 
     if (fcmToken) {
+      const pushMsg = t(pushLocale);
+      const pushAssignerName = pushLocale === "ar" ? assignerNameAr : assignerName;
       await admin.messaging().send({
-        notification: { title, body },
+        notification: {
+          title: pushMsg.taskAssignedTitle,
+          body: pushMsg.taskAssignedBody(pushAssignerName, newTask.title),
+        },
         data: {
           projectId: newTask.projectId || "",
           taskId: event.params.taskId,
@@ -152,24 +190,42 @@ exports.onProjectMemberJoined = onDocumentUpdated("projects/{projectId}", async 
       const joinedUserDoc = await admin.firestore().collection("users").doc(joinedUserId).get();
       const ownerDoc = await admin.firestore().collection("users").doc(ownerId).get();
 
-      const joinedUserName = joinedUserDoc.data()?.name || "A new member";
-      const ownerFcmToken = ownerDoc.data()?.fcmToken;
+      const msgEn = t("en");
+      const msgAr = t("ar");
+
+      const joinedUserNameRaw = joinedUserDoc.data()?.name;
+      const joinedUserName = joinedUserNameRaw || msgEn.defaultJoinedUserName;
+      const joinedUserNameAr = joinedUserNameRaw || msgAr.defaultJoinedUserName;
+
+      const ownerData = ownerDoc.data();
+      const ownerFcmToken = ownerData?.fcmToken;
+      const pushLocale = ownerData?.locale || "en";
 
       const projectName = newData.name || newData.title || "Project";
-      const title = "🎉 New Member Joined!";
-      const body = `${joinedUserName} joined your project "${projectName}"`;
+
+      const titleEn = msgEn.memberJoinedTitle;
+      const titleAr = msgAr.memberJoinedTitle;
+      const bodyEn = msgEn.memberJoinedBody(joinedUserName, projectName);
+      const bodyAr = msgAr.memberJoinedBody(joinedUserNameAr, projectName);
 
       await admin.firestore().collection("users").doc(ownerId).collection("notifications").add({
-        title,
-        body,
+        titleEn,
+        titleAr,
+        bodyEn,
+        bodyAr,
         projectId: event.params.projectId,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         isRead: false,
       });
 
       if (ownerFcmToken) {
+        const pushMsg = t(pushLocale);
+        const pushJoinedUserName = pushLocale === "ar" ? joinedUserNameAr : joinedUserName;
         await admin.messaging().send({
-          notification: { title, body },
+          notification: {
+            title: pushMsg.memberJoinedTitle,
+            body: pushMsg.memberJoinedBody(pushJoinedUserName, projectName),
+          },
           data: {
             projectId: event.params.projectId,
             click_action: "FLUTTER_NOTIFICATION_CLICK",
@@ -183,4 +239,3 @@ exports.onProjectMemberJoined = onDocumentUpdated("projects/{projectId}", async 
     }
   }
 });
-

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
+import '../../../core/extensions/localization_x.dart';
 
 class NotificationEmptyView extends StatelessWidget {
   const NotificationEmptyView({super.key, required this.onRefresh});
@@ -9,6 +10,7 @@ class NotificationEmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
 
     return RefreshIndicator(
       color: colors.primary,
@@ -40,7 +42,7 @@ class NotificationEmptyView extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'No notifications yet',
+                        l10n.noNotificationsYet,
                         style: TextStyle(
                           color: colors.textDark,
                           fontSize: 17,
@@ -49,7 +51,7 @@ class NotificationEmptyView extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'When something new comes in,\nyou\'ll see it here.',
+                        l10n.notificationsEmptyHint,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: colors.textLight,

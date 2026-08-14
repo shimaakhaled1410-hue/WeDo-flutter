@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class ProfileStatCard extends StatelessWidget {
   const ProfileStatCard({
@@ -19,12 +19,14 @@ class ProfileStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: colors.surface,
         borderRadius: BorderRadius.circular(18),
-        boxShadow: AppColors.cardShadow,
+        boxShadow: colors.cardShadow,
       ),
       child: Row(
         children: [
@@ -43,17 +45,17 @@ class ProfileStatCard extends StatelessWidget {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.textDark,
+                    color: colors.textDark,
                   ),
                 ),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 11.5,
-                    color: AppColors.textLight,
+                    color: colors.textLight,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

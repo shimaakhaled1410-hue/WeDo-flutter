@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/extensions/localization_x.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
 class ProjectCardHeader extends StatelessWidget {
   const ProjectCardHeader({
@@ -15,17 +16,25 @@ class ProjectCardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
+            gradient: colors.primaryGradient,
             borderRadius: BorderRadius.circular(14),
-            boxShadow: AppColors.softShadow,
+            boxShadow: [
+              BoxShadow(
+                color: colors.primary.withValues(alpha: 0.28),
+                blurRadius: 12,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
-          child: Icon(icon, color: AppColors.white, size: 22),
+          child: Icon(icon, color: Colors.white, size: 22),
         ),
         _ActionsMenu(onEdit: onEdit, onDelete: onDelete),
       ],
@@ -41,22 +50,19 @@ class _ActionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
+        color: colors.surfaceMuted,
         borderRadius: BorderRadius.circular(10),
       ),
       child: PopupMenuButton<String>(
-        icon: const Icon(
-          Icons.more_horiz_rounded,
-          color: AppColors.textLight,
-          size: 20,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
+        icon: Icon(Icons.more_horiz_rounded, color: colors.textLight, size: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         elevation: 4,
-        color: AppColors.surface,
+        color: colors.surface,
         onSelected: (value) {
           if (value == 'edit') {
             onEdit?.call();
@@ -69,14 +75,11 @@ class _ActionsMenu extends StatelessWidget {
             value: 'edit',
             child: Row(
               children: [
-                Icon(Icons.edit_outlined, size: 18, color: AppColors.primary),
+                Icon(Icons.edit_outlined, size: 18, color: colors.primary),
                 const SizedBox(width: 10),
-                const Text(
-                  'Edit',
-                  style: TextStyle(
-                    color: AppColors.textDark,
-                    fontWeight: FontWeight.w500,
-                  ),
+                Text(
+                  l10n.edit,
+                  style: TextStyle(color: colors.textDark, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -85,14 +88,11 @@ class _ActionsMenu extends StatelessWidget {
             value: 'delete',
             child: Row(
               children: [
-                Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.error),
+                Icon(Icons.delete_outline_rounded, size: 18, color: colors.error),
                 const SizedBox(width: 10),
-                const Text(
-                  'Delete',
-                  style: TextStyle(
-                    color: AppColors.error,
-                    fontWeight: FontWeight.w500,
-                  ),
+                Text(
+                  l10n.delete,
+                  style: TextStyle(color: colors.error, fontWeight: FontWeight.w500),
                 ),
               ],
             ),

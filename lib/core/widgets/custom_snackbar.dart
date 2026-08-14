@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_color_scheme.dart';
 
 class CustomSnackBar {
   static void show({
@@ -7,8 +7,9 @@ class CustomSnackBar {
     required String message,
     bool isError = false,
   }) {
-    final Color accentColor = isError ? AppColors.error : AppColors.success;
-    final Color accentBg = isError ? AppColors.errorLight : AppColors.successLight;
+    final colors = context.colors;
+    final Color accentColor = isError ? colors.error : colors.success;
+    final Color accentBg = isError ? colors.errorLight : colors.successLight;
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -22,10 +23,10 @@ class CustomSnackBar {
         content: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: colors.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: accentColor.withValues(alpha: 0.2)),
-            boxShadow: AppColors.softShadow,
+            boxShadow: colors.softShadow,
           ),
           child: Row(
             children: [
@@ -49,19 +50,19 @@ class CustomSnackBar {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      isError ? 'Oops!' : 'Success!',
-                      style: TextStyle(
-                        color: accentColor,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
+                    // Text(
+                    //   isError ? 'Oops!' : 'Success!',
+                    //   style: TextStyle(
+                    //     color: accentColor,
+                    //     fontSize: 14,
+                    //     fontWeight: FontWeight.w700,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 4),
                     Text(
                       message,
-                      style: const TextStyle(
-                        color: AppColors.textDark,
+                      style: TextStyle(
+                        color: colors.textDark,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),

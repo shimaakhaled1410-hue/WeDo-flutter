@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
 class CreateProjectButton extends StatelessWidget {
   const CreateProjectButton({
     super.key,
     required this.isLoading,
     required this.onPressed,
+    required this.label,
   });
 
   final bool isLoading;
   final VoidCallback? onPressed;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return SizedBox(
       width: double.infinity,
       height: 54,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          gradient: isLoading ? null : AppColors.primaryGradient,
-          color: isLoading ? AppColors.textMuted : null,
+          gradient: isLoading ? null : colors.primaryGradient,
+          color: isLoading ? colors.textMuted : null,
           borderRadius: BorderRadius.circular(14),
-          boxShadow: isLoading ? null : AppColors.softShadow,
+          boxShadow: isLoading ? null : colors.softShadow,
         ),
         child: ElevatedButton(
           onPressed: isLoading ? null : onPressed,
@@ -38,16 +42,16 @@ class CreateProjectButton extends StatelessWidget {
                   width: 22,
                   height: 22,
                   child: CircularProgressIndicator(
-                    color: AppColors.white,
+                    color: Colors.white,
                     strokeWidth: 2.4,
                   ),
                 )
-              : const Text(
-                  'Create Project',
-                  style: TextStyle(
+              : Text(
+                  label,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.white,
+                    color: Colors.white,
                   ),
                 ),
         ),

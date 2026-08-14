@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class LogoutButton extends StatelessWidget {
   const LogoutButton({super.key, required this.onTap});
@@ -8,23 +9,26 @@ class LogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return SizedBox(
       width: double.infinity,
       height: 54,
       child: OutlinedButton.icon(
         style: OutlinedButton.styleFrom(
-          backgroundColor: AppColors.errorLight,
-          side: BorderSide(color: AppColors.error.withValues(alpha: 0.25)),
+          backgroundColor: colors.errorLight,
+          side: BorderSide(color: colors.error.withValues(alpha: 0.25)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
         ),
         onPressed: onTap,
-        icon: const Icon(Icons.logout_rounded, color: AppColors.error, size: 19),
-        label: const Text(
-          'Sign Out',
+        icon: Icon(Icons.logout_rounded, color: colors.error, size: 19),
+        label: Text(
+          l10n.signOut,
           style: TextStyle(
-            color: AppColors.error,
+            color: colors.error,
             fontSize: 15.5,
             fontWeight: FontWeight.w700,
           ),

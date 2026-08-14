@@ -137,4 +137,202 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageArabic => 'Arabic';
+
+  @override
+  String get emailHint => 'you@example.com';
+
+  @override
+  String get passwordHint => '••••••••';
+
+  @override
+  String get emailRequired => 'Please enter your email';
+
+  @override
+  String get passwordRequired => 'Please enter your password';
+
+  @override
+  String get chooseLanguage => 'Choose Language';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 6 characters';
+
+  @override
+  String get accountCreatedSuccess => 'Account Created Successfully!';
+
+  @override
+  String get nameRequired => 'Please enter your name';
+
+  @override
+  String get createProject => 'Create New Project';
+
+  @override
+  String get editProject => 'Edit Project';
+
+  @override
+  String get projectNameLabel => 'Project Name';
+
+  @override
+  String get projectNameHint => 'Project Name (e.g. Groceries)';
+
+  @override
+  String get projectNameRequired => 'Please enter a project name';
+
+  @override
+  String get chooseIcon => 'Choose Icon';
+
+  @override
+  String get createProjectSubtitle =>
+      'Give your project a name and pick an icon.';
+
+  @override
+  String get editProjectSubtitle => 'Update the name or icon of your project.';
+
+  @override
+  String get createProjectButton => 'Create Project';
+
+  @override
+  String get saveChanges => 'Save Changes';
+
+  @override
+  String get projectCreatedSuccess => 'Project created successfully!';
+
+  @override
+  String get projectUpdatedSuccess => 'Project updated successfully';
+
+  @override
+  String tasksCount(int completed, int total) {
+    return '$completed/$total tasks';
+  }
+
+  @override
+  String get notStarted => 'Not started';
+
+  @override
+  String get deleteProjectTitle => 'Delete Project';
+
+  @override
+  String deleteProjectConfirm(String name) {
+    return 'Are you sure you want to delete \"$name\"?\nThis cannot be undone.';
+  }
+
+  @override
+  String projectDeleted(String name) {
+    return 'Project \"$name\" deleted';
+  }
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get inviteCollaborator => 'Invite Collaborator';
+
+  @override
+  String get inviteLinkCopied => 'Invite link copied to clipboard!';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterMyTasks => 'My Tasks';
+
+  @override
+  String get filterPending => 'Pending';
+
+  @override
+  String get filterDone => 'Done';
+
+  @override
+  String get noTasksFound => 'No tasks found';
+
+  @override
+  String get addNewTask => 'Add New Task';
+
+  @override
+  String get whatNeedsToBeDone => 'What needs to be done?';
+
+  @override
+  String get taskTitleRequired => 'Please enter task title';
+
+  @override
+  String get assignTo => 'Assign to';
+
+  @override
+  String get assignedMember => 'Assigned Member';
+
+  @override
+  String get member => 'Member';
+
+  @override
+  String get setAlertTime => 'Set Alert Time';
+
+  @override
+  String alertLabel(String date, String time) {
+    return 'Alert: $date · $time';
+  }
+
+  @override
+  String get addTask => 'Add Task';
+
+  @override
+  String taskDeleted(String title) {
+    return 'Task \"$title\" deleted';
+  }
+
+  @override
+  String get editTask => 'Edit Task';
+
+  @override
+  String get enterNewTaskTitle => 'Enter new task title';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get taskUpdatedSuccess => 'Task updated successfully';
+
+  @override
+  String get profileImageUpdatedSuccess =>
+      'Profile image updated successfully!';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '1 minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '1 hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
 }

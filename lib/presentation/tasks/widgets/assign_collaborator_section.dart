@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import 'package:wedo_flutter/core/extensions/localization_x.dart';
+import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
 import 'package:wedo_flutter/domain/entities/project_entity.dart';
 
+
 class AssignCollaboratorSection extends StatelessWidget {
-  const AssignCollaboratorSection({
-    super.key,
-    required this.project,
-    required this.selectedUserId,
-    required this.onAssign,
-  });
+  const AssignCollaboratorSection({super.key, required this.project, required this.selectedUserId, required this.onAssign});
 
   final ProjectEntity project;
   final String? selectedUserId;
@@ -16,24 +13,17 @@ class AssignCollaboratorSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
-        const Row(
+        Row(
           children: [
-            Text(
-              'Assign to',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-                color: AppColors.textDark,
-              ),
-            ),
-            Text(
-              ' *',
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
-            ),
+            Text(l10n.assignTo, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15, color: colors.textDark)),
+            Text(' *', style: TextStyle(color: colors.error, fontWeight: FontWeight.bold)),
           ],
         ),
         const SizedBox(height: 10),
@@ -43,16 +33,11 @@ class AssignCollaboratorSection extends StatelessWidget {
           itemCount: project.collaboratorsIds.length,
           itemBuilder: (context, index) {
             final collabId = project.collaboratorsIds[index];
-            final collabImage =
-                (project.collaboratorsImages.isNotEmpty &&
-                        project.collaboratorsImages.length > index)
-                    ? project.collaboratorsImages[index]
-                    : '';
+            final collabImage = (project.collaboratorsImages.isNotEmpty && project.collaboratorsImages.length > index)
+                ? project.collaboratorsImages[index]
+                : '';
             final namesList = project.collaboratorsNames;
-            final collabName =
-                (namesList.isNotEmpty && namesList.length > index)
-                    ? namesList[index]
-                    : 'Member';
+            final collabName = (namesList.isNotEmpty && namesList.length > index) ? namesList[index] : l10n.member;
             final isSelected = selectedUserId == collabId;
 
             return _CollaboratorTile(
@@ -71,16 +56,8 @@ class AssignCollaboratorSection extends StatelessWidget {
   }
 }
 
-/// Extracted as its own widget so only the tapped tile rebuilds/animates,
-/// keeping the animation smooth and cheap even with many collaborators.
 class _CollaboratorTile extends StatelessWidget {
-  const _CollaboratorTile({
-    super.key,
-    required this.isSelected,
-    required this.collabImage,
-    required this.collabName,
-    required this.onTap,
-  });
+  const _CollaboratorTile({super.key, required this.isSelected, required this.collabImage, required this.collabName, required this.onTap});
 
   final bool isSelected;
   final String collabImage;
@@ -92,6 +69,8 @@ class _CollaboratorTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
@@ -101,12 +80,9 @@ class _CollaboratorTile extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLight : AppColors.surfaceMuted,
+          color: isSelected ? colors.primaryLight : colors.surfaceMuted,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
-            width: isSelected ? 1.5 : 1,
-          ),
+          border: Border.all(color: isSelected ? colors.primary : colors.border, width: isSelected ? 1.5 : 1),
         ),
         child: Row(
           children: [
@@ -117,20 +93,14 @@ class _CollaboratorTile extends StatelessWidget {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? AppColors.primary : Colors.transparent,
-                  width: 2,
-                ),
+                border: Border.all(color: isSelected ? colors.primary : Colors.transparent, width: 2),
               ),
               padding: const EdgeInsets.all(2),
               child: CircleAvatar(
                 radius: 16,
-                backgroundColor: AppColors.surface,
-                backgroundImage:
-                    collabImage.isNotEmpty ? NetworkImage(collabImage) : null,
-                child: collabImage.isEmpty
-                    ? const Icon(Icons.person, size: 16, color: AppColors.textMuted)
-                    : null,
+                backgroundColor: colors.surface,
+                backgroundImage: collabImage.isNotEmpty ? NetworkImage(collabImage) : null,
+                child: collabImage.isEmpty ? Icon(Icons.person, size: 16, color: colors.textMuted) : null,
               ),
             ),
             const SizedBox(width: 12),
@@ -141,7 +111,7 @@ class _CollaboratorTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  color: isSelected ? AppColors.primary : AppColors.textDark,
+                  color: isSelected ? colors.primary : colors.textDark,
                 ),
                 child: Text(collabName),
               ),
@@ -153,11 +123,7 @@ class _CollaboratorTile extends StatelessWidget {
               child: AnimatedOpacity(
                 duration: _duration,
                 opacity: isSelected ? 1 : 0,
-                child: const Icon(
-                  Icons.check_circle_rounded,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
+                child: Icon(Icons.check_circle_rounded, color: colors.primary, size: 20),
               ),
             ),
           ],

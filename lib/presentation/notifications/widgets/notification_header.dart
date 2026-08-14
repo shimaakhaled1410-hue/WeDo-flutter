@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
+import '../../../core/extensions/localization_x.dart';
 
 class NotificationHeader extends StatelessWidget {
   const NotificationHeader({
@@ -14,6 +15,7 @@ class NotificationHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
 
     return Container(
       width: double.infinity,
@@ -38,9 +40,9 @@ class NotificationHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Notifications',
-                  style: TextStyle(
+                Text(
+                  l10n.notifications,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w800,
                     fontSize: 20,
@@ -49,8 +51,8 @@ class NotificationHeader extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   unreadCount > 0
-                      ? '$unreadCount unread notification${unreadCount == 1 ? '' : 's'}'
-                      : 'You\'re all caught up',
+                      ? l10n.unreadNotifications(unreadCount)
+                      : l10n.allCaughtUp,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.85),
                     fontSize: 12.5,

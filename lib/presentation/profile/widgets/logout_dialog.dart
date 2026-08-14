@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 Future<void> showLogoutDialog(
   BuildContext context, {
   required VoidCallback onConfirm,
 }) {
+  final colors = context.colors;
+  final l10n = context.l10n;
+
   return showDialog(
     context: context,
     builder: (dialogContext) => Dialog(
@@ -13,9 +17,9 @@ Future<void> showLogoutDialog(
       child: Container(
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colors.surface,
           borderRadius: BorderRadius.circular(22),
-          boxShadow: AppColors.softShadow,
+          boxShadow: colors.softShadow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -23,32 +27,28 @@ Future<void> showLogoutDialog(
             Container(
               width: 56,
               height: 56,
-              decoration: const BoxDecoration(
-                color: AppColors.errorLight,
+              decoration: BoxDecoration(
+                color: colors.errorLight,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.logout_rounded,
-                color: AppColors.error,
-                size: 24,
-              ),
+              child: Icon(Icons.logout_rounded, color: colors.error, size: 24),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Sign Out',
+            Text(
+              l10n.signOut,
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                color: AppColors.textDark,
+                color: colors.textDark,
               ),
             ),
             const SizedBox(height: 6),
-            const Text(
-              'Are you sure you want to sign out\nof your account?',
+            Text(
+              l10n.signOutConfirm,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.textLight,
+                color: colors.textLight,
                 height: 1.4,
               ),
             ),
@@ -59,16 +59,16 @@ Future<void> showLogoutDialog(
                   child: TextButton(
                     onPressed: () => Navigator.of(dialogContext).pop(),
                     style: TextButton.styleFrom(
-                      backgroundColor: AppColors.surfaceMuted,
+                      backgroundColor: colors.surfaceMuted,
                       padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(13),
                       ),
                     ),
-                    child: const Text(
-                      'Cancel',
+                    child: Text(
+                      l10n.cancel,
                       style: TextStyle(
-                        color: AppColors.textLight,
+                        color: colors.textLight,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -82,17 +82,17 @@ Future<void> showLogoutDialog(
                       onConfirm();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.error,
+                      backgroundColor: colors.error,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(13),
                       ),
                     ),
-                    child: const Text(
-                      'Sign Out',
-                      style: TextStyle(
-                        color: AppColors.white,
+                    child: Text(
+                      l10n.signOut,
+                      style: const TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

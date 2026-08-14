@@ -53,7 +53,7 @@ class WeDoApp extends StatelessWidget {
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               title: 'WeDo',
-              locale: DevicePreview.locale(context) ??
+              locale:
                   localeState.locale.toFlutterLocale,
               builder: DevicePreview.appBuilder,
 

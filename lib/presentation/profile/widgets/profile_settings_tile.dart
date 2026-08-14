@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class ProfileSettingsTile extends StatelessWidget {
   const ProfileSettingsTile({
@@ -21,6 +21,8 @@ class ProfileSettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -39,28 +41,28 @@ class ProfileSettingsTile extends StatelessWidget {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14.5,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textDark,
+                  color: colors.textDark,
                 ),
               ),
             ),
             if (trailingText != null) ...[
               Text(
                 trailingText!,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.textMuted,
+                  color: colors.textMuted,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(width: 6),
             ],
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios_rounded,
               size: 13,
-              color: AppColors.textMuted,
+              color: colors.textMuted,
             ),
           ],
         ),

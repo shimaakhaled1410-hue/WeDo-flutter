@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../core/extensions/localization_x.dart';
+import '../../../core/theme/app_color_scheme.dart';
 import 'profile_avatar.dart';
-
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
@@ -25,15 +25,18 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final l10n = context.l10n;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 8,
         bottom: 52,
       ),
-      decoration: const BoxDecoration(
-        gradient: AppColors.heroGradient,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(36)),
+      decoration: BoxDecoration(
+        gradient: colors.heroGradient,
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(36)),
       ),
       child: Column(
         children: [
@@ -45,12 +48,12 @@ class ProfileHeader extends StatelessWidget {
                   icon: Icons.arrow_back_ios_new_rounded,
                   onTap: onBackTap,
                 ),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'My Profile',
+                    l10n.myProfile,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.white,
+                    style: const TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 17,
                     ),
@@ -73,7 +76,7 @@ class ProfileHeader extends StatelessWidget {
             style: const TextStyle(
               fontSize: 21,
               fontWeight: FontWeight.w800,
-              color: AppColors.white,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 4),
@@ -81,7 +84,7 @@ class ProfileHeader extends StatelessWidget {
             user?.email ?? 'No Email Provided',
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.white.withValues(alpha: 0.85),
+              color: Colors.white.withValues(alpha: 0.85),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -108,7 +111,7 @@ class _CircleIconButton extends StatelessWidget {
           color: Colors.white.withValues(alpha: 0.16),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: AppColors.white, size: 16),
+        child: Icon(icon, color: Colors.white, size: 16),
       ),
     );
   }

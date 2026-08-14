@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wedo_flutter/core/theme/app_color_scheme.dart';
+import '../../../core/extensions/localization_x.dart';
 
 class NotificationErrorView extends StatelessWidget {
   const NotificationErrorView({
@@ -14,6 +15,7 @@ class NotificationErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final l10n = context.l10n;
 
     return Center(
       child: Padding(
@@ -36,7 +38,7 @@ class NotificationErrorView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'Something went wrong',
+              l10n.somethingWentWrong,
               style: TextStyle(
                 color: colors.textDark,
                 fontSize: 17,
@@ -64,7 +66,7 @@ class NotificationErrorView extends StatelessWidget {
                 ),
                 elevation: 0,
               ),
-              child: const Text('Try again'),
+              child: Text(l10n.tryAgain),
             ),
           ],
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_color_scheme.dart';
 
 class AuthGradientTitle extends StatelessWidget {
   const AuthGradientTitle({
@@ -13,17 +13,18 @@ class AuthGradientTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return Column(
       children: [
         ShaderMask(
-          shaderCallback: (bounds) =>
-              AppColors.heroGradient.createShader(bounds),
+          shaderCallback: (bounds) => colors.heroGradient.createShader(bounds),
           child: const Text(
             'WeDo',
             style: TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w900,
-              color: AppColors.white, // masked
+              color: Colors.white, // masked
               letterSpacing: 0.5,
             ),
           ),
@@ -31,17 +32,17 @@ class AuthGradientTitle extends StatelessWidget {
         const SizedBox(height: 10),
         Text(
           heading,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            color: AppColors.textDark,
+            color: colors.textDark,
           ),
         ),
         const SizedBox(height: 6),
         Text(
           subheading,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 13.5, color: AppColors.textLight),
+          style: TextStyle(fontSize: 13.5, color: colors.textLight),
         ),
       ],
     );

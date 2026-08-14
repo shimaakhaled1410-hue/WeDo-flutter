@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wedo_flutter/core/theme/app_colors.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
 class TaskCheckbox extends StatelessWidget {
   const TaskCheckbox({
@@ -15,17 +15,17 @@ class TaskCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+
     return SizedBox(
       height: 26,
       width: 26,
       child: Checkbox(
         value: value,
-        activeColor: AppColors.accent,
-        checkColor: AppColors.white,
-        side: const BorderSide(color: AppColors.border, width: 1.5),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7),
-        ),
+        activeColor: colors.accent,
+        checkColor: Colors.white,
+        side: BorderSide(color: colors.border, width: 1.5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
         onChanged: enabled ? onChanged : null,
       ),
     );

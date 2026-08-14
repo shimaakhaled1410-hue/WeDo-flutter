@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
 class ProjectCollaboratorsStack extends StatelessWidget {
-  const ProjectCollaboratorsStack({
-    super.key,
-    required this.imageUrls,
-  });
+  const ProjectCollaboratorsStack({super.key, required this.imageUrls});
 
   final List<String> imageUrls;
 
@@ -13,8 +10,10 @@ class ProjectCollaboratorsStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final int visibleCount =
-        imageUrls.length > _maxVisible ? _maxVisible + 1 : imageUrls.length;
+    final colors = context.colors;
+    final int visibleCount = imageUrls.length > _maxVisible
+        ? _maxVisible + 1
+        : imageUrls.length;
 
     return SizedBox(
       height: 32,
@@ -29,11 +28,11 @@ class ProjectCollaboratorsStack extends StatelessWidget {
               widthFactor: 0.65,
               child: CircleAvatar(
                 radius: 14,
-                backgroundColor: AppColors.primary,
+                backgroundColor: colors.primary,
                 child: Text(
                   '+$remaining',
                   style: const TextStyle(
-                    color: AppColors.white,
+                    color: Colors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -48,18 +47,15 @@ class ProjectCollaboratorsStack extends StatelessWidget {
             widthFactor: 0.65,
             child: CircleAvatar(
               radius: 14,
-              backgroundColor: AppColors.surface,
+              backgroundColor: colors.surface,
               child: CircleAvatar(
                 radius: 12,
-                backgroundColor: AppColors.surfaceMuted,
-                backgroundImage:
-                    imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                backgroundColor: colors.surfaceMuted,
+                backgroundImage: imageUrl.isNotEmpty
+                    ? NetworkImage(imageUrl)
+                    : null,
                 child: imageUrl.isEmpty
-                    ? const Icon(
-                        Icons.person,
-                        size: 14,
-                        color: AppColors.textMuted,
-                      )
+                    ? Icon(Icons.person, size: 14, color: colors.textMuted)
                     : null,
               ),
             ),
