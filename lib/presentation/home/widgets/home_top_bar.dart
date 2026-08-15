@@ -42,22 +42,15 @@ class HomeTopBar extends StatelessWidget {
 
                   return GestureDetector(
                     onTap: () => context.push(AppRoutes.profile),
-                    child: Container(
-                      padding: const EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        gradient: colors.primaryGradient,
-                        shape: BoxShape.circle,
-                      ),
-                      child: CircleAvatar(
-                        radius: 17,
-                        backgroundColor: colors.surface,
-                        backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
-                            ? NetworkImage(photoUrl)
-                            : null,
-                        child: (photoUrl == null || photoUrl.isEmpty)
-                            ? Icon(Icons.person_outline, color: colors.primary, size: 18)
-                            : null,
-                      ),
+                    child: CircleAvatar(
+                      radius: 18,
+                      backgroundColor: colors.surface,
+                      backgroundImage: (photoUrl != null && photoUrl.isNotEmpty)
+                          ? NetworkImage(photoUrl)
+                          : null,
+                      child: (photoUrl == null || photoUrl.isEmpty)
+                          ? Icon(Icons.person_outline, color: colors.primary, size: 18)
+                          : null,
                     ),
                   );
                 },
