@@ -54,13 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final l10n = context.l10n;
-    final projectsList = context.watch<ProjectCubit>().projectsList;
-
-    final totalProjects = projectsList.length;
-    final completedTasksCount = projectsList.fold<int>(
-      0,
-      (sum, project) => sum + project.completedTasks,
-    );
 
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
@@ -86,8 +79,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       },
       builder: (context, state) {
+        // مهم جدًا: أثناء تسجيل الخروج، الـ builder بيتنفذ مرة تانية
+        // بعد ما يبقى currentUser = null، قبل ما التنقل لـ Login يخلص فعليًا.
+        // من غير الحارس ده، الكود بيحاول يبني شاشة بروفايل كاملة
+        // بمستخدم مش موجود، وده اللي بيسبب الـ null check exception.
+        if (state is Unauthenticated || state is AuthLoading) {
+          return Scaffold(
+            backgroundColor: colors.background,
+            body: Center(
+              child: CircularProgressIndicator(color: colors.primary),
+            ),
+          );
+        }
+
+        // هنا مضمون إن الـ state مش Unauthenticated، فآمن نقرا currentUser.
         final user = FirebaseAuth.instance.currentUser;
-        final displayName = user!.displayName;
+        final displayName = (user?.displayName?.isNotEmpty ?? false)
+            ? user!.displayName!
+            : (user?.email?.split('@').first ?? 'User');
+
+        final projectsList = context.watch<ProjectCubit>().projectsList;
+        final totalProjects = projectsList.length;
+        final completedTasksCount = projectsList.fold<int>(
+          0,
+          (sum, project) => sum + project.completedTasks,
+        );
+
         return Scaffold(
           backgroundColor: colors.background,
           body: SingleChildScrollView(
@@ -98,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileHeader(
                   imageBytes: _imageBytes,
                   user: user,
-                  displayName: displayName!,
+                  displayName: displayName,
                   isUploading: _isUploading,
                   onAvatarTap: _pickImage,
                   onBackTap: () => context.pop(),
