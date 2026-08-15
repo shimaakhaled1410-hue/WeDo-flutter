@@ -9,21 +9,9 @@ const List<IconData> availableProjectIcons = [
   Icons.work_outline_rounded,
   Icons.favorite_border_rounded,
 ];
-
-/// Maps a stored icon codePoint back to its IconData for display.
-IconData getProjectIcon(int codePoint) {
-  switch (codePoint) {
-    case 0xe59c: // Icons.shopping_cart_outlined
-      return Icons.shopping_cart_outlined;
-    case 0xe190: // Icons.code_rounded
-      return Icons.code_rounded;
-    case 0xe293: // Icons.flight_takeoff_rounded
-      return Icons.flight_takeoff_rounded;
-    case 0xe6e0: // Icons.work_outline_rounded
-      return Icons.work_outline_rounded;
-    case 0xe25b: // Icons.favorite_border_rounded
-      return Icons.favorite_border_rounded;
-    default:
-      return Icons.folder_outlined;
+IconData getProjectIcon(int index) {
+  if (index < 0 || index >= availableProjectIcons.length) {
+    return availableProjectIcons.first;
   }
+  return availableProjectIcons[index];
 }

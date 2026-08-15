@@ -117,9 +117,8 @@ class _AddProjectBottomSheetState extends State<AddProjectBottomSheet> {
                       if (_formKey.currentState!.validate()) {
                         context.read<ProjectCubit>().createProject(
                           name: _nameController.text.trim(),
-                          iconCodePoint:
-                              availableProjectIcons[_selectedIconIndex]
-                                  .codePoint,
+                          iconCodePoint:_selectedIconIndex,
+                             
                         );
                       }
                     },

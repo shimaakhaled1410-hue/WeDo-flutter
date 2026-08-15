@@ -10,6 +10,7 @@ import 'package:wedo_flutter/core/services/service_locator.dart' as di;
 import 'package:wedo_flutter/core/theme/app_theme.dart';
 import 'package:wedo_flutter/firebase_options.dart';
 import 'package:wedo_flutter/l10n/app_localizations.dart';
+import 'package:wedo_flutter/presentation/manager/auth/auth_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/locale/locale_cubit.dart';
 import 'package:wedo_flutter/presentation/manager/locale/locale_state.dart';
 import 'package:wedo_flutter/presentation/manager/locale/locale_x.dart';
@@ -30,11 +31,12 @@ void main() async {
 
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode,
+      enabled: isDevicePreviewEnabled,
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => di.sl<ThemeCubit>()),
           BlocProvider(create: (_) => di.sl<LocaleCubit>()),
+          BlocProvider(create: (_) => di.sl<AuthCubit>()),
         ],
         child: const WeDoApp(),
       ),

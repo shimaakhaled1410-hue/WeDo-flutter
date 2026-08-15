@@ -49,7 +49,7 @@ class _EditProjectBottomSheetState extends State<EditProjectBottomSheet> {
 
     final updatedProject = widget.project.copyWith(
       name: _nameController.text.trim(),
-      iconCodePoint: availableProjectIcons[_selectedIconIndex].codePoint,
+      iconCodePoint: _selectedIconIndex,
     );
 
     context.read<ProjectCubit>().updateProject(updatedProject);

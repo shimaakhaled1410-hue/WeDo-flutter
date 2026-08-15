@@ -54,7 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final l10n = context.l10n;
-    final user = FirebaseAuth.instance.currentUser;
     final projectsList = context.watch<ProjectCubit>().projectsList;
 
     final totalProjects = projectsList.length;
@@ -63,11 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       (sum, project) => sum + project.completedTasks,
     );
 
-    final displayName = user?.displayName?.isNotEmpty == true
-        ? user!.displayName!
-        : (user?.email?.split('@').first ?? 'User');
-
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is Unauthenticated) {
           context.go(AppRoutes.login);
@@ -90,84 +85,89 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         }
       },
-      child: Scaffold(
-        backgroundColor: colors.background,
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ProfileHeader(
-                imageBytes: _imageBytes,
-                user: user,
-                displayName: displayName,
-                isUploading: _isUploading,
-                onAvatarTap: _pickImage,
-                onBackTap: () => context.pop(),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -34),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ProfileStatCard(
-                          title: l10n.projects,
-                          value: '$totalProjects',
-                          icon: Icons.folder_open_rounded,
-                          iconBackground: colors.primaryLight,
-                          iconColor: colors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ProfileStatCard(
-                          title: l10n.doneTasks,
-                          value: '$completedTasksCount',
-                          icon: Icons.task_alt_rounded,
-                          iconBackground: colors.successLight,
-                          iconColor: colors.success,
-                        ),
-                      ),
-                    ],
-                  ),
+      builder: (context, state) {
+        final user = FirebaseAuth.instance.currentUser;
+        final displayName = user!.displayName;
+        return Scaffold(
+          backgroundColor: colors.background,
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ProfileHeader(
+                  imageBytes: _imageBytes,
+                  user: user,
+                  displayName: displayName!,
+                  isUploading: _isUploading,
+                  onAvatarTap: _pickImage,
+                  onBackTap: () => context.pop(),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                child: Transform.translate(
-                  offset: const Offset(0, -20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4, bottom: 10),
-                        child: Text(
-                          l10n.settings,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: colors.textDark,
+                Transform.translate(
+                  offset: const Offset(0, -34),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ProfileStatCard(
+                            title: l10n.projects,
+                            value: '$totalProjects',
+                            icon: Icons.folder_open_rounded,
+                            iconBackground: colors.primaryLight,
+                            iconColor: colors.primary,
                           ),
                         ),
-                      ),
-                      const ProfileSettingsCard(),
-                      const SizedBox(height: 28),
-                      LogoutButton(
-                        onTap: () => showLogoutDialog(
-                          context,
-                          onConfirm: () => context.read<AuthCubit>().signOut(),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ProfileStatCard(
+                            title: l10n.doneTasks,
+                            value: '$completedTasksCount',
+                            icon: Icons.task_alt_rounded,
+                            iconBackground: colors.successLight,
+                            iconColor: colors.success,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  child: Transform.translate(
+                    offset: const Offset(0, -20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4, bottom: 10),
+                          child: Text(
+                            l10n.settings,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: colors.textDark,
+                            ),
+                          ),
+                        ),
+                        const ProfileSettingsCard(),
+                        const SizedBox(height: 28),
+                        LogoutButton(
+                          onTap: () => showLogoutDialog(
+                            context,
+                            onConfirm: () =>
+                                context.read<AuthCubit>().signOut(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
