@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -19,9 +20,23 @@ class _JoinProjectScreenState extends State<JoinProjectScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.projectId != null && widget.projectId!.isNotEmpty) {
-      context.read<ProjectCubit>().joinProjectById(widget.projectId!);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handleJoin());
+  }
+
+  void _handleJoin() {
+    final projectId = widget.projectId;
+    if (projectId == null || projectId.isEmpty) {
+      context.go(AppRoutes.home);
+      return;
     }
+
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      context.go('${AppRoutes.login}?redirectProjectId=$projectId');
+      return;
+    }
+
+    context.read<ProjectCubit>().joinProjectById(projectId);
   }
 
   @override

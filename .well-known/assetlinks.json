@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.wedo_flutter",
+      "sha256_cert_fingerprints": [
+        "86:51:4E:2D:DA:16:D6:EF:B3:E4:1B:2D:E1:0E:59:A4:04:4A:E1:6A:24:29:49:AC:27:65:C6:3D:69:48:6D:1E",
+        "B2:3D:70:F2:B3:0D:49:54:33:65:2A:17:A4:83:AD:D0:DD:BC:2A:EE:42:9E:1F:C0:26:CA:4E:74:52:2B:48:66"
+      ]
+    }
+  }
+]

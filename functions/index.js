@@ -152,7 +152,8 @@ async function sendMissedDeadlineNotifications(now) {
   }
 }
 
-exports.onTaskAssigned = onDocumentUpdated("tasks/{taskId}", async (event) => {  if (!event.data || !event.data.after.exists) return;
+exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
+  if (!event.data || !event.data.after.exists) return;
 
   const oldTask = event.data.before.exists ? event.data.before.data() : null;
   const newTask = event.data.after.data();

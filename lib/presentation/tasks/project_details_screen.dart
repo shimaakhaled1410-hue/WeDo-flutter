@@ -52,7 +52,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
   void _shareInviteLink(BuildContext context) {
     final l10n = context.l10n;
     final inviteUrl =
-        'https://wedo-app.web.app/join?projectId=${widget.project.id}';
+        'https://naslookapp-ecf15.web.app/join?projectId=${widget.project.id}';
     final shareText = l10n.inviteShareMessage(widget.project.name, inviteUrl);
 
     SharePlus.instance.share(ShareParams(text: shareText));

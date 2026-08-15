@@ -10,22 +10,36 @@ class NotificationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> initNotification() async {
+    // Registered unconditionally: this powers our custom in-app banner,
+    // not the system tray, so it must not depend on the OS permission
+    // result below.
+    FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+
     NotificationSettings settings = await _fcm.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      String? token = await _fcm.getToken();
+    String? token = await _fcm.getToken();
+    if (token != null) {
+      await saveTokenToFirestore(token);
+    }
 
-      if (token != null) {
-        await saveTokenToFirestore(token);
+    _fcm.onTokenRefresh.listen(saveTokenToFirestore);
+
+    _auth.authStateChanges().listen((user) async {
+      if (user != null) {
+        final currentToken = await _fcm.getToken();
+        if (currentToken != null) {
+          await saveTokenToFirestore(currentToken);
+        }
       }
+    });
 
-      _fcm.onTokenRefresh.listen(saveTokenToFirestore);
-
-      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+    if (settings.authorizationStatus != AuthorizationStatus.authorized) {
+      // ignore: avoid_print
+      print('⚠️ Notification permission not granted: ${settings.authorizationStatus}');
     }
   }
 

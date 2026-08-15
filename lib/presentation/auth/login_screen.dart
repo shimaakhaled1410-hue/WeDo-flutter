@@ -43,6 +43,18 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _navigateAfterLogin(BuildContext context) {
+    final redirectProjectId = GoRouterState.of(
+      context,
+    ).uri.queryParameters['redirectProjectId'];
+
+    if (redirectProjectId != null && redirectProjectId.isNotEmpty) {
+      context.go('/join?projectId=$redirectProjectId');
+    } else {
+      context.go(AppRoutes.home);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -64,6 +76,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Image.asset(
+                        'assets/images/wedo_logo.png',
+                        width: 64,
+                        height: 64,
+                      ),
+                      const SizedBox(height: 12),
                       AuthGradientTitle(
                         heading: l10n.welcomeBack,
                         subheading: l10n.loginSubtitle,
@@ -114,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     message: l10n.welcomeBack,
                                     isError: false,
                                   );
-                                  context.go(AppRoutes.home);
+                                  _navigateAfterLogin(context);
                                 }
                               },
                               builder: (context, state) {
@@ -130,7 +148,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: AuthFooterLink(
                                 leadingText: l10n.dontHaveAccount,
                                 actionText: l10n.signUp,
-                                onTap: () => context.push(AppRoutes.register),
+                                onTap: () {
+                                  final redirectProjectId = GoRouterState.of(
+                                    context,
+                                  ).uri.queryParameters['redirectProjectId'];
+                                  if (redirectProjectId != null &&
+                                      redirectProjectId.isNotEmpty) {
+                                    context.push(
+                                      '${AppRoutes.register}?redirectProjectId=$redirectProjectId',
+                                    );
+                                  } else {
+                                    context.push(AppRoutes.register);
+                                  }
+                                },
                               ),
                             ),
                           ],

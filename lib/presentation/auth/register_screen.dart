@@ -46,6 +46,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  void _navigateAfterRegister(BuildContext context) {
+    final redirectProjectId = GoRouterState.of(
+      context,
+    ).uri.queryParameters['redirectProjectId'];
+
+    if (redirectProjectId != null && redirectProjectId.isNotEmpty) {
+      context.go('/join?projectId=$redirectProjectId');
+    } else {
+      context.go(AppRoutes.home);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -67,6 +79,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Image.asset(
+                        'assets/images/wedo_logo.png',
+                        width: 64,
+                        height: 64,
+                      ),
+                      const SizedBox(height: 12),
                       AuthGradientTitle(
                         heading: l10n.createAccount,
                         subheading: l10n.registerSubtitle,
@@ -130,7 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     message: l10n.accountCreatedSuccess,
                                     isError: false,
                                   );
-                                  context.go(AppRoutes.home);
+                                  _navigateAfterRegister(context);
                                 }
                               },
                               builder: (context, state) {
@@ -148,7 +166,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       AuthFooterLink(
                         leadingText: l10n.alreadyHaveAccount,
                         actionText: l10n.login,
-                        onTap: () => context.push(AppRoutes.login),
+                        onTap: () {
+                          final redirectProjectId = GoRouterState.of(
+                            context,
+                          ).uri.queryParameters['redirectProjectId'];
+                          if (redirectProjectId != null &&
+                              redirectProjectId.isNotEmpty) {
+                            context.push(
+                              '${AppRoutes.login}?redirectProjectId=$redirectProjectId',
+                            );
+                          } else {
+                            context.push(AppRoutes.login);
+                          }
+                        },
                       ),
                     ],
                   ),

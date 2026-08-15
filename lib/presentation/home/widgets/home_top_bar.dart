@@ -19,17 +19,27 @@ class HomeTopBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ShaderMask(
-            shaderCallback: (bounds) => colors.primaryGradient.createShader(bounds),
-            child: const Text(
-              'WeDo',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.5,
+          Row(
+            children: [
+              Image.asset(
+                'assets/images/wedo_logo.png',
+                width: 28,
+                height: 28,
               ),
-            ),
+              const SizedBox(width: 8),
+              ShaderMask(
+                shaderCallback: (bounds) => colors.primaryGradient.createShader(bounds),
+                child: const Text(
+                  'WeDo',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
+            ],
           ),
           Row(
             children: [
