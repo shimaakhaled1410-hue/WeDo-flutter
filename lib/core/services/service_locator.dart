@@ -30,6 +30,7 @@ import 'package:wedo_flutter/domain/usecases/notifications/get_notifications_use
 import 'package:wedo_flutter/domain/usecases/notifications/mark_notification_as_read_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/add_project_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/delete_project_usecase.dart';
+import 'package:wedo_flutter/domain/usecases/project/get_project_by_id_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_projects_usecase.dart';
 import 'package:wedo_flutter/domain/usecases/project/join_project_by_id.dart';
 import 'package:wedo_flutter/domain/usecases/project/update_project_usecase.dart';
@@ -96,6 +97,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteProjectUsecase(sl()));
   sl.registerLazySingleton(() => UpdateProjectUsecase(sl()));
   sl.registerLazySingleton(() => JoinProjectById(sl()));
+  sl.registerLazySingleton(() => GetProjectByIdUseCase(sl()));
 
   sl.registerLazySingleton<ProjectRepo>(() => ProjectRepoImpl(sl()));
 

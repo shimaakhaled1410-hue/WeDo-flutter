@@ -7,6 +7,14 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
+
+const androidConfig = {
+  notification: {
+    channelId: "task_alerts_channel",
+    sound: "notification_sound",
+  },
+};
+
 exports.sendTaskAlerts = onSchedule("every 10 minutes", async (event) => {
   const now = admin.firestore.Timestamp.now();
 
@@ -17,7 +25,6 @@ exports.sendTaskAlerts = onSchedule("every 10 minutes", async (event) => {
   }
 });
 
-// Reminder before/at the alertTime the user picked when creating the task.
 async function sendPendingAlertReminders(now) {
   const tasksSnapshot = await admin
     .firestore()
@@ -67,6 +74,7 @@ async function sendPendingAlertReminders(now) {
           title: pushMsg.taskAlertTitle,
           body: pushMsg.taskAlertBody(task.title),
         },
+        android: androidConfig, 
         data: {
           taskId: doc.id,
           projectId: task.projectId || "",
@@ -80,7 +88,6 @@ async function sendPendingAlertReminders(now) {
   }
 }
 
-// One-time notification when a task's deadline passes without being completed.
 async function sendMissedDeadlineNotifications(now) {
   const tasksSnapshot = await admin
     .firestore()
@@ -96,8 +103,6 @@ async function sendMissedDeadlineNotifications(now) {
     const task = doc.data();
     const assignedUserId = task.assignedToUserId;
     if (!assignedUserId) {
-      // No assignee: nothing to notify, but still mark as processed so we
-      // don't re-check this doc on every run.
       await doc.ref.update({ missedNotificationSent: true });
       continue;
     }
@@ -139,6 +144,7 @@ async function sendMissedDeadlineNotifications(now) {
           title: pushMsg.taskMissedTitle,
           body: pushMsg.taskMissedBody(task.title),
         },
+        android: androidConfig,
         data: {
           taskId: doc.id,
           projectId: task.projectId || "",
@@ -229,6 +235,7 @@ exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
           title: pushMsg.taskAssignedTitle,
           body: pushMsg.taskAssignedBody(pushAssignerName, newTask.title),
         },
+        android: androidConfig, 
         data: {
           projectId: newTask.projectId || "",
           taskId: event.params.taskId,
@@ -305,6 +312,7 @@ exports.onProjectMemberJoined = onDocumentUpdated("projects/{projectId}", async 
             title: pushMsg.memberJoinedTitle,
             body: pushMsg.memberJoinedBody(pushJoinedUserName, projectName),
           },
+          android: androidConfig, 
           data: {
             projectId: event.params.projectId,
             click_action: "FLUTTER_NOTIFICATION_CLICK",

@@ -5,7 +5,7 @@ class InAppNotificationBanner {
   static OverlayEntry? _currentEntry;
 
   static void show(
-    BuildContext context, {
+    OverlayState overlayState, {
     required String title,
     required String body,
     VoidCallback? onTap,
@@ -13,27 +13,28 @@ class InAppNotificationBanner {
     _currentEntry?.remove();
     _currentEntry = null;
 
-    final overlay = Overlay.of(context, rootOverlay: true);
     late OverlayEntry entry;
 
     entry = OverlayEntry(
-      builder: (context) => _BannerWidget(
-        title: title,
-        body: body,
-        onTap: () {
-          entry.remove();
-          _currentEntry = null;
-          onTap?.call();
-        },
-        onDismiss: () {
-          entry.remove();
-          _currentEntry = null;
-        },
-      ),
+      builder: (context) {
+        return _BannerWidget(
+          title: title,
+          body: body,
+          onTap: () {
+            entry.remove();
+            _currentEntry = null;
+            onTap?.call();
+          },
+          onDismiss: () {
+            entry.remove();
+            _currentEntry = null;
+          },
+        );
+      },
     );
 
     _currentEntry = entry;
-    overlay.insert(entry);
+    overlayState.insert(entry);
   }
 }
 
@@ -66,8 +67,10 @@ class _BannerWidgetState extends State<_BannerWidget>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _offset = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _offset = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
     Future.delayed(const Duration(seconds: 4), _close);
   }

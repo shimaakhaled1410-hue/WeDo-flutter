@@ -55,6 +55,7 @@ dependencies:
   intl: 0.20.2
   share_plus: ^13.3.0
   app_links: ^7.2.1
+  audioplayers: ^6.8.1
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
   assets:
     - .env
     - assets/images/wedo_logo.png
+    - assets/sounds/notification-sound.wav
 
 flutter_launcher_icons:
   android: true

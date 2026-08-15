@@ -8,6 +8,7 @@ abstract class ProjectRemoteDataSource {
   Future<void> deleteProject(String projectId);
   Future<void> updateProject(ProjectModel project);
   Future<void> joinProjectById(String projectId);
+  Future<ProjectModel> getProjectById(String projectId);
 }
 
 class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
@@ -90,5 +91,14 @@ class ProjectRemoteDataSourceImpl implements ProjectRemoteDataSource {
         .collection('projects')
         .doc(project.id)
         .update(project.toMap());
+  }
+
+  @override
+  Future<ProjectModel> getProjectById(String projectId) async {
+    final doc = await firestore.collection('projects').doc(projectId).get();
+    if (!doc.exists || doc.data() == null) {
+      throw Exception('Project not found');
+    }
+    return ProjectModel.fromMap(doc.data()!, doc.id);
   }
 }

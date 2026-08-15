@@ -39,8 +39,11 @@ class ProjectRepoImpl implements ProjectRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+
   @override
-  Future<Either<Failure, void>> deleteProject({required String projectId}) async {
+  Future<Either<Failure, void>> deleteProject({
+    required String projectId,
+  }) async {
     try {
       await remoteDataSource.deleteProject(projectId);
       return const Right(null);
@@ -48,8 +51,11 @@ class ProjectRepoImpl implements ProjectRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+
   @override
-  Future<Either<Failure, void>> updateProject({required ProjectEntity project}) async {
+  Future<Either<Failure, void>> updateProject({
+    required ProjectEntity project,
+  }) async {
     try {
       final projectModel = ProjectModel.fromEntity(project);
       await remoteDataSource.updateProject(projectModel);
@@ -58,11 +64,26 @@ class ProjectRepoImpl implements ProjectRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+
   @override
-  Future<Either<Failure, void>> joinProjectById({required String projectId}) async {
+  Future<Either<Failure, void>> joinProjectById({
+    required String projectId,
+  }) async {
     try {
       await remoteDataSource.joinProjectById(projectId);
       return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProjectEntity>> getProjectById(
+    String projectId,
+  ) async {
+    try {
+      final model = await remoteDataSource.getProjectById(projectId);
+      return Right(model);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
