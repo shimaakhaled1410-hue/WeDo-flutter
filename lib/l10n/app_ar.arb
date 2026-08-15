@@ -150,6 +150,24 @@
   "daysAgo": "{count, plural, one{منذ يوم} two{منذ يومين} few{منذ {count} أيام} other{منذ {count} يومًا}}",
   "@daysAgo": {
     "placeholders": { "count": { "type": "int" } }
+  },
+
+  "taskMissed": "مهمة منتهية",
+  "setDueDate": "تحديد الموعد النهائي",
+  "dueDateLabel": "الموعد النهائي: {date} · {time}",
+  "@dueDateLabel": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "alertAfterDueDateError": "وقت التنبيه لا يمكن أن يكون بعد الموعد النهائي",
+  "inviteShareMessage": "انضم لمشروعي \"{projectName}\" على WeDo!\n{link}",
+  "@inviteShareMessage": {
+    "placeholders": {
+      "projectName": { "type": "String" },
+      "link": { "type": "String" }
+    }
   }
 
 }

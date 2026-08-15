@@ -18,6 +18,7 @@ import 'package:wedo_flutter/presentation/manager/theme/theme_mode_x.dart';
 import 'package:wedo_flutter/presentation/manager/theme/theme_state.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+const bool isDevicePreviewEnabled = kIsWeb && !kReleaseMode;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
@@ -53,10 +54,8 @@ class WeDoApp extends StatelessWidget {
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               title: 'WeDo',
-              locale:
-                  localeState.locale.toFlutterLocale,
-              builder: DevicePreview.appBuilder,
-
+              locale: localeState.locale.toFlutterLocale,
+              builder: isDevicePreviewEnabled ? DevicePreview.appBuilder : null,
               // Localization setup — RTL is handled automatically by
               // Flutter when locale is Arabic, no manual config needed.
               localizationsDelegates: const [

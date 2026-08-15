@@ -151,6 +151,25 @@
   "daysAgo": "{count, plural, one{1 day ago} other{{count} days ago}}",
   "@daysAgo": {
     "placeholders": { "count": { "type": "int" } }
+  },
+
+  "taskMissed": "Deadline missed",
+
+  "setDueDate": "Set Due Date",
+  "dueDateLabel": "Due: {date} · {time}",
+  "@dueDateLabel": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "time": { "type": "String" }
+    }
+  },
+  "alertAfterDueDateError": "Alert time can't be after the due date",
+  "inviteShareMessage": "Join my project \"{projectName}\" on WeDo!\n{link}",
+  "@inviteShareMessage": {
+    "placeholders": {
+      "projectName": { "type": "String" },
+      "link": { "type": "String" }
+    }
   }
 
 

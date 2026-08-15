@@ -326,4 +326,24 @@ class AppLocalizationsAr extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get taskMissed => 'مهمة منتهية';
+
+  @override
+  String get setDueDate => 'تحديد الموعد النهائي';
+
+  @override
+  String dueDateLabel(String date, String time) {
+    return 'الموعد النهائي: $date · $time';
+  }
+
+  @override
+  String get alertAfterDueDateError =>
+      'وقت التنبيه لا يمكن أن يكون بعد الموعد النهائي';
+
+  @override
+  String inviteShareMessage(String projectName, String link) {
+    return 'انضم لمشروعي \"$projectName\" على WeDo!\n$link';
+  }
 }

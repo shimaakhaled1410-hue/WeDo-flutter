@@ -14,6 +14,8 @@ class TaskModel extends TaskEntity {
     super.assignedToUserImage,
     super.alertTime,
     super.alertSent,
+    super.dueDate,
+    super.missedNotificationSent,
   });
 
   factory TaskModel.fromMap(Map map, String docId) {
@@ -33,6 +35,10 @@ class TaskModel extends TaskEntity {
           ? (map['alertTime'] as Timestamp).toDate()
           : null,
       alertSent: map['alertSent'] ?? false,
+      dueDate: map['dueDate'] != null
+          ? (map['dueDate'] as Timestamp).toDate()
+          : null,
+      missedNotificationSent: map['missedNotificationSent'] ?? false,
     );
   }
 
@@ -48,6 +54,8 @@ class TaskModel extends TaskEntity {
       'assignedToUserImage': assignedToUserImage,
       'alertTime': alertTime != null ? Timestamp.fromDate(alertTime!) : null,
       'alertSent': alertSent,
+      'dueDate': dueDate != null ? Timestamp.fromDate(dueDate!) : null,
+      'missedNotificationSent': missedNotificationSent,
     };
   }
 
@@ -64,6 +72,8 @@ class TaskModel extends TaskEntity {
       assignedToUserImage: entity.assignedToUserImage,
       alertTime: entity.alertTime,
       alertSent: entity.alertSent,
+      dueDate: entity.dueDate,
+      missedNotificationSent: entity.missedNotificationSent,
     );
   }
 }

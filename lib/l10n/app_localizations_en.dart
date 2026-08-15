@@ -335,4 +335,24 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get taskMissed => 'Deadline missed';
+
+  @override
+  String get setDueDate => 'Set Due Date';
+
+  @override
+  String dueDateLabel(String date, String time) {
+    return 'Due: $date · $time';
+  }
+
+  @override
+  String get alertAfterDueDateError =>
+      'Alert time can\'t be after the due date';
+
+  @override
+  String inviteShareMessage(String projectName, String link) {
+    return 'Join my project \"$projectName\" on WeDo!\n$link';
+  }
 }

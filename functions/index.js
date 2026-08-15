@@ -7,71 +7,150 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
-exports.sendTaskAlerts = onSchedule("every 1 minutes", async (event) => {
-  const now = new Date();
+exports.sendTaskAlerts = onSchedule("every 15 minutes", async (event) => {
+  const now = admin.firestore.Timestamp.now();
+
   try {
-    const tasksSnapshot = await admin.firestore().collection("tasks").get();
-
-    for (const doc of tasksSnapshot.docs) {
-      const task = doc.data();
-
-      if (task.alertSent === true) continue;
-      if (!task.alertTime || !task.assignedToUserId) continue;
-
-      const alertTime = task.alertTime.toDate();
-      if (alertTime <= now) {
-        const assignedUserId = task.assignedToUserId;
-
-        const userDoc = await admin.firestore().collection("users").doc(assignedUserId).get();
-        if (!userDoc.exists) continue;
-
-        const userData = userDoc.data();
-        const fcmToken = userData?.fcmToken;
-        const pushLocale = userData?.locale || "en";
-
-        const msgEn = t("en");
-        const msgAr = t("ar");
-
-        const titleEn = msgEn.taskAlertTitle;
-        const titleAr = msgAr.taskAlertTitle;
-        const bodyEn = msgEn.taskAlertBody(task.title);
-        const bodyAr = msgAr.taskAlertBody(task.title);
-
-        await admin.firestore().collection("users").doc(assignedUserId).collection("notifications").add({
-          titleEn,
-          titleAr,
-          bodyEn,
-          bodyAr,
-          taskId: doc.id,
-          projectId: task.projectId || "",
-          projectName: task.projectName || "Project",
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          isRead: false,
-        });
-
-        if (fcmToken) {
-          const pushMsg = t(pushLocale);
-          await admin.messaging().send({
-            notification: {
-              title: pushMsg.taskAlertTitle,
-              body: pushMsg.taskAlertBody(task.title),
-            },
-            data: {
-              taskId: doc.id,
-              projectId: task.projectId || "",
-              click_action: "FLUTTER_NOTIFICATION_CLICK",
-            },
-            token: fcmToken,
-          });
-        }
-
-        await doc.ref.update({ alertSent: true });
-      }
-    }
+    await Promise.all([sendPendingAlertReminders(now), sendMissedDeadlineNotifications(now)]);
   } catch (error) {
     console.error("Error in sendTaskAlerts:", error);
   }
 });
+
+// Reminder before/at the alertTime the user picked when creating the task.
+async function sendPendingAlertReminders(now) {
+  const tasksSnapshot = await admin
+    .firestore()
+    .collection("tasks")
+    .where("alertSent", "==", false)
+    .where("alertTime", "<=", now)
+    .get();
+
+  if (tasksSnapshot.empty) return;
+
+  for (const doc of tasksSnapshot.docs) {
+    const task = doc.data();
+    const assignedUserId = task.assignedToUserId;
+    if (!assignedUserId) continue;
+
+    const userDoc = await admin.firestore().collection("users").doc(assignedUserId).get();
+    if (!userDoc.exists) continue;
+
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcmToken;
+    const pushLocale = userData?.locale || "en";
+
+    const msgEn = t("en");
+    const msgAr = t("ar");
+
+    const titleEn = msgEn.taskAlertTitle;
+    const titleAr = msgAr.taskAlertTitle;
+    const bodyEn = msgEn.taskAlertBody(task.title);
+    const bodyAr = msgAr.taskAlertBody(task.title);
+
+    await admin.firestore().collection("users").doc(assignedUserId).collection("notifications").add({
+      titleEn,
+      titleAr,
+      bodyEn,
+      bodyAr,
+      taskId: doc.id,
+      projectId: task.projectId || "",
+      projectName: task.projectName || "Project",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      isRead: false,
+    });
+
+    if (fcmToken) {
+      const pushMsg = t(pushLocale);
+      await admin.messaging().send({
+        notification: {
+          title: pushMsg.taskAlertTitle,
+          body: pushMsg.taskAlertBody(task.title),
+        },
+        data: {
+          taskId: doc.id,
+          projectId: task.projectId || "",
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
+        },
+        token: fcmToken,
+      });
+    }
+
+    await doc.ref.update({ alertSent: true });
+  }
+}
+
+// One-time notification when a task's deadline passes without being completed.
+async function sendMissedDeadlineNotifications(now) {
+  const tasksSnapshot = await admin
+    .firestore()
+    .collection("tasks")
+    .where("isCompleted", "==", false)
+    .where("missedNotificationSent", "==", false)
+    .where("dueDate", "<=", now)
+    .get();
+
+  if (tasksSnapshot.empty) return;
+
+  for (const doc of tasksSnapshot.docs) {
+    const task = doc.data();
+    const assignedUserId = task.assignedToUserId;
+    if (!assignedUserId) {
+      // No assignee: nothing to notify, but still mark as processed so we
+      // don't re-check this doc on every run.
+      await doc.ref.update({ missedNotificationSent: true });
+      continue;
+    }
+
+    const userDoc = await admin.firestore().collection("users").doc(assignedUserId).get();
+    if (!userDoc.exists) {
+      await doc.ref.update({ missedNotificationSent: true });
+      continue;
+    }
+
+    const userData = userDoc.data();
+    const fcmToken = userData?.fcmToken;
+    const pushLocale = userData?.locale || "en";
+
+    const msgEn = t("en");
+    const msgAr = t("ar");
+
+    const titleEn = msgEn.taskMissedTitle;
+    const titleAr = msgAr.taskMissedTitle;
+    const bodyEn = msgEn.taskMissedBody(task.title);
+    const bodyAr = msgAr.taskMissedBody(task.title);
+
+    await admin.firestore().collection("users").doc(assignedUserId).collection("notifications").add({
+      titleEn,
+      titleAr,
+      bodyEn,
+      bodyAr,
+      taskId: doc.id,
+      projectId: task.projectId || "",
+      projectName: task.projectName || "Project",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      isRead: false,
+    });
+
+    if (fcmToken) {
+      const pushMsg = t(pushLocale);
+      await admin.messaging().send({
+        notification: {
+          title: pushMsg.taskMissedTitle,
+          body: pushMsg.taskMissedBody(task.title),
+        },
+        data: {
+          taskId: doc.id,
+          projectId: task.projectId || "",
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
+        },
+        token: fcmToken,
+      });
+    }
+
+    await doc.ref.update({ missedNotificationSent: true });
+  }
+}
 
 exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
   if (!event.data || !event.data.after.exists) return;
@@ -99,7 +178,7 @@ exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
   const msgEn = t("en");
   const msgAr = t("ar");
 
-  let assignerName = msgEn.defaultAssignerName; // same value used for both locales unless overwritten
+  let assignerName = msgEn.defaultAssignerName;
   let assignerNameAr = msgAr.defaultAssignerName;
 
   if (creatorId) {

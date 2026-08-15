@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/extensions/localization_x.dart';
 import '../../core/theme/app_color_scheme.dart';
-import '../../core/widgets/custom_snackbar.dart';
 import '../../domain/entities/project_entity.dart';
 import '../manager/tasks/task_cubit.dart';
 import '../manager/tasks/task_state.dart';
@@ -32,7 +31,10 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(value: taskCubit, child: AddTaskBottomSheet(project: widget.project)),
+      builder: (_) => BlocProvider.value(
+        value: taskCubit,
+        child: AddTaskBottomSheet(project: widget.project),
+      ),
     );
   }
 
@@ -40,8 +42,19 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
     final taskCubit = context.read<TaskCubit>();
     showDialog(
       context: context,
-      builder: (_) => BlocProvider.value(value: taskCubit, child: EditTaskDialog(task: task)),
+      builder: (_) => BlocProvider.value(
+        value: taskCubit,
+        child: EditTaskDialog(task: task),
+      ),
     );
+  }
+
+  void _shareInviteLink(BuildContext context) {
+    final l10n = context.l10n;
+    final inviteUrl = 'wedo://join?projectId=${widget.project.id}';
+    final shareText = l10n.inviteShareMessage(widget.project.name, inviteUrl);
+
+    SharePlus.instance.share(ShareParams(text: shareText));
   }
 
   @override
@@ -58,14 +71,26 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         leading: IconButton(
           icon: Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: colors.surface, borderRadius: BorderRadius.circular(12), boxShadow: colors.cardShadow),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: colors.primary, size: 16),
+            decoration: BoxDecoration(
+              color: colors.surface,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: colors.cardShadow,
+            ),
+            child: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: colors.primary,
+              size: 16,
+            ),
           ),
           onPressed: () => context.pop(),
         ),
         title: Text(
           widget.project.name,
-          style: TextStyle(color: colors.textDark, fontWeight: FontWeight.w800, fontSize: 18),
+          style: TextStyle(
+            color: colors.textDark,
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+          ),
         ),
         centerTitle: true,
         actions: [
@@ -74,15 +99,19 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
             child: IconButton(
               icon: Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: colors.surface, borderRadius: BorderRadius.circular(12), boxShadow: colors.cardShadow),
-                child: Icon(Icons.person_add_alt_1_rounded, color: colors.primary, size: 18),
+                decoration: BoxDecoration(
+                  color: colors.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: colors.cardShadow,
+                ),
+                child: Icon(
+                  Icons.person_add_alt_1_rounded,
+                  color: colors.primary,
+                  size: 18,
+                ),
               ),
               tooltip: l10n.inviteCollaborator,
-              onPressed: () {
-                final inviteUrl = 'wedo://join?projectId=${widget.project.id}';
-                Clipboard.setData(ClipboardData(text: inviteUrl));
-                CustomSnackBar.show(context: context, message: l10n.inviteLinkCopied);
-              },
+              onPressed: () => _shareInviteLink(context),
             ),
           ),
         ],
@@ -98,8 +127,14 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                 final cubit = context.read<TaskCubit>();
                 return AnimatedSegmentedControl(
                   selectedIndex: cubit.currentFilter.index,
-                  options: [l10n.filterAll, l10n.filterMyTasks, l10n.filterPending, l10n.filterDone],
-                  onOptionSelected: (index) => cubit.changeFilter(TaskFilter.values[index]),
+                  options: [
+                    l10n.filterAll,
+                    l10n.filterMyTasks,
+                    l10n.filterPending,
+                    l10n.filterDone,
+                  ],
+                  onOptionSelected: (index) =>
+                      cubit.changeFilter(TaskFilter.values[index]),
                 );
               },
             ),
@@ -111,10 +146,17 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                   final displayList = cubit.filteredTasks;
 
                   if (state is GetTasksLoading && cubit.tasksList.isEmpty) {
-                    return Center(child: CircularProgressIndicator(color: colors.primary));
+                    return Center(
+                      child: CircularProgressIndicator(color: colors.primary),
+                    );
                   }
                   if (state is GetTasksError && cubit.tasksList.isEmpty) {
-                    return Center(child: Text(state.message, style: TextStyle(color: colors.error)));
+                    return Center(
+                      child: Text(
+                        state.message,
+                        style: TextStyle(color: colors.error),
+                      ),
+                    );
                   }
                   if (displayList.isEmpty) {
                     return Center(
@@ -124,11 +166,25 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           Container(
                             width: 72,
                             height: 72,
-                            decoration: BoxDecoration(color: colors.primaryLight, shape: BoxShape.circle),
-                            child: Icon(Icons.task_alt_rounded, color: colors.primary, size: 30),
+                            decoration: BoxDecoration(
+                              color: colors.primaryLight,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.task_alt_rounded,
+                              color: colors.primary,
+                              size: 30,
+                            ),
                           ),
                           const SizedBox(height: 14),
-                          Text(l10n.noTasksFound, style: TextStyle(color: colors.textDark, fontWeight: FontWeight.w600, fontSize: 15)),
+                          Text(
+                            l10n.noTasksFound,
+                            style: TextStyle(
+                              color: colors.textDark,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -155,12 +211,18 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
         ),
       ),
       floatingActionButton: DecoratedBox(
-        decoration: BoxDecoration(gradient: colors.accentGradient, borderRadius: BorderRadius.circular(18), boxShadow: colors.accentShadow),
+        decoration: BoxDecoration(
+          gradient: colors.accentGradient,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: colors.accentShadow,
+        ),
         child: FloatingActionButton(
           backgroundColor: Colors.transparent,
           elevation: 0,
           onPressed: () => _showAddTaskBottomSheet(context),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
           child: const Icon(Icons.add_rounded, color: Colors.white),
         ),
       ),

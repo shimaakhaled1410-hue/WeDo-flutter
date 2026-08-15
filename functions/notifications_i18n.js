@@ -11,6 +11,8 @@ const messages = {
     defaultProjectName: "Project",
     defaultAssignerName: "Someone",
     defaultJoinedUserName: "A new member",
+    taskMissedTitle: "❗ Deadline Missed",
+    taskMissedBody: (taskTitle) => `You missed the deadline for: ${taskTitle}`,
   },
   ar: {
     taskAlertTitle: "⏰ تذكير بمهمة!",
@@ -24,6 +26,8 @@ const messages = {
     defaultProjectName: "مشروع",
     defaultAssignerName: "أحد المستخدمين",
     defaultJoinedUserName: "عضو جديد",
+    taskMissedTitle: "❗ فات الموعد النهائي",
+taskMissedBody: (taskTitle) => `فاتك الموعد النهائي لمهمة: ${taskTitle}`,
   },
 };
 

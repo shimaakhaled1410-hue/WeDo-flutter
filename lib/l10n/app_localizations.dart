@@ -643,6 +643,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, one{1 day ago} other{{count} days ago}}'**
   String daysAgo(int count);
+
+  /// No description provided for @taskMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline missed'**
+  String get taskMissed;
+
+  /// No description provided for @setDueDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Due Date'**
+  String get setDueDate;
+
+  /// No description provided for @dueDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Due: {date} · {time}'**
+  String dueDateLabel(String date, String time);
+
+  /// No description provided for @alertAfterDueDateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert time can\'t be after the due date'**
+  String get alertAfterDueDateError;
+
+  /// No description provided for @inviteShareMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Join my project \"{projectName}\" on WeDo!\n{link}'**
+  String inviteShareMessage(String projectName, String link);
 }
 
 class _AppLocalizationsDelegate
