@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wedo_flutter/core/services/service_locator.dart' as di;
@@ -16,7 +17,10 @@ import 'package:wedo_flutter/presentation/tasks/project_details_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   static final router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: FirebaseAuth.instance.currentUser != null
         ? AppRoutes.home
         : AppRoutes.login,

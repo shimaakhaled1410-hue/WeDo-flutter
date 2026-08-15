@@ -7,7 +7,7 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
-exports.sendTaskAlerts = onSchedule("every 15 minutes", async (event) => {
+exports.sendTaskAlerts = onSchedule("every 10 minutes", async (event) => {
   const now = admin.firestore.Timestamp.now();
 
   try {
@@ -152,8 +152,7 @@ async function sendMissedDeadlineNotifications(now) {
   }
 }
 
-exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
-  if (!event.data || !event.data.after.exists) return;
+exports.onTaskAssigned = onDocumentUpdated("tasks/{taskId}", async (event) => {  if (!event.data || !event.data.after.exists) return;
 
   const oldTask = event.data.before.exists ? event.data.before.data() : null;
   const newTask = event.data.after.data();

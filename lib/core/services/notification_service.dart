@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:wedo_flutter/core/router/app_router.dart';
+import 'package:wedo_flutter/core/widgets/in_app_notification_banner.dart';
 
 class NotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
@@ -22,6 +24,21 @@ class NotificationService {
       }
 
       _fcm.onTokenRefresh.listen(saveTokenToFirestore);
+
+      FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
+    }
+  }
+
+  void _handleForegroundMessage(RemoteMessage message) {
+    final notification = message.notification;
+    final ctx = AppRouter.navigatorKey.currentContext;
+
+    if (notification != null && ctx != null) {
+      InAppNotificationBanner.show(
+        ctx,
+        title: notification.title ?? '',
+        body: notification.body ?? '',
+      );
     }
   }
 
