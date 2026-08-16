@@ -7,14 +7,6 @@ if (!admin.apps.length) {
   admin.initializeApp();
 }
 
-
-const androidConfig = {
-  notification: {
-    channelId: "task_alerts_channel",
-    sound: "notification_sound",
-  },
-};
-
 exports.sendTaskAlerts = onSchedule("every 10 minutes", async (event) => {
   const now = admin.firestore.Timestamp.now();
 
@@ -74,7 +66,6 @@ async function sendPendingAlertReminders(now) {
           title: pushMsg.taskAlertTitle,
           body: pushMsg.taskAlertBody(task.title),
         },
-        android: androidConfig, 
         data: {
           taskId: doc.id,
           projectId: task.projectId || "",
@@ -144,7 +135,6 @@ async function sendMissedDeadlineNotifications(now) {
           title: pushMsg.taskMissedTitle,
           body: pushMsg.taskMissedBody(task.title),
         },
-        android: androidConfig,
         data: {
           taskId: doc.id,
           projectId: task.projectId || "",
@@ -235,7 +225,6 @@ exports.onTaskAssigned = onDocumentWritten("tasks/{taskId}", async (event) => {
           title: pushMsg.taskAssignedTitle,
           body: pushMsg.taskAssignedBody(pushAssignerName, newTask.title),
         },
-        android: androidConfig, 
         data: {
           projectId: newTask.projectId || "",
           taskId: event.params.taskId,
@@ -312,7 +301,6 @@ exports.onProjectMemberJoined = onDocumentUpdated("projects/{projectId}", async 
             title: pushMsg.memberJoinedTitle,
             body: pushMsg.memberJoinedBody(pushJoinedUserName, projectName),
           },
-          android: androidConfig, 
           data: {
             projectId: event.params.projectId,
             click_action: "FLUTTER_NOTIFICATION_CLICK",

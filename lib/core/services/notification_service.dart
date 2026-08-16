@@ -7,19 +7,14 @@ import 'package:wedo_flutter/core/router/app_routes.dart';
 import 'package:wedo_flutter/core/services/service_locator.dart' as di;
 import 'package:wedo_flutter/core/widgets/in_app_notification_banner.dart';
 import 'package:wedo_flutter/domain/usecases/project/get_project_by_id_usecase.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AudioPlayer _player = AudioPlayer();
-  final FlutterLocalNotificationsPlugin _localNotifications =
-      FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
-    await _createNotificationChannel();
-
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
     NotificationSettings settings = await _fcm.requestPermission(
@@ -45,22 +40,6 @@ class NotificationService {
     });
 
     if (settings.authorizationStatus != AuthorizationStatus.authorized) {}
-  }
-
-  Future<void> _createNotificationChannel() async {
-    const androidChannel = AndroidNotificationChannel(
-      'task_alerts_channel',
-      'Task Alerts',
-      description: 'Notifications for task assignments and alerts',
-      importance: Importance.high,
-      sound: RawResourceAndroidNotificationSound('notification_sound'),
-    );
-
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(androidChannel);
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
@@ -95,9 +74,7 @@ class NotificationService {
     final result = await di.sl<GetProjectByIdUseCase>().call(projectId);
 
     result.fold(
-      (failure) => print(
-        '⚠️ Could not fetch project for navigation: ${failure.message}',
-      ),
+      (failure) {},
       (project) =>
           AppRouter.router.push(AppRoutes.projectDetails, extra: project),
     );
